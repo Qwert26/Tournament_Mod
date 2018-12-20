@@ -1,10 +1,9 @@
-using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.Instances;
 using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Core.Timing;
-using BrilliantSkies.Core.Modding;
+using BrilliantSkies.Modding;
 using System;
 using UnityEngine;
 
@@ -39,6 +38,7 @@ namespace Tournament
             GameEvents.OnGui -= _t._me.OnGUI;
             GameEvents.Twice_Second -= _t._me.SlowUpdate;
             GameEvents.PreLateUpdate -= _t._me.LateUpdate;
+            GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
 			{
 				_t._me._GUI.ActivateGui(_t._me, 0);
