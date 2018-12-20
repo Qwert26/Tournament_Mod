@@ -382,9 +382,9 @@ namespace Tournament
             settingsList.Add(offset);
             settingsList.Add((float)Dir);
             settingsList.Add((float)Loc);
-            settingsList.Add((float)defaultKeys);
-            settingsList.Add((float)eastWestBoard);
-            settingsList.Add((float)northSouthBoard);
+            settingsList.Add(defaultKeys);
+            settingsList.Add(eastWestBoard);
+            settingsList.Add(northSouthBoard);
             settingsList.Add(spawngap2);
             settingsList.Add(oobMaxBuffer);
             settingsList.Add(oobReverse);
@@ -1040,7 +1040,7 @@ namespace Tournament
 							}
 							return false;
 						}).CentreOfMass;
-						GameObject.Instantiate<GameObject>(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
+                        UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
 						StaticConstructablesManager.constructables.Find(delegate(MainConstruct c)
 						{
 							ObjectId team = c.GetTeam();
