@@ -182,48 +182,60 @@ namespace Tournament
 			_me = this;
 			_GUI = new TournamentGUI(_me);
 
-			_Top = new GUIStyle(LazyLoader.HUD.Get().interactionStyle);
-            _Top.alignment = (TextAnchor)4;
-            _Top.richText = true;
-            _Top.fontSize = 12;
+            _Top = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            {
+                alignment = TextAnchor.MiddleCenter,
+                richText = true,
+                fontSize = 12
+            };
 
-            _Left = new GUIStyle(LazyLoader.HUD.Get().interactionStyle);
-            _Left.alignment = 0;
-			_Left.richText = true;
-			_Left.fontSize = 12;
-			_Left.wordWrap = false;
-			_Left.clipping = (TextClipping)1;
+            _Left = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            {
+                alignment = 0,
+                richText = true,
+                fontSize = 12,
+                wordWrap = false,
+                clipping = TextClipping.Clip
+            };
 
-            _Left2 = new GUIStyle();
-            _Left2.alignment = 0;
-            _Left2.richText = true;
-            _Left2.fontSize = 12;
+            _Left2 = new GUIStyle
+            {
+                alignment = 0,
+                richText = true,
+                fontSize = 12
+            };
             _Left2.normal.textColor = Color.white;
 
-            _Right2 = new GUIStyle();
-            _Right2.alignment = (TextAnchor)2;
-            _Right2.richText = true;
-            _Right2.fontSize = 12;
+            _Right2 = new GUIStyle
+            {
+                alignment = TextAnchor.UpperRight,
+                richText = true,
+                fontSize = 12
+            };
             _Right2.normal.textColor = Color.white;
 
-            _Right = new GUIStyle(LazyLoader.HUD.Get().interactionStyle);
-			_Right.alignment = (TextAnchor)2;
-			_Right.richText = true;
-			_Right.fontSize = 12;
-			_Right.wordWrap = false;
-			_Right.clipping = (TextClipping)1;
+            _Right = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            {
+                alignment = TextAnchor.UpperRight,
+                richText = true,
+                fontSize = 12,
+                wordWrap = false,
+                clipping = TextClipping.Clip
+            };
 
-            _RightWrap = new GUIStyle(LazyLoader.HUD.Get().interactionStyle);
-            _RightWrap.alignment = (TextAnchor)2;
-            _RightWrap.richText = true;
-            _RightWrap.fontSize = 12;
-            _RightWrap.wordWrap = true;
-            _RightWrap.clipping = (TextClipping)1;
+            _RightWrap = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            {
+                alignment = TextAnchor.UpperRight,
+                richText = true,
+                fontSize = 12,
+                wordWrap = true,
+                clipping = TextClipping.Clip
+            };
 
-            loadSettings();
+            LoadSettings();
 		}
 
-        public void loadCraft()
+        public void LoadCraft()
         {
             ClearArea();
             HUDLog.Clear();
@@ -232,13 +244,13 @@ namespace Tournament
             foreach (TournamentEntry item in entry_t1)
             {
                 item.Spawn(spawndis, spawngap, spawngap2, entry_t1.Count, entry_t1.IndexOf(item));
-                item.team_id.FactionInst().ResourceStore.SetResources(maxmat);
+                item.Team_id.FactionInst().ResourceStore.SetResources(maxmat);
             }
             t2_res = maxmat;
             foreach (TournamentEntry item2 in entry_t2)
             {
                 item2.Spawn(spawndis, spawngap, spawngap2, entry_t2.Count, entry_t2.IndexOf(item2));
-                item2.team_id.FactionInst().ResourceStore.SetResources(maxmat);
+                item2.Team_id.FactionInst().ResourceStore.SetResources(maxmat);
             }
         }
 
@@ -248,13 +260,13 @@ namespace Tournament
             timer = 0f;
 			timerTotal = 0f;
 			timerTotal2 = Time.timeSinceLevelLoad;
-			InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)1;
+            InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = ConstructableCleanUp.Ai;
 
 			orbitindex = 0;
             orbittarget = 0;
 
-            flycam.transform.position = (new Vector3(-500f, 50f, 0f));
-            flycam.transform.rotation = (Quaternion.LookRotation(Vector3.right));
+            flycam.transform.position = new Vector3(-500f, 50f, 0f);
+            flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
 			cammode = false;
             foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
 			{
@@ -265,14 +277,14 @@ namespace Tournament
                 }
                 string key = "" + constructable.UniqueId + "," + id;
 
-                if (!HUDLog.ContainsKey((constructable.GetTeam()).Id))
+                if (!HUDLog.ContainsKey(constructable.GetTeam().Id))
 				{
-					HUDLog.Add((constructable.GetTeam()).Id, new SortedDictionary<string, TournamentParticipant>());
+					HUDLog.Add(constructable.GetTeam().Id, new SortedDictionary<string, TournamentParticipant>());
 				}
                
-                if (!HUDLog[(constructable.GetTeam()).Id].ContainsKey(key))
+                if (!HUDLog[constructable.GetTeam().Id].ContainsKey(key))
 				{
-                    HUDLog[(constructable.GetTeam()).Id].Add(key, new TournamentParticipant
+                    HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
                     {
                         TeamId = constructable.GetTeam(),
                         TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -280,9 +292,9 @@ namespace Tournament
                         MothershipId = id,
                         BlueprintName = constructable.GetName(),
                         AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
-						HP = ((constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? (constructable.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f) : (constructable.iMainStatus.GetFractionAliveBlocks() * 100f)),
-						HPCUR = (float)((constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? constructable.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberAliveBlocks()),
-						HPMAX = (float)((constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? constructable.iMainStatus.GetNumberBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberBlocks())
+						HP = (constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? (constructable.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f) : (constructable.iMainStatus.GetFractionAliveBlocks() * 100f),
+						HPCUR = (constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? constructable.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberAliveBlocks(),
+						HPMAX = (constructable.BlockTypeStorage.MainframeStore.Blocks.Count > 0) ? constructable.iMainStatus.GetNumberBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberBlocks()
 					});
 				}
 			}
@@ -297,7 +309,7 @@ namespace Tournament
 
 		public unsafe void ClearArea()
 		{
-			(ForceManager.Instance).forces.ForEach(delegate(Force t)
+			ForceManager.Instance.forces.ForEach(delegate(Force t)
 			{
 				ForceManager.Instance.DeleteForce(t);
 			});
@@ -307,7 +319,7 @@ namespace Tournament
 		{
             foreach (PlayerSetupBase @object in (Objects.Instance.Players.Objects))
             {
-                GameObject.Destroy(@object.gameObject);
+                UnityEngine.Object.Destroy(@object.gameObject);
             }
             cam = R_Avatars.JustOrbitCamera.InstantiateACopy().gameObject;
             cam.gameObject.transform.position = new Vector3(-500f, 50f, 0f);
@@ -380,7 +392,7 @@ namespace Tournament
             settingsFile.SaveData(settingsList, Formatting.None);
         }
 
-        public void loadSettings()
+        public void LoadSettings()
         {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "settings.cfg");
@@ -417,12 +429,12 @@ namespace Tournament
             }
             else
             {
-                loadDefaults();
+                LoadDefaults();
             }
         }
 
 
-        public void loadDefaults()
+        public void LoadDefaults()
         {
             spawndis = spawndisD;
             spawngap = spawngapD;
@@ -453,13 +465,13 @@ namespace Tournament
 
 		public unsafe void OnGUI()
 		{
-			GUI.matrix = (Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * (float)Screen.width / 1280f, 1f * (float)Screen.height / 800f, 1f)));
+			GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
 			GUI.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
-			GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor((double)(timerTotal / 60f))}m {Math.Floor((double)timerTotal) % 60.0}s", _Top);
+			GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", _Top);
             
             foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> team in HUDLog)
             {
-                bool teamOne = entry_t1[0].team_id.Id == team.Key;
+                bool teamOne = entry_t1[0].Team_id.Id == team.Key;
 
                 float xOffset = 0f;
                 float oobOffset = 2f;
@@ -502,8 +514,8 @@ namespace Tournament
                     {
                         dqed = false;
                         teamCurrentHP += entry.Value.HPCUR;
-                        oob = $"{Math.Floor((double)(entry.Value.OoBTime / 60f))}m{Math.Floor((double)entry.Value.OoBTime) % 60.0}s";
-                        percentHP = $"{Math.Round((double)entry.Value.HP, 1)}%";
+                        oob = $"{Math.Floor(entry.Value.OoBTime / 60f)}m{Math.Floor(entry.Value.OoBTime) % 60.0}s";
+                        percentHP = $"{Math.Round(entry.Value.HP, 1)}%";
                         //text = ((!flag) ? (text + string.Format("\n{2} {1,4} {0,6}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)) : (text + string.Format("\n{0,-6} {1,-4} {2}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)));
                     }
 
@@ -718,11 +730,11 @@ namespace Tournament
 			{
 				if (shift)
 				{
-					orbitcam.distance = ((orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 100f) : 0f);
+					orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 100f) : 0f;
 				}
 				else
 				{
-					orbitcam.distance = ((orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 50f) : 0f);
+					orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 50f) : 0f;
 				}
 			}
             if (StaticConstructablesManager.constructables.Count > 0)
@@ -864,21 +876,21 @@ namespace Tournament
 			{
 				if (matconv == -1f)
 				{
-					if ((double)t1_res < entry_t1[0].team_id.FactionInst().ResourceStore.Material.Quantity)
+					if (t1_res < entry_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
 					{
-						entry_t1[0].team_id.FactionInst().ResourceStore.SetResources(t1_res);
+						entry_t1[0].Team_id.FactionInst().ResourceStore.SetResources(t1_res);
 					}
 					else
 					{
-						t1_res = (float)entry_t1[0].team_id.FactionInst().ResourceStore.Material.Quantity;
+						t1_res = (float)entry_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
 					}
-					if ((double)t2_res < entry_t2[0].team_id.FactionInst().ResourceStore.Material.Quantity)
+					if (t2_res < entry_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
 					{
-						entry_t2[0].team_id.FactionInst().ResourceStore.SetResources(t2_res);
+						entry_t2[0].Team_id.FactionInst().ResourceStore.SetResources(t2_res);
 					}
 					else
 					{
-						t2_res = (float)entry_t2[0].team_id.FactionInst().ResourceStore.Material.Quantity;
+						t2_res = (float)entry_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
 					}
 				}
 				MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
@@ -893,12 +905,12 @@ namespace Tournament
                     string key = "" + val.UniqueId + "," + id;
                     //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
                     //if (!HUDLog[((IntPtr)(void*)val.GetTeam()).Id][val.get_UniqueId()].Disqual || !HUDLog[((IntPtr)(void*)val.GetTeam()).Id][val.get_UniqueId()].Scrapping)
-                    if (!HUDLog[(val.GetTeam()).Id][key].Disqual || !HUDLog[(val.GetTeam()).Id][key].Scrapping)
+                    if (!HUDLog[val.GetTeam().Id][key].Disqual || !HUDLog[val.GetTeam().Id][key].Scrapping)
 					{
-						HUDLog[(val.GetTeam()).Id][key].AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
-						if ((val.CentreOfMass).y < minalt || (val.CentreOfMass).y > maxalt)
+						HUDLog[val.GetTeam().Id][key].AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
+						if (val.CentreOfMass.y < minalt || val.CentreOfMass.y > maxalt)
 						{
-							HUDLog[(val.GetTeam()).Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+							HUDLog[val.GetTeam().Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 						}
 						else
 						{
@@ -928,18 +940,18 @@ namespace Tournament
 							}
 							if (num > maxdis && num < num2-oobReverse) //out of bounds and moving away faster than  oobReverse m/s
 							{
-                                HUDLog[(val.GetTeam()).Id][key].OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                if(HUDLog[(val.GetTeam()).Id][key].OoBTimeBuffer > oobMaxBuffer)
+                                HUDLog[val.GetTeam().Id][key].OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                if(HUDLog[val.GetTeam().Id][key].OoBTimeBuffer > oobMaxBuffer)
                                 {
-                                    HUDLog[(val.GetTeam()).Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    HUDLog[val.GetTeam().Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 } 
 							}
                             else
                             {
-                                HUDLog[(val.GetTeam()).Id][key].OoBTimeBuffer = 0;
+                                HUDLog[val.GetTeam().Id][key].OoBTimeBuffer = 0;
                             }
 						}
-						HUDLog[(val.GetTeam()).Id][key].Disqual = (HUDLog[(val.GetTeam()).Id][key].OoBTime > maxoob);
+						HUDLog[val.GetTeam().Id][key].Disqual = HUDLog[val.GetTeam().Id][key].OoBTime > maxoob;
 					}
 				}
 				timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
@@ -958,15 +970,15 @@ namespace Tournament
                     id = val.Drones.loadedMothershipC.UniqueId;
                 }
                 string key = "" + val.UniqueId + "," + id;
-                if (!HUDLog[(val.GetTeam()).Id][key].Disqual || !HUDLog[(val.GetTeam()).Id][key].Scrapping)
+                if (!HUDLog[val.GetTeam().Id][key].Disqual || !HUDLog[(val.GetTeam()).Id][key].Scrapping)
 				{
-					HUDLog[(val.GetTeam()).Id][key].HPCUR = (float)val.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables();
-					HUDLog[(val.GetTeam()).Id][key].HP = val.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f;
+					HUDLog[val.GetTeam().Id][key].HPCUR = val.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables();
+					HUDLog[val.GetTeam().Id][key].HP = val.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f;
 				}
 				else
 				{
-					HUDLog[(val.GetTeam()).Id][key].HPCUR = 0f;
-					HUDLog[(val.GetTeam()).Id][key].HP = 0f;
+					HUDLog[val.GetTeam().Id][key].HPCUR = 0f;
+					HUDLog[val.GetTeam().Id][key].HP = 0f;
 				}
 			}
 			foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> item in HUDLog)
@@ -975,24 +987,24 @@ namespace Tournament
 				{
 					List<MainConstruct> constructables = StaticConstructablesManager.constructables;
 					List<MainConstruct> constructables2 = StaticConstructablesManager.constructables;
-					Predicate<MainConstruct> match = delegate(MainConstruct c)
-					{
-						ObjectId team3 = c.GetTeam();
-						KeyValuePair<string, TournamentParticipant> keyValuePair9 = item2;
-						if (team3 == keyValuePair9.Value.TeamId)
-						{
+                    bool match(MainConstruct c)
+                    {
+                        ObjectId team3 = c.GetTeam();
+                        KeyValuePair<string, TournamentParticipant> keyValuePair9 = item2;
+                        if (team3 == keyValuePair9.Value.TeamId)
+                        {
                             int id3 = 0;
                             if (c.Drones.loadedMothershipC != null)
                             {
                                 id3 = c.Drones.loadedMothershipC.UniqueId;
                             }
                             string uniqueId3 = "" + c.UniqueId + "," + id3;
-							KeyValuePair<string, TournamentParticipant> keyValuePair10 = item2;
-							return uniqueId3 == keyValuePair10.Key;
-						}
-						return false;
-					};
-					if (constructables.Contains(constructables2.Find(match)))
+                            KeyValuePair<string, TournamentParticipant> keyValuePair10 = item2;
+                            return uniqueId3 == keyValuePair10.Key;
+                        }
+                        return false;
+                    }
+                    if (constructables.Contains(constructables2.Find(match)))
 					{
 						SortedDictionary<string, TournamentParticipant> sortedDictionary = HUDLog[item.Key];
 						KeyValuePair<string, TournamentParticipant> keyValuePair = item2;

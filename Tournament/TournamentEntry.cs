@@ -33,7 +33,7 @@ namespace Tournament
 			set;
 		}
 
-		public ObjectId team_id
+		public ObjectId Team_id
 		{
 			get;
 			set;
@@ -51,7 +51,7 @@ namespace Tournament
             set;
         }
 
-        public BlueprintFile bpf
+        public BlueprintFile Bpf
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Tournament
 			set
 			{
 				_bpf = value;
-				bp = bpf.Load(true);
+				bp = Bpf.Load(true);
 			}
 		}
 
@@ -136,11 +136,11 @@ namespace Tournament
                 m.GenUniqueID();
                 val.Drone.myJustLoadedDrones.Add(m);
             }*/
-            team_id = (IsKing ? InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.Name == "KING").Id : 
+            Team_id = (IsKing ? InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.Name == "KING").Id : 
                 InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.Name == "CHAL").Id);
             //BrilliantSkies.Core.Types.Vector3d vector3D = new BrilliantSkies.Core.Types.Vector3d(VLoc(gap, count, pos, dis));
             //vector3D.y += offset;
-            BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, offset)), VDir(), team_id, null, 0);
+            BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, offset)), VDir(), Team_id, null, 0);
         }
 
         public Vector3 VLoc(float gap, float gap2, int count, int pos, float dis, float offset)

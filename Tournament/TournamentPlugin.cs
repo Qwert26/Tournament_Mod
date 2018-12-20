@@ -24,7 +24,7 @@ namespace Tournament
 		public unsafe void OnLoad()
 		{
 			_t = new Tournament();
-            GameEvents.StartEvent += OnInstanceChange;
+            GameEvents.InstanceChange += OnInstanceChange;
             GameEvents.UniverseChange += OnPlanetChange;
         }
 
@@ -68,25 +68,25 @@ namespace Tournament
 			FactionSpecificationFaction val = new FactionSpecificationFaction();
 			val.Name = "KING";
 			val.AbreviatedName = "KING";
-			val.FleetColors = (Color[])new Color[4]
-			{
-				new Color(1f, 0.843137264f, 0f, 0.5f),
-				new Color(0.854901969f, 0.647058845f, 0.1254902f, 0.5f),
-				new Color(1f, 0.647058845f, 0f, 0.5f),
-				new Color(0.854901969f, 0.549019635f, 0f, 0.5f)
-			};
+			val.FleetColors = (new Color[4]
+            {
+                new Color(1f, 0.843137264f, 0f, 0.5f),
+                new Color(0.854901969f, 0.647058845f, 0.1254902f, 0.5f),
+                new Color(1f, 0.647058845f, 0f, 0.5f),
+                new Color(0.854901969f, 0.549019635f, 0f, 0.5f)
+            });
 			i.AddNew(val);
 			FactionSpecifications i2 = FactionSpecifications.i;
 			FactionSpecificationFaction val2 = new FactionSpecificationFaction();
 			val2.Name = "CHAL";
 			val2.AbreviatedName = "CHAL";
-			val2.FleetColors = (Color[])new Color[4]
-			{
-				new Color(1f, 0f, 0f, 0.5f),
-				new Color(0.545098066f, 0f, 0f, 0.5f),
-				new Color(0.698039234f, 0.13333334f, 0.13333334f, 0.5f),
-				new Color(1f, 0.3882353f, 0.2784314f, 0.5f)
-			};
+			val2.FleetColors = (new Color[4]
+            {
+                new Color(1f, 0f, 0f, 0.5f),
+                new Color(0.545098066f, 0f, 0f, 0.5f),
+                new Color(0.698039234f, 0.13333334f, 0.13333334f, 0.5f),
+                new Color(1f, 0.3882353f, 0.2784314f, 0.5f)
+            });
 			i2.AddNew(val2); //get id ?
 		}
     }

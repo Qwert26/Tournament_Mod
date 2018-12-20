@@ -117,7 +117,7 @@ namespace Tournament
                     tournamentEntry.spawn_direction = t.Dir;
                     tournamentEntry.spawn_location = t.Loc;
                     tournamentEntry.offset = t.offset;
-                    tournamentEntry.bpf = _treeSelector.CurrentData;
+                    tournamentEntry.Bpf = _treeSelector.CurrentData;
                     t.entry_t1.Add(tournamentEntry);
                 }
                 if (GUI.Button(new Rect(400f, 100f, 150f, 50f), "Add to Team 2"))
@@ -128,7 +128,7 @@ namespace Tournament
                     tournamentEntry2.spawn_direction = t.Dir;
                     tournamentEntry2.spawn_location = t.Loc;
                     tournamentEntry2.offset = t.offset;
-                    tournamentEntry2.bpf = _treeSelector.CurrentData;
+                    tournamentEntry2.Bpf = _treeSelector.CurrentData;
                     t.entry_t2.Add(tournamentEntry2);
                 }
             }
@@ -146,7 +146,7 @@ namespace Tournament
             if (GUILayout.Button("Restore Defaults"))
             {
                 GUISoundManager.GetSingleton().PlayBeep();
-                t.loadDefaults();
+                t.LoadDefaults();
             }
             t.defaultKeysBool = GUILayout.Toggle(t.defaultKeysBool, "Use Default Keybinds");
             GUILayout.EndVertical();
@@ -165,7 +165,7 @@ namespace Tournament
 					{
 						text = text + "\n" + str;
 					}
-					GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.bpf.Name, (item.bp.CalculateResourceCost(false, true)).Material, item.spawn_location, item.spawn_direction, text), (GUILayoutOption[])new GUILayoutOption[0]);
+					GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, (item.bp.CalculateResourceCost(false, true)).Material, item.spawn_location, item.spawn_direction, text), (GUILayoutOption[])new GUILayoutOption[0]);
 					if (GUILayout.Button("^ Remove ^", (GUILayoutOption[])new GUILayoutOption[0]))
 					{
 						t.entry_t1.Remove(item);
@@ -183,7 +183,7 @@ namespace Tournament
 					{
 						text2 = text2 + "\n" + str2;
 					}
-					GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.bpf.Name, (item2.bp.CalculateResourceCost(false, true)).Material, item2.spawn_location, item2.spawn_direction, text2), (GUILayoutOption[])new GUILayoutOption[0]);
+					GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.Bpf.Name, (item2.bp.CalculateResourceCost(false, true)).Material, item2.spawn_location, item2.spawn_direction, text2), (GUILayoutOption[])new GUILayoutOption[0]);
 					if (GUILayout.Button("^ Remove ^", (GUILayoutOption[])new GUILayoutOption[0]))
 					{
 						t.entry_t2.Remove(item2);
@@ -195,7 +195,7 @@ namespace Tournament
 			if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entry_t1.Count > 0 && t.entry_t2.Count > 0)
 			{
 				this.DeactivateGui(0);
-                t.loadCraft();
+                t.LoadCraft();
 				t.StartMatch();
 			}
 		}
