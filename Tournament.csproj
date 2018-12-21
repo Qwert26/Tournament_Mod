@@ -284,5 +284,10 @@
     <Compile Include="Tournament\TournamentParticipant.cs" />
     <Compile Include="Tournament\TournamentPlugin.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Tournament\plugin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

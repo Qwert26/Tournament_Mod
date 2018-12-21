@@ -54,3 +54,4 @@ D:\GitHub\Tournament_Mod\obj\Debug\Tournament.csproj.CoreCompileInputs.cache
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.csproj.CopyComplete
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.dll
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.pdb
+D:\GitHub\Tournament_Mod\bin\Debug\Tournament\plugin.json
