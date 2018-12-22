@@ -356,6 +356,8 @@ namespace Tournament
                                 HPMAX = constructable.iSize.VolumeOfFullAliveBlocksUsed
                             });
                             break;
+                        default:
+                            break;
                     }
                 }
             }
