@@ -969,16 +969,21 @@ namespace Tournament
                     }
                     string key = "" + val.UniqueId + "," + id;
                     //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
-                    if (!HUDLog[val.GetTeam().Id][key].Disqual || !HUDLog[val.GetTeam().Id][key].Scrapping)
+                    TournamentParticipant tournamentParticipant = HUDLog[val.GetTeam().Id][key];
+                    if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                     {
-                        HUDLog[val.GetTeam().Id][key].AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
-                        if (val.CentreOfMass.y < minalt || val.CentreOfMass.y > maxalt)
+                        tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
+                        if (tournamentParticipant.AICount == 0)
                         {
-                            HUDLog[val.GetTeam().Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                         }
-                        else if (HUDLog[val.GetTeam().Id][key].HP < minimumHealth)
+                        else if (val.CentreOfMass.y < minalt || val.CentreOfMass.y > maxalt)
                         {
-                            HUDLog[val.GetTeam().Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                        }
+                        else if (tournamentParticipant.HP < minimumHealth)
+                        {
+                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                         }
                         else
                         {
@@ -1008,18 +1013,18 @@ namespace Tournament
                             }
                             if (num > maxdis && num < num2 - oobReverse) //out of bounds and moving away faster than  oobReverse m/s
                             {
-                                HUDLog[val.GetTeam().Id][key].OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                if (HUDLog[val.GetTeam().Id][key].OoBTimeBuffer > oobMaxBuffer)
+                                tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                if (tournamentParticipant.OoBTimeBuffer > oobMaxBuffer)
                                 {
-                                    HUDLog[val.GetTeam().Id][key].OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 }
                             }
                             else
                             {
-                                HUDLog[val.GetTeam().Id][key].OoBTimeBuffer = 0;
+                                tournamentParticipant.OoBTimeBuffer = 0;
                             }
                         }
-                        HUDLog[val.GetTeam().Id][key].Disqual = HUDLog[val.GetTeam().Id][key].OoBTime > maxoob;
+                        tournamentParticipant.Disqual = tournamentParticipant.OoBTime > maxoob;
                     }
                 }
                 timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
