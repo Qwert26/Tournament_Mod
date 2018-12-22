@@ -24,7 +24,7 @@ namespace Tournament
         public void OnLoad()
         {
             _t = new Tournament();
-            GameEvents.InstanceChange += OnInstanceChange;
+            GameEvents.StartEvent += OnInstanceChange;
             GameEvents.UniverseChange += OnPlanetChange;
         }
 
@@ -50,44 +50,47 @@ namespace Tournament
             @is = new InstanceSpecification();
             @is.Header.Name = "Tournament Creator";
             @is.Header.Summary = "Create custom tournament style matches.";
-            @is.Header.Type = (InstanceType)4;
-            @is.Header.CommonSettings.AvatarAvailability = (AvatarAvailability)1;
-            @is.Header.CommonSettings.AvatarDamage = (AvatarDamage)1;
+            @is.Header.Type = InstanceType.None;
+            @is.Header.CommonSettings.AvatarAvailability = AvatarAvailability.None;
+            @is.Header.CommonSettings.AvatarDamage = AvatarDamage.Off;
             @is.Header.CommonSettings.ConstructableCleanUp = 0;
             @is.Header.CommonSettings.HeartStoneRequirement = 0;
-            @is.Header.CommonSettings.BuildModeRules = (BuildModeRules)1;
+            @is.Header.CommonSettings.BuildModeRules = BuildModeRules.Disabled;
             @is.Header.CommonSettings.SavingOptions = 0;
-            @is.Header.CommonSettings.BlueprintSpawningOptions = (BlueprintSpawningOptions)5;
+            @is.Header.CommonSettings.BlueprintSpawningOptions = BlueprintSpawningOptions.NoNewVehicles;
             @is.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = 0f;
             @is.Header.CommonSettings.LocalisedResourceMode = 0;
-            @is.Header.CommonSettings.FogOfWarType = (FogOfWarType)1;
+            @is.Header.CommonSettings.FogOfWarType = FogOfWarType.None;
             @is.Header.CommonSettings.DesignerOptions = 0;
-            @is.Header.CommonSettings.LuckyMechanic = (LuckyMechanic)1;
+            @is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
             Planet.i.Designers.AddInstance(@is);
             FactionSpecifications i = FactionSpecifications.i;
-            FactionSpecificationFaction val = new FactionSpecificationFaction();
-            val.Name = "KING";
-            val.AbreviatedName = "KING";
-            val.FleetColors = (new Color[4]
+            FactionSpecificationFaction val = new FactionSpecificationFaction
             {
-                new Color(1f, 0.843137264f, 0f, 0.5f),
-                new Color(0.854901969f, 0.647058845f, 0.1254902f, 0.5f),
-                new Color(1f, 0.647058845f, 0f, 0.5f),
-                new Color(0.854901969f, 0.549019635f, 0f, 0.5f)
-            });
+                Name = "King",
+                AbreviatedName = "K",
+                FleetColors = (new Color[4]
+            {
+                new Color(1f, 0.84f, 0f, 0.75f),
+                new Color(0.85f, 0.65f, 0.13f, 0.75f),
+                new Color(1f, 0.65f, 0f, 0.75f),
+                new Color(0.85f, 0.55f, 0f, 0.75f)
+            })
+            };
             i.AddNew(val);
-            FactionSpecifications i2 = FactionSpecifications.i;
-            FactionSpecificationFaction val2 = new FactionSpecificationFaction();
-            val2.Name = "CHAL";
-            val2.AbreviatedName = "CHAL";
-            val2.FleetColors = (new Color[4]
+            val = new FactionSpecificationFaction
             {
-                new Color(1f, 0f, 0f, 0.5f),
-                new Color(0.545098066f, 0f, 0f, 0.5f),
-                new Color(0.698039234f, 0.13333334f, 0.13333334f, 0.5f),
-                new Color(1f, 0.3882353f, 0.2784314f, 0.5f)
-            });
-            i2.AddNew(val2); //get id ?
+                Name = "Challenger",
+                AbreviatedName = "C",
+                FleetColors = (new Color[4]
+            {
+                new Color(1f, 0f, 0f, 0.75f),
+                new Color(0.55f, 0f, 0f, 0.75f),
+                new Color(0.7f, 0.15f, 0.15f, 0.75f),
+                new Color(1f, 0.4f, 0.3f, 0.75f)
+            })
+            };
+            i.AddNew(val); //get id ?
         }
     }
 }

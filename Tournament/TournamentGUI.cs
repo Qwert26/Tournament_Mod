@@ -11,7 +11,7 @@ using BrilliantSkies.Ftd.Planets.Instances.Headers;
 
 namespace Tournament
 {
-    public class TournamentGUI : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlayGui
+    public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
     {
         public Vector2 listpos;
 
@@ -84,8 +84,9 @@ namespace Tournament
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0f, 10000f, 0, new ToolTip("Max penalty time (seconds)"));
             t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0f, 10000f, 0, new ToolTip("Max match time (seconds)"));
             t.maxmat = GUISliders.LayoutDisplaySlider("Starting Material", t.maxmat, 0f, 100000f, 0, new ToolTip("Amount of material per team (centralised)"));
-            if (showAdvancedOptions = GUILayout.Toggle(showAdvancedOptions, new GUIContent("Show Advanced Battle Options", "Usually you don't need to modify these, but if you need to customise the battles further it can be done here.")))
+            if (showAdvancedOptions = GUILayout.Toggle(showAdvancedOptions,"Show Advanced Battle Options"))
             {
+                GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
                 t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
                 {
@@ -147,16 +148,20 @@ namespace Tournament
             GUILayout.EndArea();
 
             GUILayout.BeginArea(new Rect(0f, 580f, 600f, 200f), "Spawn Settings", GUI.skin.window);
-            GUISliders.TotalWidthOfWindow = 400;
+            GUISliders.TotalWidthOfWindow = 580;
             GUISliders.TextWidth = 100;
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 40;
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
             t.Dir = (Tournament.SPAWN.DIR)GUISliders.LayoutDisplaySlider(t.Dir.ToString(), (float)t.Dir, 0f, 3f, 0, new ToolTip("Direction"));
             t.Loc = (Tournament.SPAWN.LOC)GUISliders.LayoutDisplaySlider(t.Loc.ToString(), (float)t.Loc, 0f, 3f, 0, new ToolTip("Location"));
             t.offset = GUISliders.LayoutDisplaySlider("Height Offset", t.offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
+            GUILayout.EndVertical();
             if (_treeSelector.CurrentData != null)
             {
-                if (GUI.Button(new Rect(400f, 40f, 150f, 50f), "Add to Team 1"))
+                GUILayout.BeginVertical();
+                if (GUILayout.Button("Add to Team 1"))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry = new TournamentEntry
@@ -169,7 +174,7 @@ namespace Tournament
                     };
                     t.entry_t1.Add(tournamentEntry);
                 }
-                if (GUI.Button(new Rect(400f, 100f, 150f, 50f), "Add to Team 2"))
+                if (GUILayout.Button("Add to Team 2"))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry2 = new TournamentEntry
@@ -182,7 +187,9 @@ namespace Tournament
                     };
                     t.entry_t2.Add(tournamentEntry2);
                 }
+                GUILayout.EndVertical();
             }
+            GUILayout.EndHorizontal();
             GUILayout.EndArea();
 
             GUILayout.BeginArea(new Rect(600f, 580f, 340f, 200f), "Mod Settings", GUI.skin.window);

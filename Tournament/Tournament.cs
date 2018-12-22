@@ -324,7 +324,7 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = (!spawnStick) ? constructable.iMainResourceCosts.GetResourceCostAllIncludingSubVehicles().Material : constructable.iMainResourceCosts.GetResourceCost().Material,
+                                HPCUR = (!spawnStick) ? constructable.iMainResourceCosts.CalculateResourceCostAllOfAliveBlocksIncludingSubVehicles_ForCashBack(true).Material : constructable.iMainResourceCosts.GetResourceCost().Material,
                                 HPMAX = (!spawnStick) ? constructable.iMainStatus.GetNumberBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberBlocks()
                             });
                             break;
@@ -380,7 +380,7 @@ namespace Tournament
 
         public void ResetCam()
         {
-            foreach (PlayerSetupBase @object in (Objects.Instance.Players.Objects))
+            foreach (PlayerSetupBase @object in Objects.Instance.Players.Objects)
             {
                 UnityEngine.Object.Destroy(@object.gameObject);
             }
@@ -675,7 +675,7 @@ namespace Tournament
                     float xOffsetLabel;
                     float xOffsetValue;
 
-                    int kingId = InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.Name == "KING").Id.Id;
+                    int kingId = InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.AbreviatedName == "K").Id.Id;
                     if (targetConstruct.GetTeam().Id == kingId) // team 1
                     {
                         xOffsetLabel = 200;
