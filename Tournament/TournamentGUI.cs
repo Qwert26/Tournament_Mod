@@ -17,7 +17,7 @@ namespace Tournament
 
         public Vector2 optpos, optpos2;
 
-        private bool showAdvancedOptions = false;
+        private bool showAdvancedOptions = false, showEyecandy = false;
 
         private BrilliantSkies.Ui.TreeSelection.TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> _treeSelector;
 
@@ -26,6 +26,9 @@ namespace Tournament
         private int sectionsNorthSouth, sectionsEastWest;
 
         private Tournament t;
+
+        private int kingIndexTFC = 0, challengerIndexTFC = 1;
+        private int kingIndexNew = 0, challengerIndexNew = 1;
 
         public TournamentGUI(Tournament tourny)
         {
@@ -116,7 +119,7 @@ namespace Tournament
                         case Tournament.HealthCalculation.Volume:
                             return "Health will be based on the current volume of alive blocks. This should be best for volume-based Tournaments.";
                         case Tournament.HealthCalculation.ArrayElements:
-                            return "Health will be based on the current size of alive blocks. This should be best for Tournaments based on arrayelements.";
+                            return "Health will be based on the current size of alive blocks. This should be best for Tournaments based on array-elements.";
                         default:
                             return "How did you manage to go out of bounds here?";
                     }
@@ -126,9 +129,60 @@ namespace Tournament
             }
             else {
                 t.matconv = t.matconvD;
-                t.cleanUp = ConstructableCleanUp.Ai;
-                t.healthCalculation = Tournament.HealthCalculation.NumberOfBlocks;
-                t.minimumHealth = 0;
+                t.cleanUp = t.cleanUpD;
+                t.healthCalculation = t.healthCalculationD;
+                t.minimumHealth = t.minimumHealthD;
+            }
+            if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
+            {
+                GUILayout.Label("If you are bored of the same fleet colors for every match, you can change them here. <b>But there are no color selectors only predefined packages!</b>");
+                kingIndexNew = (int)GUISliders.LayoutDisplaySlider("Team 1: "+TournamentFleetColor.colorSchemes[kingIndexTFC].Name, kingIndexTFC, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[kingIndexTFC].Description));
+                if (kingIndexNew == challengerIndexTFC)
+                {
+                    if (kingIndexNew < kingIndexTFC)
+                    {
+                        kingIndexNew--;
+                        if (kingIndexNew < 0)
+                        {
+                            kingIndexNew = 1;
+                        }
+                    }
+                    else
+                    {
+                        kingIndexNew++;
+                        if (kingIndexNew >= TournamentFleetColor.colorSchemes.Length)
+                        {
+                            kingIndexNew = TournamentFleetColor.colorSchemes.Length - 2;
+                        }
+                    }
+                }
+                kingIndexTFC = kingIndexNew;
+                challengerIndexNew = (int)GUISliders.LayoutDisplaySlider("Team 2: "+TournamentFleetColor.colorSchemes[challengerIndexTFC].Name, challengerIndexTFC, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[challengerIndexTFC].Description));
+                if (challengerIndexNew == kingIndexTFC)
+                {
+                    if (challengerIndexNew < challengerIndexTFC)
+                    {
+                        challengerIndexNew--;
+                        if (challengerIndexNew < 0)
+                        {
+                            challengerIndexNew = 1;
+                        }
+                    }
+                    else
+                    {
+                        challengerIndexNew++;
+                        if (challengerIndexNew >= TournamentFleetColor.colorSchemes.Length)
+                        {
+                            challengerIndexNew = TournamentFleetColor.colorSchemes.Length - 2;
+                        }
+                    }
+                }
+                challengerIndexTFC = challengerIndexNew;
+            }
+            else
+            {
+                kingIndexTFC = kingIndexNew = 0;
+                challengerIndexTFC = challengerIndexNew = 1;
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -161,7 +215,7 @@ namespace Tournament
             if (_treeSelector.CurrentData != null)
             {
                 GUILayout.BeginVertical();
-                if (GUILayout.Button("Add to Team 1"))
+                if (GUILayout.Button(new GUIContent("Add to Team 1","Add the currently selected Blueprint to the King-Faction.")))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry = new TournamentEntry
@@ -174,7 +228,7 @@ namespace Tournament
                     };
                     t.entry_t1.Add(tournamentEntry);
                 }
-                if (GUILayout.Button("Add to Team 2"))
+                if (GUILayout.Button(new GUIContent("Add to Team 2", "Add the currently selected Blueprint to the Challenger-Faction.")))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry2 = new TournamentEntry
@@ -253,6 +307,8 @@ namespace Tournament
             if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entry_t1.Count > 0 && t.entry_t2.Count > 0)
             {
                 DeactivateGui(0);
+                TournamentPlugin.kingFaction.FleetColors = TournamentFleetColor.colorSchemes[kingIndexTFC].Colors;
+                TournamentPlugin.challengerFaction.FleetColors = TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors;
                 t.LoadCraft();
                 t.StartMatch();
             }

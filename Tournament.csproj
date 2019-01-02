@@ -280,6 +280,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tournament\Tournament.cs" />
     <Compile Include="Tournament\TournamentEntry.cs" />
+    <Compile Include="Tournament\TournamentFleetColors.cs" />
     <Compile Include="Tournament\TournamentGUI.cs" />
     <Compile Include="Tournament\TournamentParticipant.cs" />
     <Compile Include="Tournament\TournamentPlugin.cs" />

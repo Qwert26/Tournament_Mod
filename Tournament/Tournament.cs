@@ -179,7 +179,11 @@ namespace Tournament
 
         public ConstructableCleanUp cleanUp = ConstructableCleanUp.All;
 
+        public ConstructableCleanUp cleanUpD = ConstructableCleanUp.All;
+
         public float minimumHealth = 0;
+
+        public float minimumHealthD = 0;
 
         public enum HealthCalculation
         {
@@ -189,6 +193,8 @@ namespace Tournament
             ArrayElements
         }
         public HealthCalculation healthCalculation = HealthCalculation.NumberOfBlocks;
+
+        public HealthCalculation healthCalculationD = HealthCalculation.NumberOfBlocks;
 
         public Tournament()
         {
@@ -325,7 +331,7 @@ namespace Tournament
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
                                 HPCUR = (!spawnStick) ? constructable.iMainResourceCosts.CalculateResourceCostAllOfAliveBlocksIncludingSubVehicles_ForCashBack(true).Material : constructable.iMainResourceCosts.GetResourceCost().Material,
-                                HPMAX = (!spawnStick) ? constructable.iMainStatus.GetNumberBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberBlocks()
+                                HPMAX = (!spawnStick) ? constructable.iMainResourceCosts.CalculateResourceCostAllOfAliveBlocksIncludingSubVehicles_ForCashBack(true).Material : constructable.iMainResourceCosts.GetResourceCost().Material
                             });
                             break;
                         case HealthCalculation.Volume:
@@ -675,7 +681,7 @@ namespace Tournament
                     float xOffsetLabel;
                     float xOffsetValue;
 
-                    int kingId = InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.AbreviatedName == "K").Id.Id;
+                    int kingId = TournamentPlugin.kingFaction.Id.Id;
                     if (targetConstruct.GetTeam().Id == kingId) // team 1
                     {
                         xOffsetLabel = 200;

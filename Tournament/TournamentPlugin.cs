@@ -5,7 +5,6 @@ using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Modding;
 using System;
-using UnityEngine;
 
 namespace Tournament
 {
@@ -20,6 +19,8 @@ namespace Tournament
         public static string Name => "Tournament";
 
         public Version version => new Version("0.1.1");
+
+        public static FactionSpecificationFaction kingFaction, challengerFaction;
 
         public void OnLoad()
         {
@@ -65,32 +66,20 @@ namespace Tournament
             @is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
             Planet.i.Designers.AddInstance(@is);
             FactionSpecifications i = FactionSpecifications.i;
-            FactionSpecificationFaction val = new FactionSpecificationFaction
+            kingFaction = new FactionSpecificationFaction
             {
                 Name = "King",
                 AbreviatedName = "K",
-                FleetColors = (new Color[4]
-            {
-                new Color(1f, 0.84f, 0f, 0.75f),
-                new Color(0.85f, 0.65f, 0.13f, 0.75f),
-                new Color(1f, 0.65f, 0f, 0.75f),
-                new Color(0.85f, 0.55f, 0f, 0.75f)
-            })
+                FleetColors = TournamentFleetColor.classicYellow.Colors
             };
-            i.AddNew(val);
-            val = new FactionSpecificationFaction
+            i.AddNew(kingFaction);
+            challengerFaction = new FactionSpecificationFaction
             {
                 Name = "Challenger",
                 AbreviatedName = "C",
-                FleetColors = (new Color[4]
-            {
-                new Color(1f, 0f, 0f, 0.75f),
-                new Color(0.55f, 0f, 0f, 0.75f),
-                new Color(0.7f, 0.15f, 0.15f, 0.75f),
-                new Color(1f, 0.4f, 0.3f, 0.75f)
-            })
+                FleetColors = TournamentFleetColor.classicRed.Colors
             };
-            i.AddNew(val); //get id ?
+            i.AddNew(challengerFaction);
         }
     }
 }

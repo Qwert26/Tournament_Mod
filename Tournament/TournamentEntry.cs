@@ -123,8 +123,7 @@ namespace Tournament
                 m.GenUniqueID();
                 val.Drone.myJustLoadedDrones.Add(m);
             }*/
-            Team_id = IsKing ? InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.AbreviatedName == "K").Id :
-                InstanceSpecification.i.Factions.Factions.Find((InstanceFaction f) => f.FactionSpec.AbreviatedName == "C").Id;
+            Team_id = IsKing ? TournamentPlugin.kingFaction.Id : TournamentPlugin.challengerFaction.Id;
             //BrilliantSkies.Core.Types.Vector3d vector3D = new BrilliantSkies.Core.Types.Vector3d(VLoc(gap, count, pos, dis));
             //vector3D.y += offset;
             BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, 0);
