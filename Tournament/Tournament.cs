@@ -759,29 +759,29 @@ namespace Tournament
             switch (defaultKeysBool)
             {
                 case false:
-                    pause = Input.GetKeyUp(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
+                    pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
-                    next = Input.GetKeyUp(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
-                    previous = Input.GetKeyUp(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
-                    changeExtraInfo = Input.GetKeyUp(ftdKeyMap.GetKeyDef(KeyInputsFtd.CharacterSheetUi).Key);
+                    next = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
+                    previous = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
+                    changeExtraInfo = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.CharacterSheetUi).Key);
                     freecamOn = Input.GetMouseButtonUp(1); // technically same as default atm
                     orbitcamOn = Input.GetMouseButtonUp(0); // technically same as default atm
                     break;
                 case true:
-                    pause = Input.GetKeyUp((KeyCode)292); // default f11
+                    pause = Input.GetKeyDown((KeyCode)292); // default f11
                     shift = Input.GetKey((KeyCode)303) || Input.GetKey((KeyCode)304);
-                    next = Input.GetKeyUp((KeyCode)101); // default e
-                    previous = Input.GetKeyUp((KeyCode)113); // default q
-                    changeExtraInfo = Input.GetKeyUp((KeyCode)122); // default z
-                    freecamOn = Input.GetKeyUp((KeyCode)324); // default left click
-                    orbitcamOn = Input.GetKeyUp((KeyCode)323); // default right click
+                    next = Input.GetKeyDown((KeyCode)101); // default e
+                    previous = Input.GetKeyDown((KeyCode)113); // default q
+                    changeExtraInfo = Input.GetKeyDown((KeyCode)122); // default z
+                    freecamOn = Input.GetKeyDown((KeyCode)324); // default left click
+                    orbitcamOn = Input.GetKeyDown((KeyCode)323); // default right click
                     break;
             }
 
             if (pause)
             {
                 //Time.set_timeScale((Time.get_timeScale() > 0f) ? 0f : 1f);
-                Time.timeScale = ((Time.timeScale > 0f) ? 0f : 1f);
+                Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
             }
             if (shift)
             {
