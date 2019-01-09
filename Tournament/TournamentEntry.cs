@@ -1,8 +1,6 @@
 using Assets.Scripts;
 using Assets.Scripts.Persistence;
 using BrilliantSkies.Core.Id;
-using BrilliantSkies.Ftd.Planets.Instances;
-using BrilliantSkies.Ftd.Planets.Instances.Factions;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -116,7 +114,7 @@ namespace Tournament
 
         public void Spawn(float dis, float gap, float gap2, int count, int pos)
         {
-            MainConstruct val = BlueprintConverter.Convert(bp, 0, true);
+            MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
             /*val.Drone.myJustLoadedDrones.Clear();
             foreach (MainConstruct m in val.MainArrayBasics.SVList)
             {
@@ -126,7 +124,8 @@ namespace Tournament
             Team_id = IsKing ? TournamentPlugin.kingFaction.Id : TournamentPlugin.challengerFaction.Id;
             //BrilliantSkies.Core.Types.Vector3d vector3D = new BrilliantSkies.Core.Types.Vector3d(VLoc(gap, count, pos, dis));
             //vector3D.y += offset;
-            BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, 0);
+            BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, SpawnPositioning.OriginOrCentre);
+            val.ReapplyAllColours();
         }
 
         public Vector3 VLoc(float gap, float gap2, int count, int pos, float dis, float offset)

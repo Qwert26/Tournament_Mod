@@ -21,7 +21,6 @@ using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.GridCasts;
-using BrilliantSkies.Ftd.Planets.Instances.Factions;
 
 namespace Tournament
 {
