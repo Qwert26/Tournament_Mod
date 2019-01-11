@@ -1,6 +1,5 @@
 D:\GitHub\Tournament_Mod\bin\Debug\Tournament.dll
 D:\GitHub\Tournament_Mod\bin\Debug\Tournament.pdb
-D:\GitHub\Tournament_Mod\bin\Debug\Newtonsoft.Json.dll
 D:\GitHub\Tournament_Mod\bin\Debug\System.dll
 D:\GitHub\Tournament_Mod\bin\Debug\Pathfinding.dll
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.AccessibilityModule.xml
@@ -55,3 +54,5 @@ D:\GitHub\Tournament_Mod\obj\Debug\Tournament.csproj.CopyComplete
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.dll
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.pdb
 D:\GitHub\Tournament_Mod\bin\Debug\Tournament\plugin.json
+D:\GitHub\Tournament_Mod\bin\Debug\MoonSharp.Interpreter.dll
+D:\GitHub\Tournament_Mod\bin\Debug\Newtonsoft.Json.Bson.dll

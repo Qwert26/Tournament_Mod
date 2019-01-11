@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
+using BrilliantSkies.Ftd.Planets.Factions;
 namespace Tournament
 {
     public class TournamentEntry
@@ -69,12 +70,12 @@ namespace Tournament
                             array[checked(i + 1)] = $"{list[i].blueprintName} <color=cyan>{material}</color>";
                             num += material;
                         }
-                        array[0] = $"{bp.blueprintName} <color=cyan>{(bp.CalculateResourceCost(false, true)).Material - num}</color>";
+                        array[0] = $"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true).Material - num}</color>";
                         return array;
                     }
                     return new string[1]
                     {
-                        $"{bp.blueprintName} <color=cyan>{(bp.CalculateResourceCost(false, true)).Material}</color>"
+                        $"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true).Material}</color>"
                     };
                 }
                 return null;
@@ -115,7 +116,9 @@ namespace Tournament
         public void Spawn(float dis, float gap, float gap2, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
-            Team_id = IsKing ? TournamentPlugin.kingFaction.Id : TournamentPlugin.challengerFaction.Id;
+            FactionSpecificationFaction faction = IsKing ? TournamentPlugin.kingFaction : TournamentPlugin.challengerFaction;
+            val.Colors.SetFleetColors(faction.FleetColors);
+            Team_id = faction.Id;
             BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, SpawnPositioning.OriginOrCentre);
         }
 
@@ -145,15 +148,15 @@ namespace Tournament
             switch (Spawn_direction)
             {
                 case Tournament.SPAWN.DIR.Facing:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, (float)((!IsKing) ? 1 : (-1))));
+                    return Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
                 case Tournament.SPAWN.DIR.Away:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, (float)(IsKing ? 1 : (-1))));
+                    return Quaternion.LookRotation(new Vector3(0f, 0f, IsKing ? 1 : (-1)));
                 case Tournament.SPAWN.DIR.Left:
-                    return Quaternion.LookRotation(new Vector3((float)(IsKing ? 1 : (-1)), 0f, 0f));
+                    return Quaternion.LookRotation(new Vector3(IsKing ? 1 : (-1), 0f, 0f));
                 case Tournament.SPAWN.DIR.Right:
-                    return Quaternion.LookRotation(new Vector3((float)((!IsKing) ? 1 : (-1)), 0f, 0f));
+                    return Quaternion.LookRotation(new Vector3((!IsKing) ? 1 : (-1), 0f, 0f));
                 default:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, (float)((!IsKing) ? 1 : (-1))));
+                    return Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
             }
         }
     }
