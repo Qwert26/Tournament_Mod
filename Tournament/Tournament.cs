@@ -456,7 +456,10 @@ namespace Tournament
                 northSouthBoard,
                 spawngap2,
                 oobMaxBuffer,
-                oobReverse
+                oobReverse,
+                (float)cleanUp,
+                (float)healthCalculation,
+                minimumHealth
             };
 
             settingsFile.SaveData(settingsList, Formatting.None);
@@ -487,6 +490,11 @@ namespace Tournament
                 spawngap2 = settingsList[14];
                 oobMaxBuffer = settingsList[15];
                 oobReverse = settingsList[16];
+                if (settingsList.Count > 17) {
+                    cleanUp = (ConstructableCleanUp)settingsList[17];
+                    healthCalculation = (HealthCalculation)settingsList[18];
+                    minimumHealth = settingsList[19];
+                }
 
                 if (defaultKeys == 1)
                 {
@@ -531,6 +539,9 @@ namespace Tournament
             {
                 defaultKeysBool = false;
             }
+            cleanUp = cleanUpD;
+            healthCalculation = healthCalculationD;
+            minimumHealth = minimumHealthD;
         }
 
         public void OnGUI()
