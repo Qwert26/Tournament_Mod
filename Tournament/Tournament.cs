@@ -758,7 +758,7 @@ namespace Tournament
         {
             FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
 
-            bool pause = false;
+            //bool pause = false;
             bool next = false;
             bool previous = false;
             bool shift = false;
@@ -769,7 +769,7 @@ namespace Tournament
             switch (defaultKeysBool)
             {
                 case false:
-                    pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
+                    //pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
                     next = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
                     previous = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
@@ -778,7 +778,7 @@ namespace Tournament
                     orbitcamOn = Input.GetMouseButtonUp(0); // technically same as default atm
                     break;
                 case true:
-                    pause = Input.GetKeyDown((KeyCode)292); // default f11
+                    //pause = Input.GetKeyDown((KeyCode)292); // default f11
                     shift = Input.GetKey((KeyCode)303) || Input.GetKey((KeyCode)304);
                     next = Input.GetKeyDown((KeyCode)101); // default e
                     previous = Input.GetKeyDown((KeyCode)113); // default q
@@ -788,11 +788,10 @@ namespace Tournament
                     break;
             }
 
-            if (pause)
+            /*if (pause)
             {
-                //Time.set_timeScale((Time.get_timeScale() > 0f) ? 0f : 1f);
                 Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }
+            }*/
             if (shift)
             {
                 orbitcam.xSpeed = 1000;
