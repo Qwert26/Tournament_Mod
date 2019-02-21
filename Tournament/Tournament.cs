@@ -468,6 +468,7 @@ namespace Tournament
                 oobMaxBuffer,
                 oobReverse,
                 showAdvancedOptions ? 1 : 0,
+                matconv,
                 (float)cleanUp,
                 (float)healthCalculation,
                 minimumHealth,
@@ -503,17 +504,19 @@ namespace Tournament
                 spawngap2 = settingsList[14];
                 oobMaxBuffer = settingsList[15];
                 oobReverse = settingsList[16];
-                if (settingsList.Count >= 23)
+                if (settingsList.Count >= 24)
                 {
                     showAdvancedOptions = settingsList[17] != 0;
-                    cleanUp = (ConstructableCleanUp)settingsList[18];
-                    healthCalculation = (HealthCalculation)settingsList[19];
-                    minimumHealth = settingsList[20];
-                    rotation = settingsList[21];
-                    sameMaterials = settingsList[22] != 0;
+                    matconv = settingsList[18];
+                    cleanUp = (ConstructableCleanUp)settingsList[19];
+                    healthCalculation = (HealthCalculation)settingsList[20];
+                    minimumHealth = settingsList[21];
+                    rotation = settingsList[22];
+                    sameMaterials = settingsList[23] != 0;
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
+                    matconv = matconvD;
                     cleanUp = cleanUpD;
                     healthCalculation = healthCalculationD;
                     minimumHealth = minimumHealthD;
@@ -565,6 +568,7 @@ namespace Tournament
                 defaultKeysBool = false;
             }
             showAdvancedOptions = showAdvancedOptionsD;
+            matconv = matconvD;
             cleanUp = cleanUpD;
             healthCalculation = healthCalculationD;
             minimumHealth = minimumHealthD;
