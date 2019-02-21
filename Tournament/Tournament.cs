@@ -45,7 +45,7 @@ namespace Tournament
             }
         }
 
-        public Tournament _me;
+        public static Tournament _me;
 
         public TournamentGUI _GUI;
 
@@ -184,6 +184,18 @@ namespace Tournament
 
         public float minimumHealthD = 0;
 
+        public float rotation = 0;
+
+        public float rotationD = 0;
+
+        public bool showAdvancedOptions = false;
+
+        public bool showAdvancedOptionsD = false;
+
+        public bool sameMaterials = true;
+
+        public bool sameMaterialsD = true;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -257,18 +269,16 @@ namespace Tournament
         {
             ClearArea();
             HUDLog.Clear();
-            InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = (matconv / 100f);
-            t1_res = maxmat;
+            InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = matconv / 100f;
             foreach (TournamentEntry item in entry_t1)
             {
                 item.Spawn(spawndis, spawngap, spawngap2, entry_t1.Count, entry_t1.IndexOf(item));
-                item.Team_id.FactionInst().ResourceStore.SetResources(maxmat);
+                item.Team_id.FactionInst().ResourceStore.SetResources(t1_res);
             }
-            t2_res = maxmat;
             foreach (TournamentEntry item2 in entry_t2)
             {
                 item2.Spawn(spawndis, spawngap, spawngap2, entry_t2.Count, entry_t2.IndexOf(item2));
-                item2.Team_id.FactionInst().ResourceStore.SetResources(maxmat);
+                item2.Team_id.FactionInst().ResourceStore.SetResources(t2_res);
             }
         }
 
@@ -425,7 +435,7 @@ namespace Tournament
             return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[eastWestBoard, northSouthBoard].BoardSectionCoords);
         }
 
-        public void saveSettings()
+        public void SaveSettings()
         {
             if (defaultKeysBool == true)
             {
@@ -457,9 +467,12 @@ namespace Tournament
                 spawngap2,
                 oobMaxBuffer,
                 oobReverse,
+                showAdvancedOptions ? 1 : 0,
                 (float)cleanUp,
                 (float)healthCalculation,
-                minimumHealth
+                minimumHealth,
+                rotation,
+                sameMaterials ? 1 : 0
             };
 
             settingsFile.SaveData(settingsList, Formatting.None);
@@ -490,10 +503,22 @@ namespace Tournament
                 spawngap2 = settingsList[14];
                 oobMaxBuffer = settingsList[15];
                 oobReverse = settingsList[16];
-                if (settingsList.Count > 17) {
-                    cleanUp = (ConstructableCleanUp)settingsList[17];
-                    healthCalculation = (HealthCalculation)settingsList[18];
-                    minimumHealth = settingsList[19];
+                if (settingsList.Count >= 23)
+                {
+                    showAdvancedOptions = settingsList[17] != 0;
+                    cleanUp = (ConstructableCleanUp)settingsList[18];
+                    healthCalculation = (HealthCalculation)settingsList[19];
+                    minimumHealth = settingsList[20];
+                    rotation = settingsList[21];
+                    sameMaterials = settingsList[22] != 0;
+                }
+                else {
+                    showAdvancedOptions = showAdvancedOptionsD;
+                    cleanUp = cleanUpD;
+                    healthCalculation = healthCalculationD;
+                    minimumHealth = minimumHealthD;
+                    rotation = rotationD;
+                    sameMaterials = sameMaterialsD;
                 }
 
                 if (defaultKeys == 1)
@@ -539,9 +564,12 @@ namespace Tournament
             {
                 defaultKeysBool = false;
             }
+            showAdvancedOptions = showAdvancedOptionsD;
             cleanUp = cleanUpD;
             healthCalculation = healthCalculationD;
             minimumHealth = minimumHealthD;
+            rotation = rotationD;
+            sameMaterials = sameMaterialsD;
         }
 
         public void OnGUI()
@@ -654,7 +682,7 @@ namespace Tournament
             if (extraInfo)
             {
                 //int target = getTarget();
-                IMainConstructBlock target = getTarget();
+                IMainConstructBlock target = GetTarget();
                 if (target != null)
                 {
                     //int targetIndex = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == target);
@@ -720,16 +748,11 @@ namespace Tournament
                     GUI.Label(new Rect(xOffsetValue, 190f, 110f, 38f), power, _Right);
                     GUI.Label(new Rect(xOffsetValue, 228f, 110f, 38f), altitude, _Right);
                     GUI.Label(new Rect(xOffsetValue, 266f, 110f, 38f), nearest, _Right);
-
-
-
-
-
                 }
             }
         }
 
-        public IMainConstructBlock getTarget()
+        public IMainConstructBlock GetTarget()
         {
             IMainConstructBlock target = null;
 
@@ -758,7 +781,7 @@ namespace Tournament
         {
             FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
 
-            //bool pause = false;
+            bool pause = false;
             bool next = false;
             bool previous = false;
             bool shift = false;
@@ -769,16 +792,16 @@ namespace Tournament
             switch (defaultKeysBool)
             {
                 case false:
-                    //pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
+                    pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
                     next = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
                     previous = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
                     changeExtraInfo = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.CharacterSheetUi).Key);
-                    freecamOn = Input.GetMouseButtonUp(1); // technically same as default atm
-                    orbitcamOn = Input.GetMouseButtonUp(0); // technically same as default atm
+                    freecamOn = Input.GetMouseButtonDown(1); // technically same as default atm
+                    orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
                     break;
                 case true:
-                    //pause = Input.GetKeyDown((KeyCode)292); // default f11
+                    pause = Input.GetKeyDown((KeyCode)292); // default f11
                     shift = Input.GetKey((KeyCode)303) || Input.GetKey((KeyCode)304);
                     next = Input.GetKeyDown((KeyCode)101); // default e
                     previous = Input.GetKeyDown((KeyCode)113); // default q
@@ -788,10 +811,10 @@ namespace Tournament
                     break;
             }
 
-            /*if (pause)
+            if (pause)
             {
                 Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }*/
+            }
             if (shift)
             {
                 orbitcam.xSpeed = 1000;
@@ -804,7 +827,7 @@ namespace Tournament
             }
             if (changeExtraInfo)
             {
-                extraInfo = (extraInfo == true) ? false : true;
+                extraInfo = !extraInfo;
             }
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)
             {
@@ -1170,5 +1193,6 @@ namespace Tournament
                 overtime = true;
             }
         }
+        public Quaternion Rotation => Quaternion.Euler(0, rotation, 0);
     }
 }

@@ -17,7 +17,7 @@ namespace Tournament
 
         public Vector2 optpos, optpos2;
 
-        private bool showAdvancedOptions = false, showEyecandy = false;
+        private bool showEyecandy = false;
 
         private BrilliantSkies.Ui.TreeSelection.TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> _treeSelector;
 
@@ -78,16 +78,24 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 100f, 5000f, 0, new ToolTip("Spawn distance between teams"));
-            t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Horizontal", t.spawngap, 0f, 500f, 0, new ToolTip("Spawn distance between team members left to right"));
-            t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, 0f, 1000f, 0, new ToolTip("Spawn distance between team members front to back"));
-            t.minalt = GUISliders.LayoutDisplaySlider("Min Alt", t.minalt, -500f, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
-            t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000f, 0, new ToolTip("Add to penalty time when above this"));
-            t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000f, 0, new ToolTip("Max distance from nearest enemy before penalty time added"));
-            t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0f, 10000f, 0, new ToolTip("Max penalty time (seconds)"));
-            t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0f, 10000f, 0, new ToolTip("Max match time (seconds)"));
-            t.maxmat = GUISliders.LayoutDisplaySlider("Starting Material", t.maxmat, 0f, 100000f, 0, new ToolTip("Amount of material per team (centralised)"));
-            if (showAdvancedOptions = GUILayout.Toggle(showAdvancedOptions,"Show Advanced Battle Options"))
+            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 100, 5000, 0, new ToolTip("Spawn distance between teams"));
+            t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Horizontal", t.spawngap, 0, 500, 0, new ToolTip("Spawn distance between team members left to right"));
+            t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, 0, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
+            t.minalt = GUISliders.LayoutDisplaySlider("Min Alt", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
+            t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
+            t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time added"));
+            t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
+            t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 10000, 0, new ToolTip("Max match time (seconds)"));
+            if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
+            {
+                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 100000, 0, new ToolTip("Amount of material per team (centralised)"));
+                t.t1_res = t.t2_res = t.maxmat;
+            }
+            else {
+                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 100000, enumMinMax.none, new ToolTip("Amount of material of team 1 (centralised)"));
+                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 100000, enumMinMax.none, new ToolTip("Amount of material of team 2 (centralised)"));
+            }
+            if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {
                 GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
                 t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
@@ -211,6 +219,7 @@ namespace Tournament
             t.Dir = (Tournament.SPAWN.DIR)GUISliders.LayoutDisplaySlider(t.Dir.ToString(), (float)t.Dir, 0f, 3f, 0, new ToolTip("Direction"));
             t.Loc = (Tournament.SPAWN.LOC)GUISliders.LayoutDisplaySlider(t.Loc.ToString(), (float)t.Loc, 0f, 3f, 0, new ToolTip("Location"));
             t.offset = GUISliders.LayoutDisplaySlider("Height Offset", t.offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
+            t.rotation = GUISliders.LayoutDisplaySlider("Rotation", t.rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle around origin point"));
             GUILayout.EndVertical();
             if (_treeSelector.CurrentData != null)
             {
@@ -252,7 +261,7 @@ namespace Tournament
             if (GUILayout.Button("Save Settings"))
             {
                 GUISoundManager.GetSingleton().PlayBeep();
-                t.saveSettings();
+                t.SaveSettings();
             }
             //new Rect(140f, 300f, 200f, 50f),
             if (GUILayout.Button("Restore Defaults"))

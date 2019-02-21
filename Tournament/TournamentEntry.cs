@@ -126,38 +126,50 @@ namespace Tournament
         {
             float x = (count - 1f) * gap / 2f - pos * gap;
             float z = IsKing ? (dis / 2f) + (pos * gap2) : (dis / 2f) - dis - (pos * gap2);
-
+            Vector3 ret;
             switch (Spawn_location)
             {
                 case Tournament.SPAWN.LOC.Sea:
-                    return new Vector3(x, 1f + offset, z);
+                    ret=new Vector3(x, 1f + offset, z);
+                    break;
                 case Tournament.SPAWN.LOC.Air:
-                    return new Vector3(x, 100f + offset, z);
+                    ret=new Vector3(x, 100f + offset, z);
+                    break;
                 case Tournament.SPAWN.LOC.Sub:
-                    return new Vector3(x, -20f + offset, z);
+                    ret=new Vector3(x, -20f + offset, z);
+                    break;
                 case Tournament.SPAWN.LOC.Land:
-                    return new Vector3(x, 51f + offset, z);
+                    ret=new Vector3(x, 51f + offset, z);
+                    break;
                 default:
-                    return new Vector3(x, 0f + offset, z);
+                    ret=new Vector3(x, 0f + offset, z);
+                    break;
             }
+            return Tournament._me.Rotation * ret;
         }
 
         public Quaternion VDir()
         {
-
+            Quaternion ret;
             switch (Spawn_direction)
             {
                 case Tournament.SPAWN.DIR.Facing:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    break;
                 case Tournament.SPAWN.DIR.Away:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, IsKing ? 1 : (-1)));
+                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, IsKing ? 1 : (-1)));
+                    break;
                 case Tournament.SPAWN.DIR.Left:
-                    return Quaternion.LookRotation(new Vector3(IsKing ? 1 : (-1), 0f, 0f));
+                    ret=Quaternion.LookRotation(new Vector3(IsKing ? 1 : (-1), 0f, 0f));
+                    break;
                 case Tournament.SPAWN.DIR.Right:
-                    return Quaternion.LookRotation(new Vector3((!IsKing) ? 1 : (-1), 0f, 0f));
+                    ret=Quaternion.LookRotation(new Vector3((!IsKing) ? 1 : (-1), 0f, 0f));
+                    break;
                 default:
-                    return Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    break;
             }
+            return ret*Tournament._me.Rotation;
         }
     }
 }

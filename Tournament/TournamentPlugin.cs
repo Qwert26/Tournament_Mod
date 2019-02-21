@@ -35,14 +35,14 @@ namespace Tournament
 
         public static void OnInstanceChange()
         {
-            GameEvents.FixedUpdateEvent -= _t._me.FixedUpdate;
-            GameEvents.OnGui -= _t._me.OnGUI;
-            GameEvents.Twice_Second -= _t._me.SlowUpdate;
-            GameEvents.PreLateUpdate -= _t._me.LateUpdate;
+            GameEvents.FixedUpdateEvent -= _t.FixedUpdate;
+            GameEvents.OnGui -= _t.OnGUI;
+            GameEvents.Twice_Second -= _t.SlowUpdate;
+            GameEvents.PreLateUpdate -= _t.LateUpdate;
             GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
-                _t._me._GUI.ActivateGui(_t._me, 0);
+                _t._GUI.ActivateGui(_t, 0);
             }
         }
 
