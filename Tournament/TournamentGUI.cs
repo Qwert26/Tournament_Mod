@@ -15,7 +15,7 @@ namespace Tournament
     {
         public Vector2 listpos;
 
-        public Vector2 optpos, optpos2;
+        public Vector2 optpos, optpos2, optpos3;
 
         private bool showEyecandy = false;
 
@@ -214,12 +214,13 @@ namespace Tournament
             GUISliders.TextWidth = 100;
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 40;
+            optpos3 = GUILayout.BeginScrollView(optpos3);
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
             t.Dir = (Tournament.SPAWN.DIR)GUISliders.LayoutDisplaySlider(t.Dir.ToString(), (float)t.Dir, 0f, 3f, 0, new ToolTip("Direction"));
             t.Loc = (Tournament.SPAWN.LOC)GUISliders.LayoutDisplaySlider(t.Loc.ToString(), (float)t.Loc, 0f, 3f, 0, new ToolTip("Location"));
             t.offset = GUISliders.LayoutDisplaySlider("Height Offset", t.offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
-            t.rotation = GUISliders.LayoutDisplaySlider("Rotation", t.rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle around origin point"));
+            t.rotation = GUISliders.LayoutDisplaySlider("Rotation", t.rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
             GUILayout.EndVertical();
             if (_treeSelector.CurrentData != null)
             {
@@ -253,6 +254,7 @@ namespace Tournament
                 GUILayout.EndVertical();
             }
             GUILayout.EndHorizontal();
+            GUILayout.EndScrollView();
             GUILayout.EndArea();
 
             GUILayout.BeginArea(new Rect(600f, 580f, 340f, 200f), "Mod Settings", GUI.skin.window);
