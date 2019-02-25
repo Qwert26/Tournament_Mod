@@ -1085,7 +1085,10 @@ namespace Tournament
                     id = val.Drones.loadedMothershipC.UniqueId;
                 }
                 string key = "" + val.UniqueId + "," + id;
-                TournamentParticipant tournamentParticipant = HUDLog[val.GetTeam().Id][key];
+                if (!HUDLog[val.GetTeam().Id].TryGetValue(key, out TournamentParticipant tournamentParticipant))
+                {
+                    continue; //Current construct not found skipping it.
+                }
                 if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                 {
                     switch (healthCalculation)

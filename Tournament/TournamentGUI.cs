@@ -70,7 +70,7 @@ namespace Tournament
             _treeSelector.OnGui(new Rect(30f, 35f, 280f, 520f));
             GUILayout.EndArea();
 
-            GUILayout.BeginArea(new Rect(340f, 0f, 600f, 400f), "Tournament Settings", GUI.skin.window);
+            GUILayout.BeginArea(new Rect(340f, 0f, 600f, 430f), "Tournament Settings", GUI.skin.window);
             optpos = GUILayout.BeginScrollView(optpos);
 
             GUISliders.TotalWidthOfWindow = 580;
@@ -85,15 +85,17 @@ namespace Tournament
             t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
             t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time added"));
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
+            t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
+            t.oobReverse = GUISliders.LayoutDisplaySlider("Out OfBounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
             t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 10000, 0, new ToolTip("Max match time (seconds)"));
             if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
             {
-                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 100000, 0, new ToolTip("Amount of material per team (centralised)"));
+                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip("Amount of material per team (centralised)"));
                 t.t1_res = t.t2_res = t.maxmat;
             }
             else {
-                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 100000, enumMinMax.none, new ToolTip("Amount of material of team 1 (centralised)"));
-                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 100000, enumMinMax.none, new ToolTip("Amount of material of team 2 (centralised)"));
+                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip("Amount of material of team 1 (centralised)"));
+                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip("Amount of material of team 2 (centralised)"));
             }
             if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {
@@ -195,7 +197,7 @@ namespace Tournament
             GUILayout.EndScrollView();
             GUILayout.EndArea();
 
-            GUILayout.BeginArea(new Rect(340f, 400f, 600f, 180f), "Battle Location", GUI.skin.window);
+            GUILayout.BeginArea(new Rect(340f, 430f, 600f, 150f), "Battle Location", GUI.skin.window);
             optpos2 = GUILayout.BeginScrollView(optpos2);
 
             GUISliders.TotalWidthOfWindow = 580;
