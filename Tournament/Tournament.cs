@@ -196,6 +196,10 @@ namespace Tournament
 
         public bool sameMaterialsD = true;
 
+        public bool localResources = false;
+
+        public bool localResourcesD = false;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -270,15 +274,45 @@ namespace Tournament
             ClearArea();
             HUDLog.Clear();
             InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = matconv / 100f;
+            InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = localResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
             foreach (TournamentEntry item in entry_t1)
             {
                 item.Spawn(spawndis, spawngap, spawngap2, entry_t1.Count, entry_t1.IndexOf(item));
-                item.Team_id.FactionInst().ResourceStore.SetResources(t1_res);
+                if (localResources)
+                {
+                    item.Team_id.FactionInst().ResourceStore.SetResources(0);
+                }
+                else
+                {
+                    item.Team_id.FactionInst().ResourceStore.SetResources(t1_res);
+                }
             }
             foreach (TournamentEntry item2 in entry_t2)
             {
                 item2.Spawn(spawndis, spawngap, spawngap2, entry_t2.Count, entry_t2.IndexOf(item2));
-                item2.Team_id.FactionInst().ResourceStore.SetResources(t2_res);
+                if (localResources) {
+                    item2.Team_id.FactionInst().ResourceStore.SetResources(0);
+                }
+                else
+                {
+                    item2.Team_id.FactionInst().ResourceStore.SetResources(t2_res);
+                }
+            }
+            if (localResources)
+            {
+                foreach (MainConstruct construct in StaticConstructablesManager.constructables) {
+                    if (construct.GetTeam() == TournamentPlugin.kingFaction.Id)
+                    {
+                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, t1_res));
+                    }
+                    else if (construct.GetTeam() == TournamentPlugin.challengerFaction.Id)
+                    {
+                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, t2_res));
+                    }
+                    else {
+                        construct.RawResource.Material.SetQuantity(0);
+                    }
+                }
             }
         }
 
@@ -465,6 +499,7 @@ namespace Tournament
                 eastWestBoard,
                 northSouthBoard,
                 spawngap2,
+                localResources ? 1:0,
                 oobMaxBuffer,
                 oobReverse,
                 showAdvancedOptions ? 1 : 0,
@@ -502,17 +537,18 @@ namespace Tournament
                 eastWestBoard = (int)settingsList[12];
                 northSouthBoard = (int)settingsList[13];
                 spawngap2 = settingsList[14];
-                oobMaxBuffer = settingsList[15];
-                oobReverse = settingsList[16];
-                if (settingsList.Count >= 24)
+                localResources = settingsList[15] != 0;
+                oobMaxBuffer = settingsList[16];
+                oobReverse = settingsList[17];
+                if (settingsList.Count >= 25)
                 {
-                    showAdvancedOptions = settingsList[17] != 0;
-                    matconv = settingsList[18];
-                    cleanUp = (ConstructableCleanUp)settingsList[19];
-                    healthCalculation = (HealthCalculation)settingsList[20];
-                    minimumHealth = settingsList[21];
-                    rotation = settingsList[22];
-                    sameMaterials = settingsList[23] != 0;
+                    showAdvancedOptions = settingsList[18] != 0;
+                    matconv = settingsList[19];
+                    cleanUp = (ConstructableCleanUp)settingsList[20];
+                    healthCalculation = (HealthCalculation)settingsList[21];
+                    minimumHealth = settingsList[22];
+                    rotation = settingsList[23];
+                    sameMaterials = settingsList[24] != 0;
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -574,6 +610,7 @@ namespace Tournament
             minimumHealth = minimumHealthD;
             rotation = rotationD;
             sameMaterials = sameMaterialsD;
+            localResources = localResourcesD;
         }
 
         public void OnGUI()
@@ -1084,10 +1121,56 @@ namespace Tournament
                 {
                     id = val.Drones.loadedMothershipC.UniqueId;
                 }
-                string key = "" + val.UniqueId + "," + id;
+                string key = val.UniqueId + "," + id;
                 if (!HUDLog[val.GetTeam().Id].TryGetValue(key, out TournamentParticipant tournamentParticipant))
                 {
-                    continue; //Current construct not found skipping it.
+                    tournamentParticipant = new TournamentParticipant
+                    {
+                        AICount = val.BlockTypeStorage.MainframeStore.Count,
+                        TeamId = val.GetTeam(),
+                        TeamName = val.GetTeam().FactionSpec().Name,
+                        BlueprintName = val.GetBlueprintName(),
+                        MothershipId = id,
+                        Disqual = false,
+                        Scrapping = false,
+                        UniqueId = val.UniqueId
+                    };
+                    switch (healthCalculation)
+                    {
+                        case HealthCalculation.NumberOfBlocks:
+                            tournamentParticipant.HPMAX = val.iMainStatus.GetNumberBlocksIncludingSubConstructables();
+                            break;
+                        case HealthCalculation.ResourceCost:
+                            tournamentParticipant.HPMAX = val.iMainResourceCosts.GetResourceCostAllIncludingSubVehicles().Material;
+                            break;
+                        case HealthCalculation.Volume:
+                        case HealthCalculation.ArrayElements:
+                            tournamentParticipant.HPMAX = 0;
+                            for (int x = val.ArrayBasics.minx_; x <= val.ArrayBasics.maxx_; x++)
+                            {
+                                for (int y = val.ArrayBasics.miny_; x <= val.ArrayBasics.maxy_; y++)
+                                {
+                                    for (int z = val.ArrayBasics.minz_; x <= val.ArrayBasics.maxz_; z++)
+                                    {
+                                        Block b = val.ArrayBasics[x, y, z];
+                                        if (b!=null) {
+                                            if (healthCalculation == HealthCalculation.Volume)
+                                            {
+                                                tournamentParticipant.HPMAX += b.item.SizeInfo.Volume;
+                                            }
+                                            else {
+                                                tournamentParticipant.HPMAX += b.item.SizeInfo.ArrayPositionsUsed;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                        default:
+                            Debug.LogError("Health calculation of newly spawned in Construct is not available!");
+                            break;
+                    }
+                    HUDLog[tournamentParticipant.TeamId.Id][key] = tournamentParticipant;
                 }
                 if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                 {

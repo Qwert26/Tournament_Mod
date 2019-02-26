@@ -88,14 +88,15 @@ namespace Tournament
             t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
             t.oobReverse = GUISliders.LayoutDisplaySlider("Out OfBounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
             t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 10000, 0, new ToolTip("Max match time (seconds)"));
+            t.localResources = GUILayout.Toggle(t.localResources, "Use local Resorces");
             if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
             {
-                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip("Amount of material per team (centralised)"));
+                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip(t.localResources?"Amount of material on each constructable (localised)":"Amount of material per team (centralised)"));
                 t.t1_res = t.t2_res = t.maxmat;
             }
             else {
-                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip("Amount of material of team 1 (centralised)"));
-                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip("Amount of material of team 2 (centralised)"));
+                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources?"Amount of material on each constructable of team 1 (localised)":"Amount of material of team 1 (centralised)"));
+                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
             }
             if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {
