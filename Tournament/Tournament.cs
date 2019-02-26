@@ -732,6 +732,7 @@ namespace Tournament
 
                     string name = targetConstruct.blueprintName;
                     string hp = $"{Math.Round(targetConstruct.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
+                    string resources = $"{Math.Round(targetConstruct.RawResource.Material.Quantity, 0)}/{Math.Round(targetConstruct.RawResource.Material.Maximum, 0)}";
                     string ammo = $"{Math.Round(targetConstruct.Ammo.Ammo.Quantity, 0)}/{Math.Round(targetConstruct.Ammo.Ammo.Maximum, 0)}";
                     string fuel = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Maximum, 0)}";
                     string battery = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Maximum, 0)}";
@@ -774,21 +775,23 @@ namespace Tournament
 
                     GUI.Label(new Rect(xOffsetLabel, 0f, 90f, 38f), "Name:", _Left);
                     GUI.Label(new Rect(xOffsetLabel, 38f, 90f, 38f), "HP:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 76f, 90f, 38f), "Ammo:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 114f, 90f, 38f), "Fuel:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 152f, 90f, 38f), "Battery:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 190f, 90f, 38f), "Power:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 228f, 90f, 38f), "Altitude:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 266f, 90f, 38f), "Nearest Enemy:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 76, 90, 38), "Materials:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 114, 90f, 38f), "Ammo:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 152, 90f, 38f), "Fuel:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 190, 90f, 38f), "Battery:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 228, 90f, 38f), "Power:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 266, 90f, 38f), "Altitude:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 304, 90f, 38f), "Nearest Enemy:", _Left);
 
                     GUI.Label(new Rect(xOffsetValue, 0f, 110f, 38f), name, _RightWrap);
                     GUI.Label(new Rect(xOffsetValue, 38f, 110f, 38f), hp, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 76f, 110f, 38f), ammo, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 114f, 110f, 38f), fuel, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 152f, 110f, 38f), battery, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 190f, 110f, 38f), power, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 228f, 110f, 38f), altitude, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 266f, 110f, 38f), nearest, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 76, 110, 38), resources, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 114, 110f, 38f), ammo, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 152, 110f, 38f), fuel, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 190, 110f, 38f), battery, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 228, 110f, 38f), power, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 266, 110f, 38f), altitude, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 304, 110f, 38f), nearest, _Right);
                 }
             }
         }
