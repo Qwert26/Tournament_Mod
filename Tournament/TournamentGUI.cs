@@ -239,7 +239,7 @@ namespace Tournament
                         Offset = t.offset,
                         Bpf = _treeSelector.CurrentData
                     };
-                    t.entry_t1.Add(tournamentEntry);
+                    t.entries_t1.Add(tournamentEntry);
                 }
                 if (GUILayout.Button(new GUIContent("Add to Team 2", "Add the currently selected Blueprint to the Challenger-Faction.")))
                 {
@@ -252,7 +252,7 @@ namespace Tournament
                         Offset = t.offset,
                         Bpf = _treeSelector.CurrentData
                     };
-                    t.entry_t2.Add(tournamentEntry2);
+                    t.entries_t2.Add(tournamentEntry2);
                 }
                 GUILayout.EndVertical();
             }
@@ -281,9 +281,9 @@ namespace Tournament
             GUILayout.BeginArea(new Rect(940f, 0f, 340f, 580f), "Selected", GUI.skin.window);
             listpos = GUILayout.BeginScrollView(listpos, new GUILayoutOption[0]);
             GUILayout.Box("<color=#ffa500ff>~---------T1---------~</color>", new GUILayoutOption[0]);
-            if (t.entry_t1.Count != 0)
+            if (t.entries_t1.Count != 0)
             {
-                foreach (TournamentEntry item in t.entry_t1)
+                foreach (TournamentEntry item in t.entries_t1)
                 {
                     string text = "";
                     string[] labelCost = item.LabelCost;
@@ -294,14 +294,14 @@ namespace Tournament
                     GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, (item.bp.CalculateResourceCost(false, true)).Material, item.Spawn_location, item.Spawn_direction, text), (GUILayoutOption[])new GUILayoutOption[0]);
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
-                        t.entry_t1.Remove(item);
+                        t.entries_t1.Remove(item);
                     }
                 }
             }
             GUILayout.Box("<color=#ff0000ff>~---------T2---------~</color>", new GUILayoutOption[0]);
-            if (t.entry_t2.Count != 0)
+            if (t.entries_t2.Count != 0)
             {
-                foreach (TournamentEntry item2 in t.entry_t2)
+                foreach (TournamentEntry item2 in t.entries_t2)
                 {
                     string text2 = "";
                     string[] labelCost2 = item2.LabelCost;
@@ -312,13 +312,13 @@ namespace Tournament
                     GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.Bpf.Name, (item2.bp.CalculateResourceCost(false, true)).Material, item2.Spawn_location, item2.Spawn_direction, text2), (GUILayoutOption[])new GUILayoutOption[0]);
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
-                        t.entry_t2.Remove(item2);
+                        t.entries_t2.Remove(item2);
                     }
                 }
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
-            if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entry_t1.Count > 0 && t.entry_t2.Count > 0)
+            if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entries_t1.Count > 0 && t.entries_t2.Count > 0)
             {
                 DeactivateGui(0);
                 TournamentPlugin.kingFaction.FleetColors = TournamentFleetColor.colorSchemes[kingIndexTFC].Colors;

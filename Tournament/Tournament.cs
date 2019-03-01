@@ -172,9 +172,9 @@ namespace Tournament
 
         public float t2_res;
 
-        public List<TournamentEntry> entry_t1 = new List<TournamentEntry>();
+        public List<TournamentEntry> entries_t1 = new List<TournamentEntry>();
 
-        public List<TournamentEntry> entry_t2 = new List<TournamentEntry>();
+        public List<TournamentEntry> entries_t2 = new List<TournamentEntry>();
 
         public ConstructableCleanUp cleanUp = ConstructableCleanUp.All;
 
@@ -275,9 +275,9 @@ namespace Tournament
             HUDLog.Clear();
             InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = matconv / 100f;
             InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = localResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
-            foreach (TournamentEntry item in entry_t1)
+            foreach (TournamentEntry item in entries_t1)
             {
-                item.Spawn(spawndis, spawngap, spawngap2, entry_t1.Count, entry_t1.IndexOf(item));
+                item.Spawn(spawndis, spawngap, spawngap2, entries_t1.Count, entries_t1.IndexOf(item));
                 if (localResources)
                 {
                     item.Team_id.FactionInst().ResourceStore.SetResources(0);
@@ -287,9 +287,9 @@ namespace Tournament
                     item.Team_id.FactionInst().ResourceStore.SetResources(t1_res);
                 }
             }
-            foreach (TournamentEntry item2 in entry_t2)
+            foreach (TournamentEntry item2 in entries_t2)
             {
-                item2.Spawn(spawndis, spawngap, spawngap2, entry_t2.Count, entry_t2.IndexOf(item2));
+                item2.Spawn(spawndis, spawngap, spawngap2, entries_t2.Count, entries_t2.IndexOf(item2));
                 if (localResources) {
                     item2.Team_id.FactionInst().ResourceStore.SetResources(0);
                 }
@@ -621,7 +621,7 @@ namespace Tournament
 
             foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> team in HUDLog)
             {
-                bool teamOne = entry_t1[0].Team_id.Id == team.Key;
+                bool teamOne = entries_t1[0].Team_id.Id == team.Key;
 
                 float xOffset = 0f;
                 float oobOffset = 2f;
@@ -1023,21 +1023,21 @@ namespace Tournament
             {
                 if (matconv == -1f)
                 {
-                    if (t1_res < entry_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
+                    if (t1_res < entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
                     {
-                        entry_t1[0].Team_id.FactionInst().ResourceStore.SetResources(t1_res);
+                        entries_t1[0].Team_id.FactionInst().ResourceStore.SetResources(t1_res);
                     }
                     else
                     {
-                        t1_res = (float)entry_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
+                        t1_res = (float)entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
                     }
-                    if (t2_res < entry_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
+                    if (t2_res < entries_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
                     {
-                        entry_t2[0].Team_id.FactionInst().ResourceStore.SetResources(t2_res);
+                        entries_t2[0].Team_id.FactionInst().ResourceStore.SetResources(t2_res);
                     }
                     else
                     {
-                        t2_res = (float)entry_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
+                        t2_res = (float)entries_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
                     }
                 }
                 MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
