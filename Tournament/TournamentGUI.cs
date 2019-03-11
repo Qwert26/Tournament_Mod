@@ -91,12 +91,21 @@ namespace Tournament
             t.localResources = GUILayout.Toggle(t.localResources, "Use local Resorces");
             if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
             {
-                t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip(t.localResources?"Amount of material on each constructable (localised)":"Amount of material per team (centralised)"));
-                t.t1_res = t.t2_res = t.maxmat;
+                if (!(t.infinteResourcesT1 = t.infinteResourcesT2 = GUILayout.Toggle(t.infinteResourcesT1, "Infinte Resources")))
+                {
+                    t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip(t.localResources ? "Amount of material on each constructable (localised)" : "Amount of material per team (centralised)"));
+                    t.t1_res = t.t2_res = t.maxmat;
+                }
             }
             else {
-                t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources?"Amount of material on each constructable of team 1 (localised)":"Amount of material of team 1 (centralised)"));
-                t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
+                if (!(t.infinteResourcesT1 = GUILayout.Toggle(t.infinteResourcesT1, "Infinite Resources for Team 1")))
+                {
+                    t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources ? "Amount of material on each constructable of team 1 (localised)" : "Amount of material of team 1 (centralised)"));
+                }
+                if (!(t.infinteResourcesT2 = GUILayout.Toggle(t.infinteResourcesT2, "Infinite Resources for Team 2")))
+                {
+                    t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources ? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
+                }
             }
             if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {

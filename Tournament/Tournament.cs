@@ -200,6 +200,12 @@ namespace Tournament
 
         public bool localResourcesD = false;
 
+        public bool infinteResourcesT1 = false;
+
+        public bool infinteResourcesT2 = false;
+
+        public bool infiniteResourcesD = false;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -282,7 +288,10 @@ namespace Tournament
                 {
                     item.Team_id.FactionInst().ResourceStore.SetResources(0);
                 }
-                else
+                else if(infinteResourcesT1)
+                {
+                    item.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
+                } else
                 {
                     item.Team_id.FactionInst().ResourceStore.SetResources(t1_res);
                 }
@@ -290,8 +299,12 @@ namespace Tournament
             foreach (TournamentEntry item2 in entries_t2)
             {
                 item2.Spawn(spawndis, spawngap, spawngap2, entries_t2.Count, entries_t2.IndexOf(item2));
-                if (localResources) {
+                if (localResources)
+                {
                     item2.Team_id.FactionInst().ResourceStore.SetResources(0);
+                }
+                else if (infinteResourcesT2) {
+                    item2.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
                 }
                 else
                 {
@@ -508,9 +521,10 @@ namespace Tournament
                 (float)healthCalculation,
                 minimumHealth,
                 rotation,
-                sameMaterials ? 1 : 0
+                sameMaterials ? 1 : 0,
+                infinteResourcesT1?1:0,
+                infinteResourcesT2?1:0
             };
-
             settingsFile.SaveData(settingsList, Formatting.None);
         }
 
@@ -549,6 +563,8 @@ namespace Tournament
                     minimumHealth = settingsList[22];
                     rotation = settingsList[23];
                     sameMaterials = settingsList[24] != 0;
+                    infinteResourcesT1 = settingsList[25] != 0;
+                    infinteResourcesT2 = settingsList[26] != 0;
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -558,6 +574,7 @@ namespace Tournament
                     minimumHealth = minimumHealthD;
                     rotation = rotationD;
                     sameMaterials = sameMaterialsD;
+                    infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
                 }
 
                 if (defaultKeys == 1)
@@ -611,6 +628,7 @@ namespace Tournament
             rotation = rotationD;
             sameMaterials = sameMaterialsD;
             localResources = localResourcesD;
+            infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
         }
 
         public void OnGUI()
