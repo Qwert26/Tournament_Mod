@@ -554,7 +554,7 @@ namespace Tournament
                 localResources = settingsList[15] != 0;
                 oobMaxBuffer = settingsList[16];
                 oobReverse = settingsList[17];
-                if (settingsList.Count >= 25)
+                if (settingsList.Count >= 27)
                 {
                     showAdvancedOptions = settingsList[18] != 0;
                     matconv = settingsList[19];
