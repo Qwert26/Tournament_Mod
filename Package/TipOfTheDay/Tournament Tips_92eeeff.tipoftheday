@@ -1,0 +1,15 @@
+{
+  "Tips": {
+    "Tips": [
+      "When running a Tournament with a well-known format, using Challonge will make things easier to track who is fighting who, how well an entry is doing and who could they be fighting next.",
+      "Tournaments are usually run with some amount of automatic detection to avoid stalemates because no dection system is left functional. Usually this value is between 0.1 and 0.99, a value of 1 seems to be doing worse than 0.99.",
+      "Running a Tournament with a different format will require Spreadsheets. Usually a Google document as everyone can take a look into it.",
+      "Well-known formats for single-stage Tournaments are: Single Elimination, Double Elimination, Round Robin and Swiss System. For the group stage of a two-stage Tournament, one can only use the first three types."
+    ]
+  },
+  "ComponentId": {
+    "Guid": "92eeeff1-f859-44bf-a82f-4734c39959e0",
+    "Name": "Tournament Tips"
+  },
+  "Description": "Tips when running a Tournament"
+}

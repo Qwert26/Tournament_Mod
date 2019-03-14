@@ -95,8 +95,8 @@ namespace Tournament
                         float num2 = 0f;
                         for (int i = 0; i < count; i = checked(i + 1))
                         {
-                            float material = (list[i].CalculateResourceCost(false, true)).Material;
-                            float material2 = (list[i].CalculateResourceCost(true, true)).Material;
+                            float material = list[i].CalculateResourceCost(false, true).Material;
+                            float material2 = list[i].CalculateResourceCost(true, true).Material;
                             array[checked(i + 1)] = $"{list[i].blueprintName} {Math.Round(material2 / material * 100f, 1)}";
                             num += material;
                             num2 += material2;

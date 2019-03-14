@@ -1,0 +1,26 @@
+This version of the tournament mod is based on the wootness mod that stopped working after 2.2.x
+It has been fixed and updated by Anickle and Qwert26.
+
+Changes to the mod for versions 2.3.1.15 :
+
+[v2.3.1.15]
+Major Additions:
+Added GUI-Settings for Out-Of-Bounds Reserve-Time and tolerated Fleeing-Speed.
+Added GUI-Setting to split Material allowance of Teams, so Teams can have different amounts of materials.
+Added GUI-Setting for literal infinte Resources for a Team or both Teams.
+Added Advanced Battle Options:
+	Readded Materialconversion-Setting, aka Lifesteal.
+	Added GUI-Setting for Cleanup.
+	Readded GUI-Setting for Health-Calculation and expanded it.
+	Readded GUI-Setting for minimum Amount of Health Percentage
+Added Eyecandy:
+	Added GUI-Settings to change fleet colors of both teams with a variety of predefined packages.
+Spawn-Settings:
+	Added a Slider to rotate the entire battle field between -90° and 90°. Might consider a "Swap Teams"-Button.
+
+Minor Additions:
+Added "Tips of the Day".
+
+Known Issues:
+Changing location takes a few seconds to load, launching a battle too quickly can result in terrain loading after battle has begun or the battle jumping back to the default location. Allow a few seconds for the map to load before starting a battle.
+Eyecandy-Settings only work for Team 2, despite the same code for Team 1. No Idea why...
