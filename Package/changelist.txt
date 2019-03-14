@@ -20,6 +20,7 @@ Spawn-Settings:
 
 Minor Additions:
 Added "Tips of the Day".
+Added Headers and Paragraphs to the Designer-instance.
 
 Known Issues:
 Changing location takes a few seconds to load, launching a battle too quickly can result in terrain loading after battle has begun or the battle jumping back to the default location. Allow a few seconds for the map to load before starting a battle.
