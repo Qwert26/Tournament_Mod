@@ -8,6 +8,7 @@ using UnityEngine;
 using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
+using System.Collections.Generic;
 
 namespace Tournament
 {
@@ -234,9 +235,9 @@ namespace Tournament
             t.offset = GUISliders.LayoutDisplaySlider("Height Offset", t.offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
             t.rotation = GUISliders.LayoutDisplaySlider("Rotation", t.rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
             GUILayout.EndVertical();
+            GUILayout.BeginVertical();
             if (_treeSelector.CurrentData != null)
             {
-                GUILayout.BeginVertical();
                 if (GUILayout.Button(new GUIContent("Add to Team 1","Add the currently selected Blueprint to the King-Faction.")))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
@@ -263,8 +264,20 @@ namespace Tournament
                     };
                     t.entries_t2.Add(tournamentEntry2);
                 }
-                GUILayout.EndVertical();
             }
+            if (GUILayout.Button(new GUIContent("Swap Teams", "Each Entry swaps Teams, for a quick rematch."))) {
+                List<TournamentEntry> temp = new List<TournamentEntry>();
+                temp.AddRange(t.entries_t1);
+                t.entries_t1.Clear();
+                t.entries_t1.AddRange(t.entries_t2);
+                t.entries_t2.Clear();
+                t.entries_t2.AddRange(temp);
+                temp.Clear();
+                temp = null;
+                t.entries_t1.ForEach((te) => { te.IsKing = true; });
+                t.entries_t2.ForEach((te) => { te.IsKing = false; });
+            }
+            GUILayout.EndVertical();
             GUILayout.EndHorizontal();
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -300,7 +313,7 @@ namespace Tournament
                     {
                         text = text + "\n" + str;
                     }
-                    GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, (item.bp.CalculateResourceCost(false, true)).Material, item.Spawn_location, item.Spawn_direction, text), (GUILayoutOption[])new GUILayoutOption[0]);
+                    GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true).Material, item.Spawn_location, item.Spawn_direction, text,item.Offset));
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
                         t.entries_t1.Remove(item);
@@ -318,7 +331,7 @@ namespace Tournament
                     {
                         text2 = text2 + "\n" + str2;
                     }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.Bpf.Name, (item2.bp.CalculateResourceCost(false, true)).Material, item2.Spawn_location, item2.Spawn_direction, text2), (GUILayoutOption[])new GUILayoutOption[0]);
+                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
                         t.entries_t2.Remove(item2);

@@ -16,11 +16,13 @@ Added Advanced Battle Options:
 Added Eyecandy:
 	Added GUI-Settings to change fleet colors of both teams with a variety of predefined packages.
 Spawn-Settings:
-	Added a Slider to rotate the entire battle field between -90° and 90°. Might consider a "Swap Teams"-Button.
+	Added a Slider to rotate the entire battle field between -90° and 90°.
+	Added a "Swap Teams"-Button.
 
 Minor Additions:
 Added "Tips of the Day".
 Added Headers and Paragraphs to the Designer-instance.
+Tournamententries now also tell their height offset.
 
 Known Issues:
 Changing location takes a few seconds to load, launching a battle too quickly can result in terrain loading after battle has begun or the battle jumping back to the default location. Allow a few seconds for the map to load before starting a battle.
