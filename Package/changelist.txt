@@ -18,7 +18,7 @@ Added Eyecandy:
 	Added GUI-Settings to change fleet colors of both teams with a variety of predefined packages.
 Spawn-Settings:
 	Added a Slider to rotate the entire battle field between -90° and 90°.
-	Added a "Swap Teams"-Button.
+	Added a "Swap Teams"-Button and a "Swap Teams and Orienations"-Button.
 
 Minor Additions:
 Added "Tips of the Day".

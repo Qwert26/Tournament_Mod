@@ -266,7 +266,8 @@ namespace Tournament
                     t.entries_t2.Add(tournamentEntry2);
                 }
             }
-            if (GUILayout.Button(new GUIContent("Swap Teams", "Each Entry swaps Teams, for a quick rematch."))) {
+            if (GUILayout.Button(new GUIContent("Swap Teams", "Each Entry swaps Teams, for a quick rematch.")))
+            {
                 List<TournamentEntry> temp = new List<TournamentEntry>();
                 temp.AddRange(t.entries_t1);
                 t.entries_t1.Clear();
@@ -277,6 +278,25 @@ namespace Tournament
                 temp = null;
                 t.entries_t1.ForEach((te) => { te.IsKing = true; });
                 t.entries_t2.ForEach((te) => { te.IsKing = false; });
+            }
+            if (GUILayout.Button(new GUIContent("Swap Teams\nand orientation", "Each Entry swaps Teams and inverts its orientation, for a quick rematch in an asymmetric enviroment.")))
+            {
+                List<TournamentEntry> temp = new List<TournamentEntry>();
+                temp.AddRange(t.entries_t1);
+                t.entries_t1.Clear();
+                t.entries_t1.AddRange(t.entries_t2);
+                t.entries_t2.Clear();
+                t.entries_t2.AddRange(temp);
+                temp.Clear();
+                temp = null;
+                t.entries_t1.ForEach((te) => {
+                    te.IsKing = true;
+                    te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1;
+                });
+                t.entries_t2.ForEach((te) => {
+                    te.IsKing = false;
+                    te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1;
+                });
             }
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
