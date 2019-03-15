@@ -85,6 +85,7 @@ namespace Tournament
             t.minalt = GUISliders.LayoutDisplaySlider("Min Alt", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
             t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
             t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time added"));
+            t.project2D = GUILayout.Toggle(t.project2D, "Use on Ground projected Distance.");
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
             t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
             t.oobReverse = GUISliders.LayoutDisplaySlider("Out OfBounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
@@ -331,7 +332,7 @@ namespace Tournament
                     {
                         text2 = text2 + "\n" + str2;
                     }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
+                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
                         t.entries_t2.Remove(item2);

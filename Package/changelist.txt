@@ -5,6 +5,7 @@ Changes to the mod for versions 2.3.1.15 :
 
 [v2.3.1.15]
 Major Additions:
+Added GUI-Setting for using a Distance, which is projected on the ground.
 Added GUI-Settings for Out-Of-Bounds Reserve-Time and tolerated Fleeing-Speed.
 Added GUI-Setting to split Material allowance of Teams, so Teams can have different amounts of materials.
 Added GUI-Setting for literal infinte Resources for a Team or both Teams.
@@ -23,6 +24,7 @@ Minor Additions:
 Added "Tips of the Day".
 Added Headers and Paragraphs to the Designer-instance.
 Tournamententries now also tell their height offset.
+Tournamententries on Team 2 had a wrongly colored Divider in their Textboxes.
 
 Known Issues:
 Changing location takes a few seconds to load, launching a battle too quickly can result in terrain loading after battle has begun or the battle jumping back to the default location. Allow a few seconds for the map to load before starting a battle.

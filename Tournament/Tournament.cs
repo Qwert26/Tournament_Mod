@@ -206,6 +206,10 @@ namespace Tournament
 
         public bool infiniteResourcesD = false;
 
+        public bool project2D = false;
+
+        public bool project2DD = false;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -523,7 +527,8 @@ namespace Tournament
                 rotation,
                 sameMaterials ? 1 : 0,
                 infinteResourcesT1?1:0,
-                infinteResourcesT2?1:0
+                infinteResourcesT2?1:0,
+                project2D?1:0
             };
             settingsFile.SaveData(settingsList, Formatting.None);
         }
@@ -554,7 +559,7 @@ namespace Tournament
                 localResources = settingsList[15] != 0;
                 oobMaxBuffer = settingsList[16];
                 oobReverse = settingsList[17];
-                if (settingsList.Count >= 27)
+                if (settingsList.Count >= 28)
                 {
                     showAdvancedOptions = settingsList[18] != 0;
                     matconv = settingsList[19];
@@ -565,6 +570,7 @@ namespace Tournament
                     sameMaterials = settingsList[24] != 0;
                     infinteResourcesT1 = settingsList[25] != 0;
                     infinteResourcesT2 = settingsList[26] != 0;
+                    project2D = settingsList[27] != 0;
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -575,6 +581,7 @@ namespace Tournament
                     rotation = rotationD;
                     sameMaterials = sameMaterialsD;
                     infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
+                    project2D = project2DD;
                 }
 
                 if (defaultKeys == 1)
@@ -629,6 +636,7 @@ namespace Tournament
             sameMaterials = sameMaterialsD;
             localResources = localResourcesD;
             infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
+            project2D = project2DD;
         }
 
         public void OnGUI()
@@ -1094,20 +1102,20 @@ namespace Tournament
                             {
                                 if (val != val2 && val.GetTeam() != val2.GetTeam())
                                 {
-                                    float num3 = Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
+                                    float num3 =project2D?DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
                                     if (num < 0f)
                                     {
                                         num = num3;
                                         //heading towards
                                         //num2 = Vector3.Distance(val.CentreOfMass + val.get_MainPhysics().get_iVelocities().get_VelocityVector(), val2.CentreOfMass;
-                                        num2 = Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+                                        num2 =project2D?DistanceProjected(val.CentreOfMass+val.Velocity,val2.CentreOfMass):Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
 
                                     }
-                                    else if (Vector3.Distance(val.CentreOfMass, val2.CentreOfMass) < num)
+                                    else if (num3 < num)
                                     {
                                         num = num3;
                                         //num2 = Vector3.Distance(val.get_CentreOfMass() + val.get_MainPhysics().get_iVelocities().get_VelocityVector(), val2.get_CentreOfMass());
-                                        num2 = Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+                                        num2 = project2D ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
                                     }
                                 }
                             }
@@ -1305,5 +1313,10 @@ namespace Tournament
             }
         }
         public Quaternion Rotation => Quaternion.Euler(0, rotation, 0);
+        public float DistanceProjected(Vector3 a, Vector3 b) {
+            a.y = 0;
+            b.y = 0;
+            return Vector3.Distance(a, b);
+        }
     }
 }
