@@ -56,12 +56,12 @@ namespace Tournament
                     Paragraph = "Add any Vehicle in any Order to the two opposing Teams. Then let the Fight begin!"
                 }, new HeaderAndParagraph() {
                     Header="A lot of Options",
-                    Paragraph="Determine the starting Distance, Height, Offset from teammates, Material-Allowance, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
+                    Paragraph="Determine the starting Distance, Offsets from teammates, Start-Materials, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
                     "tolerated Fleeing-Speed and maximum Match-Time for the fights. For Battles with a lot of vertical Freedom, its better to use the ground-projected Distance."
                 }, new HeaderAndParagraph() {
                     Header="Even more Options",
                     Paragraph="Decide to use local or centralised Resources, Give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
-                    "Set the Lifesteal-Percentage, change how Vehicles are despawned and how Health is calculated and even set a minimum Health-Percentage und which Penalty-Time is picked up."
+                    "Set the Lifesteal-Percentage, change how Vehicles are despawned and how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
                 }, new HeaderAndParagraph() {
                     Header="You go there and we fight here",
                     Paragraph="Each Vehicle can be spawned in the Air, in the Water, under Water or on Land. Give them their own Height Offset if needed. " +

@@ -7,7 +7,7 @@
       "When creating the factions of a Map, turn off the Tournament Mod in order to not have the Factions \"King\" and \"Challenger\" multiple Times! Because these two always gets created anytime this Mod gets loaded.",
       "The \"Storm 35\"-Map is one giant flat landarea. This is perfect for huge land battles at long and short ranges.",
       "Any Map which is purely for a Tournament doesn't need anything besides Weather and Time settings, because these will influence battles. Also you might want it to have mirror or rotational symmetry, unless you want asymmetric battles.",
-      "Jimmers \"The Island\"-Map contains a single 2km by 2km square island without any undulations or other kinds of irregular terrain. This is used for Tournaments inspired by the D-Day."
+      "Jimmers \"The Island\"-Map contains a single 2km by 2km square island without any undulations or other kinds of irregular terrain. This is used for Tournaments with a beach landing."
     ]
   },
   "ComponentId": {
