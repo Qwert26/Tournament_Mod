@@ -57,7 +57,7 @@ namespace Tournament
                 }, new HeaderAndParagraph() {
                     Header="A lot of Options",
                     Paragraph="Determine the starting Distance, Height, Offset from teammates, Material-Allowance, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
-                    "tolerated Fleeing-Speed and Match-Time for the fights."
+                    "tolerated Fleeing-Speed and maximum Match-Time for the fights. For Battles with a lot of vertical Freedom, its better to use the ground-projected Distance."
                 }, new HeaderAndParagraph() {
                     Header="Even more Options",
                     Paragraph="Decide to use local or centralised Resources, Give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
@@ -66,6 +66,10 @@ namespace Tournament
                     Header="You go there and we fight here",
                     Paragraph="Each Vehicle can be spawned in the Air, in the Water, under Water or on Land. Give them their own Height Offset if needed. " +
                     "Use the Location sliders to select the perfect Map-Sector for the fight. And finally rotate them around the center point of it."
+                }, new HeaderAndParagraph() {
+                    Header="I want a Rematch!",
+                    Paragraph="Simply use two Buttons to swap both Teams or even swap Teams while also swapping the orientation of each Entry, " +
+                    "thus keeping the orientations relative to the battlegrounds the same."
                 }
             };
             @is.Header.Type = InstanceType.None;
