@@ -1,13 +1,14 @@
 {
   "Tips": {
     "Tips": [
-      "Visual Detection Range exclusively depends on the number of visible blocks of the vehicle and its subconstructs, weather, time and the individual positions of said blocks.",
+      "Visual Detection Range exclusively depends on the number of visible blocks of the vehicle and its subconstructs, weather, time and the individual positions and rotations of said blocks.",
       "Cameras of all types, Coincidence Rangefinders and the camera gimbal trackers can be used against their own craft with a Retroreflection Sensor.",
       "Detection Data is shared between all AIs on a single craft, using an Inter Vehicle Transmitter allows this Data to be shared between Vehicles, too.",
       "A Laser Range Finder can and will be obscured by Smoke.",
       "Radars and Radar trackers can be used against their own craft with a passive Radar. The same goes for Sonar. Radar and Sonar Buoys however are not detected by them.",
       "Each AI can have different averaging settings on them, but only the one currently most accurate set of settings will be used for engaging.",
-      "Using a lot of Transmitters and Recievers on a craft makes it more detectable by a wireless Snooper, which can not be obscured with a Signal Jammer."
+      "Using a lot of Transmitters and Recievers on a craft makes it more detectable by a wireless Snooper, which can not be obscured with a Signal Jammer.",
+      "Laser Range Finders and Retroreflection Sensors are the only optical detection systems, which still function when under water."
     ]
   },
   "ComponentId": {

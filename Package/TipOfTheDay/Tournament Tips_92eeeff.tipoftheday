@@ -5,7 +5,7 @@
       "Tournaments are usually run with some amount of automatic detection to avoid stalemates because no dection system is left functional. Usually this value is between 0.1 and 0.99, a value of 1 seems to be doing worse than 0.99.",
       "Running a Tournament with a different format will require Spreadsheets. Usually a Google document as everyone can take a look into it.",
       "Well-known formats for single-stage Tournaments are: Single Elimination, Double Elimination, Round Robin and Swiss System. For the group stage of a two-stage Tournament, one can only use the first three types.",
-      "Unpause not working again? Opening and closing the Menu via Escape is one solution. The other one is pressing Strg+F11."
+      "Unpause not working again? Opening and closing the Menu via Escape is one solution. The other one is pressing Strg+F11 for Default Controls."
     ]
   },
   "ComponentId": {

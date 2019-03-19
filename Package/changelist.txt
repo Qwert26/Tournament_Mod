@@ -26,6 +26,9 @@ Added Headers and Paragraphs to the Designer-instance.
 Tournamententries now also tell their height offset.
 Tournamententries on Team 2 had a wrongly colored Divider in their Textboxes.
 
+Experimental Additions:
+Under Advanced Options there is now the possibility to change the Pools of FtD. Countering Shell despawn by allowing more shells to exist.
+
 Known Issues:
 Changing location takes a few seconds to load, launching a battle too quickly can result in terrain loading after battle has begun or the battle jumping back to the default location. Allow a few seconds for the map to load before starting a battle.
 Eyecandy-Settings only work for Team 2, despite the same code for Team 1. No Idea why...
