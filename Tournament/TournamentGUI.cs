@@ -159,7 +159,7 @@ namespace Tournament
                 }
                 t.healthCalculation = (Tournament.HealthCalculation)GUISliders.LayoutDisplaySlider(t.healthCalculation.ToString(), (float)t.healthCalculation, 0, 3, enumMinMax.none, new ToolTip(describeHealthCalculation()));
                 t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
-                if (GUILayout.Toggle(showExperimental, "Show experimental Features"))
+                if (showExperimental=GUILayout.Toggle(showExperimental, "Show experimental Features"))
                 {
                     GUILayout.Label("<color=#ff0000><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned</b></color>");
                     poolFactorADV = (int)GUISliders.LayoutDisplaySlider("Poolfactor ADV", poolFactorADV, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for APS-Bullets."));
