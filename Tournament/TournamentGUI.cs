@@ -161,11 +161,11 @@ namespace Tournament
                 t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
                 if (showExperimental=GUILayout.Toggle(showExperimental, "Show experimental Features"))
                 {
-                    GUILayout.Label("<color=#ff0000><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned</b></color>");
-                    poolFactorADV = (int)GUISliders.LayoutDisplaySlider("Poolfactor ADV", poolFactorADV, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for APS-Bullets."));
+                    GUILayout.Label("<color=#ff0000><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned!</b></color>");
+                    poolFactorADV = (int)GUISliders.LayoutDisplaySlider("Poolfactor APS", poolFactorADV, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for APS-Bullets."));
                     poolFactorCRAM = (int)GUISliders.LayoutDisplaySlider("Poolfactor CRAM", poolFactorCRAM, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for CRAM-Bullets."));
-                    poolFactorFragment = (int)GUISliders.LayoutDisplaySlider("Poolfactor ADV", poolFactorFragment, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for Fragments."));
-                    poolFactorProjectile = (int)GUISliders.LayoutDisplaySlider("Poolfactor ADV", poolFactorProjectile, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for simple Projectiles."));
+                    poolFactorFragment = (int)GUISliders.LayoutDisplaySlider("Poolfactor Fragments", poolFactorFragment, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for Fragments."));
+                    poolFactorProjectile = (int)GUISliders.LayoutDisplaySlider("Poolfactor Projectiles", poolFactorProjectile, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for simple Projectiles."));
                     UpdatePools();
                 }
             }
