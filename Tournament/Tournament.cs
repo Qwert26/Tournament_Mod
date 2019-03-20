@@ -1119,7 +1119,7 @@ namespace Tournament
                                     }
                                 }
                             }
-                            if (num > maxdis && num < num2 - oobReverse) //out of bounds and moving away faster than  oobReverse m/s
+                            if (num > maxdis && num < num2 - oobReverse) //out of bounds and moving away faster than oobReverse m/s
                             {
                                 tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 if (tournamentParticipant.OoBTimeBuffer > oobMaxBuffer)
@@ -1185,10 +1185,10 @@ namespace Tournament
                                         if (b!=null) {
                                             if (healthCalculation == HealthCalculation.Volume)
                                             {
-                                                tournamentParticipant.HPMAX += b.item.SizeInfo.Volume;
+                                                tournamentParticipant.HPMAX += b.item.SizeInfo.VolumeFactor;
                                             }
                                             else {
-                                                tournamentParticipant.HPMAX += b.item.SizeInfo.ArrayPositionsUsed;
+                                                tournamentParticipant.HPMAX += 1;
                                             }
                                         }
                                     }

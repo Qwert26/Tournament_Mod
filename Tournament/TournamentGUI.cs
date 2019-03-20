@@ -95,7 +95,7 @@ namespace Tournament
             t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, 0, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.minalt = GUISliders.LayoutDisplaySlider("Min Alt", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
             t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
-            t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time added"));
+            t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
             t.project2D = GUILayout.Toggle(t.project2D, "Use on Ground projected Distance.");
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
             t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
@@ -161,12 +161,13 @@ namespace Tournament
                 t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
                 if (showExperimental = GUILayout.Toggle(showExperimental, "Show experimental Features"))
                 {
-                    GUILayout.Label("<color=#ff0000><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned!</b></color>");
+                    GUILayout.Label("<color=#ff0000ff><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned!</b></color>");
                     poolFactorADV = (int)GUISliders.LayoutDisplaySlider("Poolfactor APS", poolFactorADV, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for APS-Bullets."));
                     poolFactorCRAM = (int)GUISliders.LayoutDisplaySlider("Poolfactor CRAM", poolFactorCRAM, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for CRAM-Bullets."));
                     poolFactorFragment = (int)GUISliders.LayoutDisplaySlider("Poolfactor Fragments", poolFactorFragment, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for Fragments."));
                     poolFactorProjectile = (int)GUISliders.LayoutDisplaySlider("Poolfactor Projectiles", poolFactorProjectile, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for simple Projectiles."));
                     UpdatePools();
+                    GUILayout.Label("The default poolsizes are 500 each, except for Fragments with 400. Unity <i>can</i> handle 6000 active Rigidbodies, but that comes at a cost of framerate or precision for physics-calculations.");
                 }
                 else {
                     poolFactorADV = poolFactorCRAM = poolFactorFragment = poolFactorProjectile = 1;
