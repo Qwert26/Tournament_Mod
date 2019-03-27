@@ -391,8 +391,8 @@ namespace Tournament
             if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entries_t1.Count > 0 && t.entries_t2.Count > 0)
             {
                 DeactivateGui(0);
-                TournamentPlugin.kingFaction.FleetColors = TournamentFleetColor.colorSchemes[kingIndexTFC].Colors;
-                TournamentPlugin.challengerFaction.FleetColors = TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors;
+                TournamentPlugin.kingFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[kingIndexTFC].Colors);
+                TournamentPlugin.challengerFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors);
                 t.LoadCraft();
                 t.StartMatch();
             }

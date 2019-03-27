@@ -14,4 +14,4 @@ Changing the speed value to a positive value will allow you to move that amount 
 The settings file can be edited in a text editor, however be careful to avoid entering invalid data into the file as there is no error checking on load.
 The file is json and in the format [value,value,value,..]
 
-[Min altitude, Max altitude, Max distance, Max DQ time, Materials, Distance, Horizontal spawn gap, Vertical spawn offset, Spawn direction, Spawn height location, Default keys on/off, Map tile east-west, Map tile north-south, Forward-back spawn gap, Out of bounds buffer time, Out of bounds away speed limit]
+[Min altitude, Max altitude, Max distance, Max DQ time, Materials, Distance, Horizontal spawn gap, Vertical spawn offset, Spawn direction, Spawn height location, Default keys on/off, Map tile east-west, Map tile north-south, Forward-back spawn gap, Local Resources on/off, Out of bounds buffer time, Out of bounds away speed limit]

@@ -117,9 +117,9 @@ namespace Tournament
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
             FactionSpecificationFaction faction = IsKing ? TournamentPlugin.kingFaction : TournamentPlugin.challengerFaction;
-            val.Colors.SetFleetColors(faction.FleetColors);
             Team_id = faction.Id;
             BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, SpawnPositioning.OriginOrCentre);
+            (val.Owner as ConstructableOwner).SetFleetColors(Team_id);
         }
 
         public Vector3 VLoc(float gap, float gap2, int count, int pos, float dis, float offset)

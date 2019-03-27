@@ -93,7 +93,7 @@ namespace Tournament
             {
                 Name = "King",
                 AbreviatedName = "K",
-                FleetColors = TournamentFleetColor.classicYellow.Colors
+                FleetColors = TournamentFleetColor.classicYellow.Colors,
             };
             i.AddNew(kingFaction);
             challengerFaction = new FactionSpecificationFaction
