@@ -154,19 +154,19 @@ namespace Tournament
             switch (Spawn_direction)
             {
                 case Tournament.SPAWN.DIR.Facing:
-                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    ret = Quaternion.LookRotation(IsKing ? Vector3.back : Vector3.forward);
                     break;
                 case Tournament.SPAWN.DIR.Away:
-                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, IsKing ? 1 : (-1)));
+                    ret = Quaternion.LookRotation(IsKing ? Vector3.forward : Vector3.back);
                     break;
                 case Tournament.SPAWN.DIR.Left:
-                    ret=Quaternion.LookRotation(new Vector3(IsKing ? 1 : (-1), 0f, 0f));
+                    ret = Quaternion.LookRotation(IsKing ? Vector3.right : Vector3.left);
                     break;
                 case Tournament.SPAWN.DIR.Right:
-                    ret=Quaternion.LookRotation(new Vector3((!IsKing) ? 1 : (-1), 0f, 0f));
+                    ret = Quaternion.LookRotation(IsKing ? Vector3.left : Vector3.right);
                     break;
                 default:
-                    ret=Quaternion.LookRotation(new Vector3(0f, 0f, (!IsKing) ? 1 : (-1)));
+                    ret = Quaternion.LookRotation(IsKing ? Vector3.back : Vector3.forward);
                     break;
             }
             return ret*Tournament._me.Rotation;
