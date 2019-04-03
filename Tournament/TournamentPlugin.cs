@@ -4,7 +4,6 @@ using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Core.Text;
-using BrilliantSkies.Core.Pooling;
 using BrilliantSkies.Modding;
 using System;
 using System.Collections.Generic;
@@ -20,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version("2.4.0.11");
+        public Version version => new Version("2.4.0.12");
 
         public static FactionSpecificationFaction kingFaction, challengerFaction;
 
@@ -44,7 +43,6 @@ namespace Tournament
             {
                 _t._GUI.ActivateGui(_t, 0);
             }
-            Pooler.DeleteAll();
         }
 
         public static void OnPlanetChange()
