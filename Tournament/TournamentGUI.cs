@@ -9,8 +9,6 @@ using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
-using BrilliantSkies.Core.Pooling;
-
 namespace Tournament
 {
     public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
@@ -19,7 +17,7 @@ namespace Tournament
 
         public Vector2 optpos, optpos2, optpos3;
 
-        private bool showEyecandy = false, showExperimental = false;
+        private bool showEyecandy = false;
 
         private BrilliantSkies.Ui.TreeSelection.TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> _treeSelector;
 
@@ -31,16 +29,6 @@ namespace Tournament
 
         private int kingIndexTFC = 0, challengerIndexTFC = 1;
         private int kingIndexNew = 0, challengerIndexNew = 1;
-
-        private int poolFactorCRAM = 1;
-        private int poolFactorADV = 1;
-        private int poolFactorProjectile = 1;
-        private int poolFactorFragment = 1;
-
-        public const int defaultPoolSizeCRAM = 500;
-        public const int defaultPoolSizeADV = 500;
-        public const int defaultPoolSizeProjectile = 500;
-        public const int defaultPoolSizeFragment = 400;
 
         public TournamentGUI(Tournament tourny)
         {
@@ -159,28 +147,12 @@ namespace Tournament
                 }
                 t.healthCalculation = (Tournament.HealthCalculation)GUISliders.LayoutDisplaySlider(t.healthCalculation.ToString(), (float)t.healthCalculation, 0, 3, enumMinMax.none, new ToolTip(describeHealthCalculation()));
                 t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
-                if (showExperimental = GUILayout.Toggle(showExperimental, "Show experimental Features"))
-                {
-                    GUILayout.Label("<color=#ff0000ff><b>If you opened this, i hope you know exactly what you about to do! It is your fault if you break FtD using these Features! You have been warned!</b></color>");
-                    poolFactorADV = (int)GUISliders.LayoutDisplaySlider("Poolfactor APS", poolFactorADV, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for APS-Bullets."));
-                    poolFactorCRAM = (int)GUISliders.LayoutDisplaySlider("Poolfactor CRAM", poolFactorCRAM, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for CRAM-Bullets."));
-                    poolFactorFragment = (int)GUISliders.LayoutDisplaySlider("Poolfactor Fragments", poolFactorFragment, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for Fragments."));
-                    poolFactorProjectile = (int)GUISliders.LayoutDisplaySlider("Poolfactor Projectiles", poolFactorProjectile, 1, 10, enumMinMax.none, new ToolTip("Change the Poolsize for simple Projectiles."));
-                    UpdatePools();
-                    GUILayout.Label("The default poolsizes are 500 each, except for Fragments with 400. Unity <i>can</i> handle 6000 active Rigidbodies, but that comes at a cost of framerate or precision for physics-calculations.");
-                }
-                else {
-                    poolFactorADV = poolFactorCRAM = poolFactorFragment = poolFactorProjectile = 1;
-                    UpdatePools();
-                }
             }
             else {
                 t.matconv = t.matconvD;
                 t.cleanUp = t.cleanUpD;
                 t.healthCalculation = t.healthCalculationD;
                 t.minimumHealth = t.minimumHealthD;
-                poolFactorADV = poolFactorCRAM = poolFactorFragment = poolFactorProjectile = 1;
-                UpdatePools();
             }
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
@@ -395,25 +367,6 @@ namespace Tournament
                 TournamentPlugin.challengerFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors);
                 t.LoadCraft();
                 t.StartMatch();
-            }
-        }
-        private void UpdatePools()
-        {
-            AdvProjectilePool pADV = Pooler.GetPool<AdvProjectilePool>();
-            if (pADV.PoolSize != poolFactorADV * defaultPoolSizeADV) {
-                pADV.Spawn(poolFactorADV * defaultPoolSizeADV, R_Pools.AdvProjectile.Get());
-            }
-            CramProjectilePool pCRAM = Pooler.GetPool<CramProjectilePool>();
-            if (pCRAM.PoolSize != poolFactorCRAM * defaultPoolSizeCRAM) {
-                pCRAM.Spawn(poolFactorCRAM * defaultPoolSizeCRAM, R_Pools.CramProjectile.Get());
-            }
-            FragmentPool pFrags = Pooler.GetPool<FragmentPool>();
-            if (pFrags.PoolSize != poolFactorCRAM * defaultPoolSizeFragment) {
-                pFrags.Spawn(poolFactorFragment * defaultPoolSizeFragment, R_Pools.Fragment.Get());
-            }
-            ProjectilePool pProjectiles = Pooler.GetPool<ProjectilePool>();
-            if (pProjectiles.PoolSize != poolFactorProjectile * defaultPoolSizeProjectile) {
-                pProjectiles.Spawn(poolFactorProjectile * defaultPoolSizeProjectile, R_Pools.GenericProjectile.Get());
             }
         }
     }
