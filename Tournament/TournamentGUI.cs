@@ -9,6 +9,7 @@ using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
+using BrilliantSkies.Core.Pooling;
 namespace Tournament
 {
     public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
@@ -154,6 +155,11 @@ namespace Tournament
                 t.healthCalculation = t.healthCalculationD;
                 t.minimumHealth = t.minimumHealthD;
             }
+            if (GUILayout.Button("Delete Pools")) {
+                Pooler.DeleteAll();
+            }
+            GUILayout.Label("Usually changing the Poolsize requires a restart, but by deleting the current pools this change can happen while the game is running. " +
+                "This might sound radical, but Pools are created dynamicly by the game. You will experience lag, while the new Pool is filled with Objects.");
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
                 GUILayout.Label("If you are bored of the same fleet colors for every match, you can change them here. <b>But there are no color selectors only predefined packages!</b>");
