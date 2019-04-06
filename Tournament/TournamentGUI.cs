@@ -82,9 +82,9 @@ namespace Tournament
             t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 100, 5000, 0, new ToolTip("Spawn distance between teams"));
             t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Horizontal", t.spawngap, 0, 500, 0, new ToolTip("Spawn distance between team members left to right"));
             t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, 0, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
-            t.minalt = GUISliders.LayoutDisplaySlider("Min Alt", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
-            t.maxalt = GUISliders.LayoutDisplaySlider("Max Alt", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
-            t.maxdis = GUISliders.LayoutDisplaySlider("Max Dis", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
+            t.minalt = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
+            t.maxalt = GUISliders.LayoutDisplaySlider("Maximum Altitude", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
+            t.maxdis = GUISliders.LayoutDisplaySlider("Maximum Distance", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
             t.project2D = GUILayout.Toggle(t.project2D, "Use on Ground projected Distance.");
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
             t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
@@ -159,7 +159,7 @@ namespace Tournament
                 Pooler.DeleteAll();
             }
             GUILayout.Label("Usually changing the Poolsize requires a restart, but by deleting the current pools this change can happen while the game is running. " +
-                "This might sound radical, but Pools are created dynamicly by the game. You will experience lag, while the new Pool is filled with Objects.");
+                "This might sound radical, but Pools are created dynamicly by the game. <b>You will experience lag, while the new Pool is filled with Objects.</b>");
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
                 GUILayout.Label("If you are bored of the same fleet colors for every match, you can change them here. <b>But there are no color selectors only predefined packages!</b>");

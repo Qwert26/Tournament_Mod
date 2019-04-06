@@ -1,30 +1,30 @@
-using BrilliantSkies.FromTheDepths.Game;
-using BrilliantSkies.Effects.Cameras;
-using BrilliantSkies.Ftd.Planets.Instances;
-using BrilliantSkies.Ftd.Planets.Instances.Headers;
-using BrilliantSkies.Ftd.Planets.Factions;
-using BrilliantSkies.Core.Timing;
-using BrilliantSkies.Ftd.Avatar;
-using BrilliantSkies.Core.Id;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using UnityEngine;
-using BrilliantSkies.Core.Returns.PositionAndRotation;
-using BrilliantSkies.PlayerProfiles;
-using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
-using BrilliantSkies.Core.Types;
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
-using Newtonsoft.Json;
+using BrilliantSkies.Core.Id;
+using BrilliantSkies.Core.Returns.PositionAndRotation;
+using BrilliantSkies.Core.Timing;
+using BrilliantSkies.Core.Types;
 using BrilliantSkies.Core.UniverseRepresentation;
+using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
+using BrilliantSkies.Effects.Cameras;
+using BrilliantSkies.FromTheDepths.Game;
+using BrilliantSkies.Ftd.Avatar;
 using BrilliantSkies.Ftd.Planets;
+using BrilliantSkies.Ftd.Planets.Factions;
+using BrilliantSkies.Ftd.Planets.Instances;
+using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.GridCasts;
+using BrilliantSkies.PlayerProfiles;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace Tournament
 {
-    public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
+	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
     {
         public static class SPAWN
         {
@@ -209,6 +209,8 @@ namespace Tournament
         public bool project2D = false;
 
         public bool project2DD = false;
+
+        public bool showLists = true;
 
         public enum HealthCalculation
         {
@@ -644,105 +646,107 @@ namespace Tournament
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
             GUI.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
             GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", _Top);
-
-            foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> team in HUDLog)
+            if (showLists)
             {
-                bool teamOne = entries_t1[0].Team_id.Id == team.Key;
-
-                float xOffset = 0f;
-                float oobOffset = 2f;
-                float hpOffset = 42f;
-                float nameOffset = 78f;
-
-                GUIStyle style = _Left2;
-                if (!teamOne)
+                foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> team in HUDLog)
                 {
-                    style = _Right2;
-                    xOffset = 1080f;
-                    oobOffset = 160f;
-                    hpOffset = 128f;
-                    nameOffset = 2f;
-                }
+                    bool teamOne = entries_t1[0].Team_id.Id == team.Key;
 
-                float height = 38f + 16f * HUDLog[team.Key].Values.Count;
+                    float xOffset = 0f;
+                    float oobOffset = 2f;
+                    float hpOffset = 42f;
+                    float nameOffset = 78f;
 
-                float teamCurrentHP = 0f;
-                float teamMaxHP = 0f;
-
-                string teamName = $"Team {(teamOne ? 1f : 2f)}";
-                string materials = FactionSpecifications.i.Factions.Where(x => x.Id.Id == team.Key).First().InstanceOfFaction.ResourceStore.Material.ToString() + "M";
-
-                GUILayout.BeginArea(new Rect(xOffset, 0f, 200f, height), "", _Top);
-
-                int entries = 0;
-
-                foreach (KeyValuePair<string, TournamentParticipant> entry in team.Value)
-                {
-                    string oob = "";
-                    string percentHP = "";
-                    string nameBP = $"{entry.Value.BlueprintName}";
-                    string dq = "DQ";
-                    bool dqed = true;
-
-                    teamMaxHP += entry.Value.HPMAX;
-
-                    if (!entry.Value.Disqual && !entry.Value.Scrapping && entry.Value.AICount != 0)
+                    GUIStyle style = _Left2;
+                    if (!teamOne)
                     {
-                        dqed = false;
-                        teamCurrentHP += entry.Value.HPCUR;
-                        oob = $"{Math.Floor(entry.Value.OoBTime / 60f)}m{Math.Floor(entry.Value.OoBTime) % 60.0}s";
-                        percentHP = $"{Math.Round(entry.Value.HP, 1)}%";
-                        //text = ((!flag) ? (text + string.Format("\n{2} {1,4} {0,6}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)) : (text + string.Format("\n{0,-6} {1,-4} {2}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)));
+                        style = _Right2;
+                        xOffset = 1080f;
+                        oobOffset = 160f;
+                        hpOffset = 128f;
+                        nameOffset = 2f;
                     }
 
-                    // member name, hp + oob time or DQ
-                    if (!dqed)
+                    float height = 38f + 16f * HUDLog[team.Key].Values.Count;
+
+                    float teamCurrentHP = 0f;
+                    float teamMaxHP = 0f;
+
+                    string teamName = $"Team {(teamOne ? 1f : 2f)}";
+                    string materials = FactionSpecifications.i.Factions.Where(x => x.Id.Id == team.Key).First().InstanceOfFaction.ResourceStore.Material.ToString() + "M";
+
+                    GUILayout.BeginArea(new Rect(xOffset, 0f, 200f, height), "", _Top);
+
+                    int entries = 0;
+
+                    foreach (KeyValuePair<string, TournamentParticipant> entry in team.Value)
                     {
-                        GUI.Label(new Rect(hpOffset, 38f + entries * 16f, 30f, 16f), percentHP, style);
-                        GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 38f, 16f), oob, style);
+                        string oob = "";
+                        string percentHP = "";
+                        string nameBP = $"{entry.Value.BlueprintName}";
+                        string dq = "DQ";
+                        bool dqed = true;
+
+                        teamMaxHP += entry.Value.HPMAX;
+
+                        if (!entry.Value.Disqual && !entry.Value.Scrapping && entry.Value.AICount != 0)
+                        {
+                            dqed = false;
+                            teamCurrentHP += entry.Value.HPCUR;
+                            oob = $"{Math.Floor(entry.Value.OoBTime / 60f)}m{Math.Floor(entry.Value.OoBTime) % 60.0}s";
+                            percentHP = $"{Math.Round(entry.Value.HP, 1)}%";
+                            //text = ((!flag) ? (text + string.Format("\n{2} {1,4} {0,6}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)) : (text + string.Format("\n{0,-6} {1,-4} {2}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)));
+                        }
+
+                        // member name, hp + oob time or DQ
+                        if (!dqed)
+                        {
+                            GUI.Label(new Rect(hpOffset, 38f + entries * 16f, 30f, 16f), percentHP, style);
+                            GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 38f, 16f), oob, style);
+                        }
+                        else
+                        {
+                            GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 30f, 16f), dq, style);
+                        }
+
+                        //GUI.Label(new Rect(nameOffset, 38f + entries*16f, 124f, 16f), nameBP, style);
+
+                        float scrollSpeed = 30;
+                        float t = Time.realtimeSinceStartup * scrollSpeed;
+
+                        //float dimensions = _Left2.fontSize * nameBP.Length;
+                        var dimensions = _Left2.CalcSize(new GUIContent(nameBP));
+                        float width = dimensions.x + 120f;
+
+                        if (dimensions.x <= 120f)
+                        {
+                            GUI.Label(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), nameBP, style);
+                        }
+                        else
+                        {
+                            GUI.BeginScrollView(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), new Vector2(t % width, 0), new Rect(-width, 0, 2 * dimensions.x + 120f, 16f), GUIStyle.none, GUIStyle.none);
+                            GUI.Label(new Rect(-dimensions.x, 0, dimensions.x, 16f), nameBP, style);
+                            GUI.EndScrollView();
+                        }
+
+                        entries++;
+                    }
+
+                    // team name , hp , mats
+                    string teamHP = Math.Round(teamCurrentHP / teamMaxHP * 100, 1) + "%";
+                    string topLabel = "";
+                    if (teamOne)
+                    {
+                        topLabel = $"{teamName}  <color=#ffa500ff>{teamHP}</color>  <color=cyan>{materials}</color>";
                     }
                     else
                     {
-                        GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 30f, 16f), dq, style);
+                        topLabel = $"<color=cyan>{materials}</color>  <color=#ffa500ff>{teamHP}</color>  {teamName}";
                     }
+                    GUI.Label(new Rect(4f, 6f, 192f, 32f), topLabel, style);
 
-                    //GUI.Label(new Rect(nameOffset, 38f + entries*16f, 124f, 16f), nameBP, style);
-
-                    float scrollSpeed = 30;
-                    float t = Time.realtimeSinceStartup * scrollSpeed;
-
-                    //float dimensions = _Left2.fontSize * nameBP.Length;
-                    var dimensions = _Left2.CalcSize(new GUIContent(nameBP));
-                    float width = dimensions.x + 120f;
-
-                    if (dimensions.x <= 120f)
-                    {
-                        GUI.Label(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), nameBP, style);
-                    }
-                    else
-                    {
-                        GUI.BeginScrollView(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), new Vector2(t % width, 0), new Rect(-width, 0, 2 * dimensions.x + 120f, 16f), GUIStyle.none, GUIStyle.none);
-                        GUI.Label(new Rect(-dimensions.x, 0, dimensions.x, 16f), nameBP, style);
-                        GUI.EndScrollView();
-                    }
-
-                    entries++;
+                    GUILayout.EndArea();
                 }
-
-                // team name , hp , mats
-                string teamHP = Math.Round(teamCurrentHP / teamMaxHP * 100, 1) + "%";
-                string topLabel = "";
-                if (teamOne)
-                {
-                    topLabel = $"{teamName}  <color=#ffa500ff>{teamHP}</color>  <color=cyan>{materials}</color>";
-                }
-                else
-                {
-                    topLabel = $"<color=cyan>{materials}</color>  <color=#ffa500ff>{teamHP}</color>  {teamName}";
-                }
-                GUI.Label(new Rect(4f, 6f, 192f, 32f), topLabel, style);
-
-                GUILayout.EndArea();
             }
 
             // extra info panel
@@ -858,6 +862,7 @@ namespace Tournament
             bool freecamOn = false;
             bool orbitcamOn = false;
             bool changeExtraInfo = false;
+            bool changeShowLists = false;
 
             switch (defaultKeysBool)
             {
@@ -867,17 +872,19 @@ namespace Tournament
                     next = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
                     previous = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
                     changeExtraInfo = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.CharacterSheetUi).Key);
+                    changeShowLists = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.EnemySpawnUi).Key);
                     freecamOn = Input.GetMouseButtonDown(1); // technically same as default atm
                     orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
                     break;
                 case true:
-                    pause = Input.GetKeyDown((KeyCode)292); // default f11
-                    shift = Input.GetKey((KeyCode)303) || Input.GetKey((KeyCode)304);
-                    next = Input.GetKeyDown((KeyCode)101); // default e
-                    previous = Input.GetKeyDown((KeyCode)113); // default q
-                    changeExtraInfo = Input.GetKeyDown((KeyCode)122); // default z
-                    freecamOn = Input.GetKeyDown((KeyCode)324); // default left click
-                    orbitcamOn = Input.GetKeyDown((KeyCode)323); // default right click
+                    pause = Input.GetKeyDown(KeyCode.F11); // default f11
+                    shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                    next = Input.GetKeyDown(KeyCode.E); // default e
+                    previous = Input.GetKeyDown(KeyCode.Q); // default q
+                    changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
+                    changeShowLists = Input.GetKeyDown(KeyCode.X);
+                    freecamOn = Input.GetMouseButtonDown(1); // default left click
+                    orbitcamOn = Input.GetMouseButtonDown(0); // default right click
                     break;
             }
 
@@ -898,6 +905,9 @@ namespace Tournament
             if (changeExtraInfo)
             {
                 extraInfo = !extraInfo;
+            }
+            if (changeShowLists) {
+                showLists = !showLists;
             }
             if (Input.GetAxis("Mouse ScrollWheel") != 0f)
             {
