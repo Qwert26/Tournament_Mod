@@ -115,8 +115,8 @@ namespace Tournament
             if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {
                 GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
-				kingIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[kingIndexTF].Name, kingIndexTF, 0, TournamentFormation.tournamentFormations.Length, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[kingIndexTF].Description));
-				challengerIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[challengerIndexTF].Name, challengerIndexTF, 0, TournamentFormation.tournamentFormations.Length, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[challengerIndexTF].Description));
+				kingIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[kingIndexTF].Name, kingIndexTF, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[kingIndexTF].Description));
+				challengerIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[challengerIndexTF].Name, challengerIndexTF, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[challengerIndexTF].Description));
 				t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
                 {
