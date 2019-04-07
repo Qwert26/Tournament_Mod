@@ -124,27 +124,7 @@ namespace Tournament
 
         public Vector3 VLoc(float gap, float gap2, int count, int pos, float dis, float offset)
         {
-            float x = (count - 1f) * gap / 2f - pos * gap;
-            float z = IsKing ? (dis / 2f) + (pos * gap2) : (dis / 2f) - dis - (pos * gap2);
-            Vector3 ret;
-            switch (Spawn_location)
-            {
-                case Tournament.SPAWN.LOC.Sea:
-                    ret=new Vector3(x, 1f + offset, z);
-                    break;
-                case Tournament.SPAWN.LOC.Air:
-                    ret=new Vector3(x, 100f + offset, z);
-                    break;
-                case Tournament.SPAWN.LOC.Sub:
-                    ret=new Vector3(x, -20f + offset, z);
-                    break;
-                case Tournament.SPAWN.LOC.Land:
-                    ret=new Vector3(x, 51f + offset, z);
-                    break;
-                default:
-                    ret=new Vector3(x, 0f + offset, z);
-                    break;
-            }
+			Vector3 ret = (IsKing ? Tournament._me.kingFormation : Tournament._me.challengerFormation).DetermineLocalPosition(IsKing, gap, gap2, count, pos, dis, offset, Spawn_location);
             return Tournament._me.Rotation * ret;
         }
 

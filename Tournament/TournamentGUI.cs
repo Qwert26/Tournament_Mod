@@ -31,6 +31,8 @@ namespace Tournament
         private int kingIndexTFC = 0, challengerIndexTFC = 1;
         private int kingIndexNew = 0, challengerIndexNew = 1;
 
+		private int kingIndexTF = 0, challengerIndexTF = 0;
+
         public TournamentGUI(Tournament tourny)
         {
             _Style = LazyLoader.LoadVehicle.Get();
@@ -80,8 +82,8 @@ namespace Tournament
             GUISliders.UpperMargin = 0;
 
             t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 100, 5000, 0, new ToolTip("Spawn distance between teams"));
-            t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Horizontal", t.spawngap, 0, 500, 0, new ToolTip("Spawn distance between team members left to right"));
-            t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, 0, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
+            t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.spawngap, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
+            t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.minalt = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
             t.maxalt = GUISliders.LayoutDisplaySlider("Maximum Altitude", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
             t.maxdis = GUISliders.LayoutDisplaySlider("Maximum Distance", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
@@ -109,10 +111,13 @@ namespace Tournament
                     t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources ? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
                 }
             }
+			//Fortgeschrittene Optionen
             if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
             {
                 GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
-                t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
+				kingIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[kingIndexTF].Name, kingIndexTF, 0, TournamentFormation.tournamentFormations.Length, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[kingIndexTF].Description));
+				challengerIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[challengerIndexTF].Name, challengerIndexTF, 0, TournamentFormation.tournamentFormations.Length, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[challengerIndexTF].Description));
+				t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
                 {
                     switch (t.cleanUp)
@@ -154,6 +159,7 @@ namespace Tournament
                 t.cleanUp = t.cleanUpD;
                 t.healthCalculation = t.healthCalculationD;
                 t.minimumHealth = t.minimumHealthD;
+				kingIndexTF = challengerIndexTF = 0;
             }
             if (GUILayout.Button("Delete Pools")) {
                 Pooler.DeleteAll();
@@ -371,6 +377,8 @@ namespace Tournament
                 DeactivateGui(0);
                 TournamentPlugin.kingFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[kingIndexTFC].Colors);
                 TournamentPlugin.challengerFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors);
+				t.kingFormation = TournamentFormation.tournamentFormations[kingIndexTF];
+				t.challengerFormation = TournamentFormation.tournamentFormations[challengerIndexTF];
                 t.LoadCraft();
                 t.StartMatch();
             }

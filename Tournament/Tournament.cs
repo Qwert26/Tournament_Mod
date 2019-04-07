@@ -212,6 +212,8 @@ namespace Tournament
 
         public bool showLists = true;
 
+		public TournamentFormation kingFormation, challengerFormation;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
