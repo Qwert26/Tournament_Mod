@@ -2,6 +2,7 @@
 namespace Tournament
 {
 	internal static class FormationCalculation {
+		static readonly float factorFor1To1GapRation = Mathf.Tan(Mathf.Deg2Rad*68);
 		public static float CalculateYComponent(float offset, Tournament.SPAWN.LOC spawnLocation)
 		{
 			switch (spawnLocation)
