@@ -47,5 +47,79 @@ namespace Tournament
 				return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
 			}
 		}
+		public static Vector3 DividedWedgeFormation(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
+			if (index == 0) //Ist es das Flaggschiff?
+			{
+				return new Vector3(0, CalculateYComponent(offset, spawnLocation), isKing ? (distance / 2f) : (distance / -2f));
+			}
+			else
+			{
+				float x=0, z=0;
+				if (count <= 3)
+				{
+					z = isKing ? (distance / 2f) + gapForwardBackward : (distance / -2f) - gapForwardBackward;
+					if (index == 1)
+					{
+						x = gapLeftRight;
+					}
+					else //index=2
+					{
+						x = -gapLeftRight;
+					}
+				}
+				else
+				{
+					count -= 3;
+					count += 6 - (count % 6);
+					//Anzahl der Plätze zwischen Flagschiff und Kommandoschiff
+					int bufferSpaces = count / 3;
+					if (index == 1)
+					{
+						x = (1 + bufferSpaces) * gapLeftRight;
+						z = isKing ? (distance / 2f) + ((1 + bufferSpaces) * gapForwardBackward) : (distance / -2f) - ((1 + bufferSpaces) * gapForwardBackward);
+					}
+					else if (index == 2)
+					{
+						x = -(1 + bufferSpaces) * gapLeftRight;
+						z = isKing ? (distance / 2f) + ((1 + bufferSpaces) * gapForwardBackward) : (distance / -2f) - ((1 + bufferSpaces) * gapForwardBackward);
+					}
+					else //Alle anderen Schiffe
+					{
+						int groupAndSide = (index - 3) % 6;
+						int groupLine = (index - 3) / 6;
+						switch (groupAndSide)
+						{
+							case 0:
+								x = gapLeftRight;
+								z = isKing ? (distance / 2f) + (groupLine * gapForwardBackward) : (distance / -2f) - (groupLine * gapForwardBackward);
+								break;
+							case 1:
+								x = -gapLeftRight;
+								z = isKing ? (distance / 2f) + (groupLine * gapForwardBackward) : (distance / -2f) - (groupLine * gapForwardBackward);
+								break;
+							case 2:
+								x = (2 + bufferSpaces) * gapLeftRight;
+								z = isKing ? (distance / 2f) + ((2 + bufferSpaces + groupLine) * gapForwardBackward) : (distance / -2f) - ((2 + bufferSpaces + groupLine) * gapForwardBackward);
+								break;
+							case 3:
+								x = -(2 + bufferSpaces) * gapLeftRight;
+								z = isKing ? (distance / 2f) + ((2 + bufferSpaces + groupLine) * gapForwardBackward) : (distance / -2f) - ((2 + bufferSpaces + groupLine) * gapForwardBackward);
+								break;
+							case 4:
+								x = bufferSpaces * gapLeftRight;
+								z = isKing ? (distance / 2f) + ((2 + bufferSpaces + groupLine) * gapForwardBackward) : (distance / -2f) - ((2 + bufferSpaces + groupLine) * gapForwardBackward);
+								break;
+							case 5:
+								x = -bufferSpaces * gapLeftRight;
+								z = isKing ? (distance / 2f) + ((2 + bufferSpaces + groupLine) * gapForwardBackward) : (distance / -2f) - ((2 + bufferSpaces + groupLine) * gapForwardBackward);
+								break;
+							default:
+								throw new System.Exception("Someone modified groupAndSide with a debugger...");
+						}
+					}
+				}
+				return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
+			}
+		}
 	}
 }
