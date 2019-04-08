@@ -8,7 +8,10 @@
       "Radars and Radar trackers can be used against their own craft with a passive Radar. The same goes for Sonar. Radar and Sonar Buoys however are not detected by them.",
       "Each AI can have different averaging settings on them, but only the one currently most accurate set of settings will be used for engaging.",
       "Using a lot of Transmitters and Recievers on a craft makes it more detectable by a wireless Snooper, which can not be obscured with a Signal Jammer.",
-      "Laser Range Finders and Retroreflection Sensors are the only optical detection systems, which still function when under water."
+      "Laser Range Finders and Retroreflection Sensors are the only optical detection systems, which still function when under water.",
+      "Sonar and Radar Detection Range exclusively depends on the material the indivdual blocks are made of and the indivdual positions and rotations of said blocks.",
+      "Blocks with a higher radar/sonar signature, such as Metal and Heavy Armor can be hidden behind blocks with a lower signature like Wood or Alloy.",
+      "Rubber is a radar and sonar proof material but is not structural sound and will not benefit from addition armor by layering!"
     ]
   },
   "ComponentId": {

@@ -27,6 +27,6 @@ namespace Tournament
 			"Commandships are the second and third positions. The distance between the groups grows, the larger the fleet is.",
 			DetermineLocalPosition = FormationCalculation.DividedWedgeFormation
 		};
-		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge };
+		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge };
 	}
 }
