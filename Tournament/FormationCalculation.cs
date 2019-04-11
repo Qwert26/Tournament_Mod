@@ -133,7 +133,7 @@ namespace Tournament
 		public static Vector3 CommandedParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2 * currentGapRatio * factorFor1To1GapRation)); //Schiffe sind doppel so weit voneinander entfernt.
-			int groups = Mathf.CeilToInt(count / (1 + 2 * shipsPerLine));
+			int groups = Math.Max(1, Mathf.CeilToInt(count / (1 + 2 * shipsPerLine)));
 			float x, z;
 			if (index < groups) //Platziere Kommandoschiffe
 			{
