@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 namespace Tournament
 {
 	internal static class FormationCalculation {
@@ -114,12 +115,20 @@ namespace Tournament
 								z = isKing ? (distance / 2f) + ((2 + bufferSpaces + groupLine) * gapForwardBackward) : (distance / -2f) - ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
 							default:
-								throw new System.Exception("Someone modified groupAndSide with a debugger...");
+								throw new Exception("Someone modified groupAndSide with a debugger...");
 						}
 					}
 				}
 				return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
 			}
+		}
+		public static Vector3 ParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
+			float currentGapRatio = Mathf.Abs(gapLeftRight / gapForwardBackward);
+			int shipsPerLine = Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRation);
+			int lines = (int)Math.Ceiling((double)count / shipsPerLine);
+			float x = (lines - 1) * gapLeftRight / 2f - index % lines * gapLeftRight;
+			float z = isKing ? (distance / 2f) + (index / lines * gapForwardBackward) : (distance / -2f) - (index / lines * gapForwardBackward);
+			return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
 		}
 	}
 }

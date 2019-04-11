@@ -27,6 +27,13 @@ namespace Tournament
 			"Commandships are the second and third positions. The distance between the groups grows, the larger the fleet is.",
 			DetermineLocalPosition = FormationCalculation.DividedWedgeFormation
 		};
-		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge };
+		public static readonly TournamentFormation ParallelColumns = new TournamentFormation()
+		{
+			Name="Columns",
+			Description="The fleet is in a rectangular formation, where the start of one column is at an 22° angle to the end of a neighboring column. " +
+			"The Columns are getting filled front to back and the maximum amount of ships gets determined by the ratio of the two gap values.",
+			DetermineLocalPosition=FormationCalculation.ParallelColumns
+		};
+		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge, ParallelColumns };
 	}
 }
