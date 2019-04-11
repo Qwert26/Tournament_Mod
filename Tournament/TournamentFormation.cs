@@ -40,6 +40,6 @@ namespace Tournament
 			Description="Similar to the Columns-Formation, but each pair of Columns also has an Commandship diagonally in front of it.",
 			DetermineLocalPosition=FormationCalculation.CommandedParallelColumns
 		};
-		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge, ParallelColumns };
+		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge, ParallelColumns, CommandedParallelColumns };
 	}
 }
