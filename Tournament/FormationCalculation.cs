@@ -123,16 +123,16 @@ namespace Tournament
 			}
 		}
 		public static Vector3 ParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
-			float currentGapRatio = Mathf.Abs(gapLeftRight / gapForwardBackward);
-			int shipsPerLine = Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRation);
+			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
+			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRation));
 			int lines = (int)Math.Ceiling((double)count / shipsPerLine);
 			float x = (lines - 1) * gapLeftRight / 2f - index % lines * gapLeftRight;
 			float z = isKing ? (distance / 2f) + (index / lines * gapForwardBackward) : (distance / -2f) - (index / lines * gapForwardBackward);
 			return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
 		}
 		public static Vector3 CommandedParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
-			float currentGapRatio = Mathf.Abs(gapLeftRight / gapForwardBackward);
-			int shipsPerLine = Mathf.RoundToInt(2 * currentGapRatio * factorFor1To1GapRation);//Schiffe sind doppel so weit voneinander entfernt.
+			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
+			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2 * currentGapRatio * factorFor1To1GapRation)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Mathf.CeilToInt(count / (1 + 2 * shipsPerLine));
 			float x, z;
 			if (index < groups) //Platziere Kommandoschiffe
