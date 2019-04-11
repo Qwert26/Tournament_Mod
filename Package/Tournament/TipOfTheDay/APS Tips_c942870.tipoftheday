@@ -3,11 +3,12 @@
     "Tips": [
       "The Grav-Ram Part is a standard ban in tournaments, as it has the potential to make fights boring to watch.",
       "The Disruptor-Smoke shell targets two active Defenses at once: Shields and LAMS. But it needs at least a caliber of 200mm to function.",
-      "A timed FLAK-FRAG shell can be used against missiles and aircrafts. Making it good dual-purpose shell.",
+      "A timed FLAK-FRAG shell can be used against missiles and aircrafts. Making it a good dual-purpose shell.",
       "8m long HP-HE-FRAG shells with a caliber of 500mm can be devastating. A timed fuse can even make misses dangerous.",
       "A timed Sabot-FRAG shell with pendepth can make quick work with internals. Only problem is that FRAG is only at 25% of its power.",
       "A HESH-Frag shell creates interior spalling against internals and exterior spalling against the outer armour. You can also mix in some HEAT.",
-      "For purely direct fed guns, the ammo customizer can have at most 30 blocks with shell components, allowing for a 30m long shell at maximum caliber."
+      "For purely direct fed guns, the ammo customizer can have at most 30 blocks with shell components, allowing for a 30m long shell at maximum caliber.",
+      "FLAK a high calibers can make short work of any missile swarm. Mostly because of its absurdly high explosion radius."
     ]
   },
   "ComponentId": {

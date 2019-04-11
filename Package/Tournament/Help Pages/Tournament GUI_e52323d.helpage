@@ -50,7 +50,7 @@
     },
     {
       "Header": "Formations",
-      "Paragraph": "The first option is the formation setting for both teams, the default is the <<Line>>-Formation for both teams. The second option is called the <<Wedge>>- or better known as a <<V>>-Formation which can manifest itself as an <<Arrow>>- or <<Funnel>>-Formation depending on the <<Forwards-Backwards Gap>>."
+      "Paragraph": "The first option is the formation setting for both teams, the default is the <<Line>>-Formation for both teams. The second option is called the <<Wedge>>- or better known as a <<V>>-Formation which can manifest itself as an <<Arrow>>- or <<Funnel>>-Formation depending on the <<Forwards-Backwards Gap>>. The third option is called <<Divided Wedge>>, where the fleet gets divided into three groups, which then are put into a <<V>>-Formation"
     },
     {
       "Header": "Constructable Cleanup",

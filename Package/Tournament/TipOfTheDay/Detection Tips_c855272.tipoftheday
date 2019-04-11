@@ -10,8 +10,9 @@
       "Using a lot of Transmitters and Recievers on a craft makes it more detectable by a wireless Snooper, which can not be obscured with a Signal Jammer.",
       "Laser Range Finders and Retroreflection Sensors are the only optical detection systems, which still function when under water.",
       "Sonar and Radar Detection Range exclusively depends on the material the indivdual blocks are made of and the indivdual positions and rotations of said blocks.",
-      "Blocks with a higher radar/sonar signature, such as Metal and Heavy Armor can be hidden behind blocks with a lower signature like Wood or Alloy.",
-      "Rubber is a radar and sonar proof material but is not structural sound and will not benefit from addition armor by layering!"
+      "Blocks with a higher radar/sonar signature, such as Metal and Heavy Armor can be hidden behind blocks with a lower signature like Wood and Alloy.",
+      "Rubber is a radar and sonar proof material but is not structural sound and will not benefit from addition armor by layering!",
+      "When APS and CRAM cannons fire, they temporary increase the Heat-Signature in the direction they are facing."
     ]
   },
   "ComponentId": {

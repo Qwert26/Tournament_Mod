@@ -130,5 +130,23 @@ namespace Tournament
 			float z = isKing ? (distance / 2f) + (index / lines * gapForwardBackward) : (distance / -2f) - (index / lines * gapForwardBackward);
 			return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
 		}
+		public static Vector3 CommandedParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
+			float currentGapRatio = Mathf.Abs(gapLeftRight / gapForwardBackward);
+			int shipsPerLine = Mathf.RoundToInt(2 * currentGapRatio * factorFor1To1GapRation);//Schiffe sind doppel so weit voneinander entfernt.
+			int groups = Mathf.CeilToInt(count / (1 + 2 * shipsPerLine));
+			float x, z;
+			if (index < groups) //Platziere Kommandoschiffe
+			{
+				x = (groups - 1) * 4 * gapLeftRight / 2f - index * 4 * gapLeftRight;
+				z = isKing ? (distance / 2f) : (distance / -2f);
+			}
+			else //Platziere Flotte
+			{
+				index -= groups;
+				x = (2 * groups - 1) * 2 * gapLeftRight / 2f - index % (2 * groups) * 2 * gapLeftRight;
+				z = isKing ? (distance / 2f) + (index / (2 * groups) * gapForwardBackward) : (distance / -2f) - (index / (2 * groups) * gapForwardBackward);
+			}
+			return new Vector3(x, CalculateYComponent(offset, spawnLocation), z);
+		}
 	}
 }

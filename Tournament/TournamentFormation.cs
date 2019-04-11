@@ -34,6 +34,12 @@ namespace Tournament
 			"The Columns are getting filled front to back and the maximum amount of ships gets determined by the ratio of the two gap values.",
 			DetermineLocalPosition=FormationCalculation.ParallelColumns
 		};
+		public static readonly TournamentFormation CommandedParallelColumns = new TournamentFormation()
+		{
+			Name="Commanded Columns",
+			Description="Similar to the Columns-Formation, but each pair of Columns also has an Commandship diagonally in front of it.",
+			DetermineLocalPosition=FormationCalculation.CommandedParallelColumns
+		};
 		public static readonly TournamentFormation[] tournamentFormations = { Line, Wedge, DividedWedge, ParallelColumns };
 	}
 }
