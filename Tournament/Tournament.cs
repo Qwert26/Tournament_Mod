@@ -166,6 +166,8 @@ namespace Tournament
 
         public float oobMaxBufferD = 3; //out of bounds and moving away too fast buffer time in secs
 
+        //Management
+
         private SortedDictionary<int, SortedDictionary<string, TournamentParticipant>> HUDLog = new SortedDictionary<int, SortedDictionary<string, TournamentParticipant>>();
 
         public float t1_res;
@@ -214,6 +216,14 @@ namespace Tournament
 
 		public TournamentFormation kingFormation, challengerFormation;
 
+        public bool softLimits = true;
+
+        public bool softLimitsD = true;
+
+        public float altitudeReverse = 3;
+
+        public float altitudeReverseD = 3;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -239,7 +249,7 @@ namespace Tournament
 
             _Left = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
-                alignment = 0,
+                alignment = TextAnchor.UpperLeft,
                 richText = true,
                 fontSize = 12,
                 wordWrap = false,
@@ -248,7 +258,7 @@ namespace Tournament
 
             _Left2 = new GUIStyle
             {
-                alignment = 0,
+                alignment = TextAnchor.UpperLeft,
                 richText = true,
                 fontSize = 12
             };
@@ -532,7 +542,9 @@ namespace Tournament
                 sameMaterials ? 1 : 0,
                 infinteResourcesT1?1:0,
                 infinteResourcesT2?1:0,
-                project2D?1:0
+                project2D?1:0,
+                softLimits?1:0,
+                altitudeReverse
             };
             settingsFile.SaveData(settingsList, Formatting.None);
         }
@@ -563,7 +575,7 @@ namespace Tournament
                 localResources = settingsList[15] != 0;
                 oobMaxBuffer = settingsList[16];
                 oobReverse = settingsList[17];
-                if (settingsList.Count >= 28)
+                if (settingsList.Count >= 30)
                 {
                     showAdvancedOptions = settingsList[18] != 0;
                     matconv = settingsList[19];
@@ -575,6 +587,8 @@ namespace Tournament
                     infinteResourcesT1 = settingsList[25] != 0;
                     infinteResourcesT2 = settingsList[26] != 0;
                     project2D = settingsList[27] != 0;
+                    softLimits = settingsList[28] != 0;
+                    altitudeReverse = settingsList[29];
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -586,6 +600,8 @@ namespace Tournament
                     sameMaterials = sameMaterialsD;
                     infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
                     project2D = project2DD;
+                    softLimits = softLimitsD;
+                    altitudeReverse = altitudeReverseD;
                 }
 
                 if (defaultKeys == 1)
@@ -641,6 +657,8 @@ namespace Tournament
             localResources = localResourcesD;
             infinteResourcesT1 = infinteResourcesT2 = infiniteResourcesD;
             project2D = project2DD;
+            softLimits = softLimitsD;
+            altitudeReverse = altitudeReverseD;
         }
 
         public void OnGUI()
@@ -1099,7 +1117,28 @@ namespace Tournament
                         }
                         else if (val.CentreOfMass.y < minalt || val.CentreOfMass.y > maxalt)
                         {
-                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            if (softLimits) {
+                                if (val.CentreOfMass.y < minalt && -val.Velocity.y > altitudeReverse) //Below minimum altitude and still sinking.
+                                {
+                                    tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    if (tournamentParticipant.OoBTimeBuffer > oobMaxBuffer)
+                                    {
+                                        tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    }
+                                }
+                                else if (val.CentreOfMass.y > maxalt && val.Velocity.y > altitudeReverse) //Above maximum altitude and still rising.
+                                {
+                                    tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    if (tournamentParticipant.OoBTimeBuffer > oobMaxBuffer)
+                                    {
+                                        tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            }
                         }
                         else if (tournamentParticipant.HP < minimumHealth)
                         {
@@ -1114,30 +1153,30 @@ namespace Tournament
                             {
                                 if (val != val2 && val.GetTeam() != val2.GetTeam())
                                 {
-                                    float num3 =project2D?DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
+                                    float num3 = project2D ? DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
                                     if (num < 0f)
                                     {
                                         num = num3;
-                                        //heading towards
-                                        //num2 = Vector3.Distance(val.CentreOfMass + val.get_MainPhysics().get_iVelocities().get_VelocityVector(), val2.CentreOfMass;
-                                        num2 =project2D?DistanceProjected(val.CentreOfMass+val.Velocity,val2.CentreOfMass):Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+                                        num2 = project2D ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
 
                                     }
                                     else if (num3 < num)
                                     {
                                         num = num3;
-                                        //num2 = Vector3.Distance(val.get_CentreOfMass() + val.get_MainPhysics().get_iVelocities().get_VelocityVector(), val2.get_CentreOfMass());
                                         num2 = project2D ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
                                     }
                                 }
                             }
-                            if (num > maxdis && num < num2 - oobReverse) //out of bounds and moving away faster than oobReverse m/s
+                            if (softLimits && num > maxdis && num < num2 - oobReverse) //out of bounds and moving away faster than oobReverse m/s
                             {
                                 tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 if (tournamentParticipant.OoBTimeBuffer > oobMaxBuffer)
                                 {
                                     tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 }
+                            }
+                            else if (!softLimits && num > maxdis) { //out of bounds
+                                tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                             }
                             else
                             {

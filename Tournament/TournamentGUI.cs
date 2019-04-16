@@ -88,11 +88,21 @@ namespace Tournament
             t.maxalt = GUISliders.LayoutDisplaySlider("Maximum Altitude", t.maxalt, t.minalt, 2000, 0, new ToolTip("Add to penalty time when above this"));
             t.maxdis = GUISliders.LayoutDisplaySlider("Maximum Distance", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
             t.project2D = GUILayout.Toggle(t.project2D, "Use on Ground projected Distance.");
+            GUILayout.Label("When turned on, the distance for fleeing will be calculated using a top-down view.");
             t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 10000, 0, new ToolTip("Max penalty time (seconds)"));
-            t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds"));
-            t.oobReverse = GUISliders.LayoutDisplaySlider("Out OfBounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
+            if (t.softLimits = GUILayout.Toggle(t.softLimits, "Soft Limits"))
+            {
+                GUILayout.Label("Soft Limits are active: Entries will <b>not</b> pick up DQ-Time if they do move towards the limits with a certain speed or don't surpass the permitted fleeing speed.");
+                t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds. This buffer will reset, once an entry is back inside."));
+                t.oobReverse = GUISliders.LayoutDisplaySlider("Out Of Bounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
+                t.altitudeReverse = GUISliders.LayoutDisplaySlider("Altitude Reverse", t.altitudeReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to drift away from the set altitude limits, while negative value rquires you to move this many m/s towards the altitude limits."));
+            }
+            else {
+                GUILayout.Label("Hard Limits are active: Entries will pick up DQ-Time, for as long as they are out of bounds.");
+            }
             t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 10000, 0, new ToolTip("Max match time (seconds)"));
-            t.localResources = GUILayout.Toggle(t.localResources, "Use local Resorces");
+
+            t.localResources = GUILayout.Toggle(t.localResources, "Use local Resources");
             if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
             {
                 if (!(t.infinteResourcesT1 = t.infinteResourcesT2 = GUILayout.Toggle(t.infinteResourcesT1, "Infinte Resources")))
@@ -134,7 +144,7 @@ namespace Tournament
                             return "How did you manage to go out of bounds here?";
                     }
                 }
-                t.cleanUp = (ConstructableCleanUp)GUISliders.LayoutDisplaySlider(t.cleanUp.ToString(), (float)t.cleanUp, 0, 3, enumMinMax.none, new ToolTip(describeCleanupMode()));
+                t.cleanUp = (ConstructableCleanUp)GUISliders.LayoutDisplaySlider("Constructs-Cleanup: "+t.cleanUp, (float)t.cleanUp, 0, 3, enumMinMax.none, new ToolTip(describeCleanupMode()));
                 string describeHealthCalculation()
                 {
                     switch (t.healthCalculation)
@@ -151,7 +161,7 @@ namespace Tournament
                             return "How did you manage to go out of bounds here?";
                     }
                 }
-                t.healthCalculation = (Tournament.HealthCalculation)GUISliders.LayoutDisplaySlider(t.healthCalculation.ToString(), (float)t.healthCalculation, 0, 3, enumMinMax.none, new ToolTip(describeHealthCalculation()));
+                t.healthCalculation = (Tournament.HealthCalculation)GUISliders.LayoutDisplaySlider("Healthcalculation: "+t.healthCalculation, (float)t.healthCalculation, 0, 3, enumMinMax.none, new ToolTip(describeHealthCalculation()));
                 t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
             }
             else {
