@@ -19,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version("2.4.2.5");
+        public Version version => new Version("2.4.3.0");
 
         public static FactionSpecificationFaction kingFaction, challengerFaction;
 
