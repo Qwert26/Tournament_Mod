@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Ftd.Planets.Factions;
+using BrilliantSkies.Ftd.Persistence.Inits;
+
 namespace Tournament
 {
     public class TournamentEntry
@@ -118,7 +120,14 @@ namespace Tournament
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
             FactionSpecificationFaction faction = IsKing ? TournamentPlugin.kingFaction : TournamentPlugin.challengerFaction;
             Team_id = faction.Id;
-            BlueprintConverter.Initiate(val, PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir(), Team_id, null, SpawnPositioning.OriginOrCentre);
+            BlueprintInitialisation initialisation = new BlueprintInitialisation(val)
+            {
+                Positioning = new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir())
+                {
+                    PositioningType = SpawnPositioning.OriginOrCentre
+                }
+            };
+            initialisation.Run(Team_id);
             (val.Owner as ConstructableOwner).SetFleetColors(Team_id);
         }
 

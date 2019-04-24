@@ -364,9 +364,9 @@ namespace Tournament
             foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
             {
                 int id = 0;
-                if (constructable.Drones.loadedMothershipC != null)
+                if (constructable.Drones.LoadedMothershipC != null)
                 {
-                    id = constructable.Drones.loadedMothershipC.UniqueId;
+                    id = constructable.Drones.LoadedMothershipC.UniqueId;
                 }
                 string key = "" + constructable.UniqueId + "," + id;
 
@@ -947,7 +947,7 @@ namespace Tournament
                     orbitindex = 0;
                 }
                 if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != 0 ||
-                    (orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.loadedMothershipC.uniqueID != orbitMothership))
+                    (orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID != orbitMothership))
                 {
                     int index;
                     if (orbitMothership == -1)
@@ -956,7 +956,7 @@ namespace Tournament
                     }
                     else
                     {
-                        index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.Drones.loadedMothershipC.uniqueID == orbitMothership);
+                        index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.Drones.LoadedMothershipC.uniqueID == orbitMothership);
                     }
                     if (index >= 0) { orbitindex = index; }
                     else { orbitindex = 0; }
@@ -989,13 +989,13 @@ namespace Tournament
                 }
 
                 if (orbittarget != StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId ||
-                    (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.loadedMothershipC != null &&
-                     orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.loadedMothershipC.uniqueID))
+                    (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null &&
+                     orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID))
                 {
                     orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
-                    if (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.loadedMothershipC != null)
+                    if (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null)
                     {
-                        orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.loadedMothershipC.uniqueID;
+                        orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID;
                     }
                     else
                     {
@@ -1101,9 +1101,9 @@ namespace Tournament
                 {
                     //Debug.Log("FixedUpdate ID: " + val.UniqueId);
                     int id = 0;
-                    if (val.Drones.loadedMothershipC != null)
+                    if (val.Drones.LoadedMothershipC != null)
                     {
-                        id = val.Drones.loadedMothershipC.UniqueId;
+                        id = val.Drones.LoadedMothershipC.UniqueId;
                     }
                     string key = "" + val.UniqueId + "," + id;
                     //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
@@ -1197,9 +1197,9 @@ namespace Tournament
             foreach (MainConstruct val in array)
             {
                 int id = 0;
-                if (val.Drones.loadedMothershipC != null)
+                if (val.Drones.LoadedMothershipC != null)
                 {
-                    id = val.Drones.loadedMothershipC.UniqueId;
+                    id = val.Drones.LoadedMothershipC.UniqueId;
                 }
                 string key = val.UniqueId + "," + id;
                 if (!HUDLog[val.GetTeam().Id].TryGetValue(key, out TournamentParticipant tournamentParticipant))
@@ -1290,9 +1290,9 @@ namespace Tournament
                         if (team3 == keyValuePair9.Value.TeamId)
                         {
                             int id3 = 0;
-                            if (c.Drones.loadedMothershipC != null)
+                            if (c.Drones.LoadedMothershipC != null)
                             {
-                                id3 = c.Drones.loadedMothershipC.UniqueId;
+                                id3 = c.Drones.LoadedMothershipC.UniqueId;
                             }
                             string uniqueId3 = "" + c.UniqueId + "," + id3;
                             KeyValuePair<string, TournamentParticipant> keyValuePair10 = item2;
@@ -1326,9 +1326,9 @@ namespace Tournament
                             if (team2 == keyValuePair7.Value.TeamId)
                             {
                                 int id2 = 0;
-                                if (c.Drones.loadedMothershipC != null)
+                                if (c.Drones.LoadedMothershipC != null)
                                 {
-                                    id2 = c.Drones.loadedMothershipC.UniqueId;
+                                    id2 = c.Drones.LoadedMothershipC.UniqueId;
                                 }
                                 string uniqueId2 = "" + c.UniqueId + "," + id2;
                                 KeyValuePair<string, TournamentParticipant> keyValuePair8 = item2;
@@ -1344,9 +1344,9 @@ namespace Tournament
                             if (team == keyValuePair5.Value.TeamId)
                             {
                                 int id1 = 0;
-                                if (c.Drones.loadedMothershipC != null)
+                                if (c.Drones.LoadedMothershipC != null)
                                 {
-                                    id1 = c.Drones.loadedMothershipC.UniqueId;
+                                    id1 = c.Drones.LoadedMothershipC.UniqueId;
                                 }
                                 string uniqueId1 = "" + c.UniqueId + "," + id1;
                                 KeyValuePair<string, TournamentParticipant> keyValuePair6 = item2;
