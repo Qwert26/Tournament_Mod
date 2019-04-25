@@ -81,7 +81,7 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 100, 5000, 0, new ToolTip("Spawn distance between teams"));
+            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 0, 10000, 0, new ToolTip("Spawn distance between teams"));
             t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.spawngap, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
             t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.minalt = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
@@ -94,7 +94,7 @@ namespace Tournament
             {
                 GUILayout.Label("Soft Limits are active: Entries will <b>not</b> pick up DQ-Time if they do move towards the limits with a certain speed or don't surpass the permitted fleeing speed.");
                 t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 100, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds. This buffer will reset, once an entry is back inside."));
-                t.oobReverse = GUISliders.LayoutDisplaySlider("Out Of Bounds Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
+                t.oobReverse = GUISliders.LayoutDisplaySlider("Distance Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
                 t.altitudeReverse = GUISliders.LayoutDisplaySlider("Altitude Reverse", t.altitudeReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to drift away from the set altitude limits, while negative value rquires you to move this many m/s towards the altitude limits."));
             }
             else {
