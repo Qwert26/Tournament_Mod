@@ -285,6 +285,7 @@
     <Compile Include="Tournament\TournamentFleetColors.cs" />
     <Compile Include="Tournament\TournamentFormation.cs" />
     <Compile Include="Tournament\TournamentGUI.cs" />
+    <Compile Include="Tournament\TournamentParameters.cs" />
     <Compile Include="Tournament\TournamentParticipant.cs" />
     <Compile Include="Tournament\TournamentPlugin.cs" />
   </ItemGroup>
