@@ -100,7 +100,8 @@ namespace Tournament
             else {
                 GUILayout.Label("Hard Limits are active: Entries will pick up DQ-Time, for as long as they are out of bounds.");
             }
-            t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 10000, 0, new ToolTip("Max match time (seconds)"));
+            t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 3600, 0, new ToolTip("Max match time (seconds)"));
+            t.overtime = GUISliders.LayoutDisplaySlider("Overtime", t.overtime, 0, t.maxtime, enumMinMax.min, new ToolTip("Length of one Overtime-section (seconds)"));
 
             t.localResources = GUILayout.Toggle(t.localResources, "Use local Resources");
             if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))

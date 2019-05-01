@@ -5,8 +5,8 @@ namespace Tournament
 {
     public class TournamentParameters : PrototypeSystem
     {
-        #region Standard-Parameter
         public TournamentParameters(uint uniqueId) : base(uniqueId) {}
+        #region Standard-Parameter
         [Variable(0,"Starting Distance(m)","The Initial starting distance of the two teams.")]
         public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 10000);
         [Variable(1, "Spawn gap Left-Right(m)", "Spawn distance between team members left to right.")]
@@ -34,17 +34,19 @@ namespace Tournament
         public Var<int> AltitudeReverse { get; set; } = new VarIntClamp(3, -300, 300);
         [Variable(11, "Maximum time(s)")]
         public Var<int> MaximumTime { get; set; } = new VarIntClamp(900, 0, 3600);
-        [Variable(12, "Local resources", "When active, fills up the material containers of each entry up to the specified amounts.")]
+        [Variable(12,"Overtime(s)")]
+        public Var<int> Overtime { get; set; } = new VarIntClamp(0, 0, 3600);
+        [Variable(13, "Local resources", "When active, fills up the material containers of each entry up to the specified amounts.")]
         public Var<bool> LocalResources { get; set; } = new VarBool(false);
-        [Variable(13, "Same materials", "When active, both teams will have the exact same starting materials.")]
+        [Variable(14, "Same materials", "When active, both teams will have the exact same starting materials.")]
         public Var<bool> SameMaterials { get; set; } = new VarBool(true);
-        [Variable(14, "Infinte Resources for Team 1", "When active, Team 1 will have infinte Resources. If \"Same Materials\" is also active, both teams will have infinte resources.")]
+        [Variable(15, "Infinte Resources for Team 1", "When active, Team 1 will have infinte Resources. If \"Same Materials\" is also active, both teams will have infinte resources.")]
         public Var<bool> InfinteResourcesTeam1 { get; set; } = new VarBool(false);
-        [Variable(15, "Infinte Resources for Team 2", "When active, Team 2 will have infinte Resources. ")]
+        [Variable(16, "Infinte Resources for Team 2", "When active, Team 2 will have infinte Resources. ")]
         public Var<bool> InfinteResourcesTeam2 { get; set; } = new VarBool(false);
-        [Variable(16, "Resources for Team 1")]
-        public Var<int> ResourcesTeam1 { get; set; } = new VarIntClamp(10000, 0, 1000000);
         [Variable(17, "Resources for Team 1")]
+        public Var<int> ResourcesTeam1 { get; set; } = new VarIntClamp(10000, 0, 1000000);
+        [Variable(18, "Resources for Team 1")]
         public Var<int> ResourcesTeam2 { get; set; } = new VarIntClamp(10000, 0, 1000000);
         #endregion
         #region Fortgeschrittene Optionen
@@ -57,7 +59,7 @@ namespace Tournament
         [Variable(103,"Lifesteal(%)", "-1 is a special value: In this case, materials by friendly fire are not refunded.")]
         public Var<int> MaterialConversion { get; set; } = new VarIntClamp(0, -1, 100);
         [Variable(104, "Constructable cleanup")]
-        public Var<int> CleanUpMode { get; set; } = new VarIntClamp(0, 0, 3);
+        public Var<int> CleanUpMode { get; set; } = new VarIntClamp(2, 0, 3);
         [Variable(105, "Health calculation")]
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
         [Variable(106, "Minimum health(%)")]
@@ -66,6 +68,7 @@ namespace Tournament
         #region Augenschmaus
         [Variable(200,"Show Eyecandy")]
         public Var<bool> ShowEyecandy { get; set; } = new VarBool(false);
+        #region Team 1
         [Variable(201,"Team 1 Main Color")]
         public Var<Color> Team1Main { get; set; } = new VarColor(new Color(1f, 0.84f, 0f, 1f));
         [Variable(202, "Team 1 Secondary Color")]
@@ -74,6 +77,8 @@ namespace Tournament
         public Var<Color> Team1Trim { get; set; } = new VarColor(new Color(1f, 0.65f, 0f, 1f));
         [Variable(204, "Team 1 Detail Color")]
         public Var<Color> Team1Detail { get; set; } = new VarColor(new Color(0.85f, 0.55f, 0f, 1f));
+        #endregion
+        #region Team 2
         [Variable(205, "Team 2 Main Color")]
         public Var<Color> Team2Main { get; set; } = new VarColor(new Color(1f, 0f, 0f, 1f));
         [Variable(206, "Team 2 Secondary Color")]
@@ -82,6 +87,7 @@ namespace Tournament
         public Var<Color> Team2Trim { get; set; } = new VarColor(new Color(0.7f, 0.15f, 0.15f, 1f));
         [Variable(208, "Team 2 Detail Color")]
         public Var<Color> Team2Detail { get; set; } = new VarColor(new Color(1f, 0.4f, 0.3f, 1f));
+        #endregion
         #endregion
     }
 }

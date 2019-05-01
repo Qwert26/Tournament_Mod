@@ -87,7 +87,7 @@ namespace Tournament
 
         private float timerTotal2;
 
-        private bool overtime;
+        private byte overtimeCounter;
 
         public float minalt;
 
@@ -224,6 +224,10 @@ namespace Tournament
 
         public float altitudeReverseD = 3;
 
+        public float overtime = 0;
+
+        public float overtimeD = 0;
+
         public enum HealthCalculation
         {
             NumberOfBlocks,
@@ -349,7 +353,7 @@ namespace Tournament
 
         public void StartMatch()
         {
-            overtime = false;
+            overtimeCounter = 0;
             timer = 0f;
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
@@ -544,7 +548,8 @@ namespace Tournament
                 infinteResourcesT2?1:0,
                 project2D?1:0,
                 softLimits?1:0,
-                altitudeReverse
+                altitudeReverse,
+                overtime
             };
             settingsFile.SaveData(settingsList, Formatting.None);
         }
@@ -575,7 +580,7 @@ namespace Tournament
                 localResources = settingsList[15] != 0;
                 oobMaxBuffer = settingsList[16];
                 oobReverse = settingsList[17];
-                if (settingsList.Count >= 30)
+                if (settingsList.Count >= 31)
                 {
                     showAdvancedOptions = settingsList[18] != 0;
                     matconv = settingsList[19];
@@ -589,6 +594,7 @@ namespace Tournament
                     project2D = settingsList[27] != 0;
                     softLimits = settingsList[28] != 0;
                     altitudeReverse = settingsList[29];
+                    overtime = settingsList[30];
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -602,6 +608,7 @@ namespace Tournament
                     project2D = project2DD;
                     softLimits = softLimitsD;
                     altitudeReverse = altitudeReverseD;
+                    overtime = overtimeD;
                 }
 
                 if (defaultKeys == 1)
@@ -659,6 +666,7 @@ namespace Tournament
             project2D = project2DD;
             softLimits = softLimitsD;
             altitudeReverse = altitudeReverseD;
+            overtime = overtimeD;
         }
 
         public void OnGUI()
@@ -1357,10 +1365,16 @@ namespace Tournament
                     }
                 }
             }
-            if (timerTotal > maxtime && !overtime)
+            if (overtimeCounter == 0&& timerTotal > maxtime)
             {
-                Time.timeScale = 0f;
-                overtime = true;
+                Time.timeScale = 0;
+                overtimeCounter = 1;
+            }
+            else if (overtime > 0) {//Verlängerung ist eingeschaltet.
+                if (timerTotal > maxtime + overtimeCounter * overtime) {
+                    Time.timeScale = 0;
+                    overtimeCounter++;
+                }
             }
         }
         public Quaternion Rotation => Quaternion.Euler(0, rotation, 0);
