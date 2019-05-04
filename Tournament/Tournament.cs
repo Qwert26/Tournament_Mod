@@ -883,7 +883,7 @@ namespace Tournament
         {
             FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
 
-            bool pause = false;
+            //bool pause = false;
             bool next = false;
             bool previous = false;
             bool shift = false;
@@ -895,17 +895,17 @@ namespace Tournament
             switch (defaultKeysBool)
             {
                 case false:
-                    pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
+                    //pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
-                    next = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.InventoryUi).Key);
-                    previous = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.Interact).Key);
-                    changeExtraInfo = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.CharacterSheetUi).Key);
-                    changeShowLists = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.EnemySpawnUi).Key);
+                    next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+                    previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+                    changeExtraInfo = ftdKeyMap.IsKey(KeyInputsFtd.CharacterSheetUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+                    changeShowLists = ftdKeyMap.IsKey(KeyInputsFtd.EnemySpawnUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     freecamOn = Input.GetMouseButtonDown(1); // technically same as default atm
                     orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
                     break;
                 case true:
-                    pause = Input.GetKeyDown(KeyCode.F11); // default f11
+                    //pause = Input.GetKeyDown(KeyCode.F11); // default f11
                     shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                     next = Input.GetKeyDown(KeyCode.E); // default e
                     previous = Input.GetKeyDown(KeyCode.Q); // default q
@@ -916,10 +916,10 @@ namespace Tournament
                     break;
             }
 
-            if (pause)
+            /*if (pause)
             {
                 Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }
+            }*/
             if (shift)
             {
                 orbitcam.xSpeed = 1000;

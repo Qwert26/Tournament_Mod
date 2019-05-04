@@ -19,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version("2.4.5.0");
+        public Version version => new Version("2.4.5.6");
 
         public static FactionSpecificationFaction kingFaction, challengerFaction;
 
@@ -41,6 +41,7 @@ namespace Tournament
             GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
+                GameSpeedManager.Instance.Reset();
                 _t._GUI.ActivateGui(_t, 0);
             }
         }
