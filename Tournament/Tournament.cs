@@ -451,7 +451,6 @@ namespace Tournament
             GameEvents.Twice_Second += SlowUpdate;
             GameEvents.FixedUpdateEvent += FixedUpdate;
             GameEvents.OnGui += OnGUI;
-            GameSpeedManager.Instance.TogglePause();
         }
 
         public void ClearArea()
@@ -883,7 +882,7 @@ namespace Tournament
         {
             FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
 
-            //bool pause = false;
+            bool pause = false;
             bool next = false;
             bool previous = false;
             bool shift = false;
@@ -895,7 +894,7 @@ namespace Tournament
             switch (defaultKeysBool)
             {
                 case false:
-                    //pause = Input.GetKeyDown(ftdKeyMap.GetKeyDef(KeyInputsFtd.PauseGame).Key);
+                    pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
                     next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
@@ -905,7 +904,7 @@ namespace Tournament
                     orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
                     break;
                 case true:
-                    //pause = Input.GetKeyDown(KeyCode.F11); // default f11
+                    pause = Input.GetKeyDown(KeyCode.F11); // default f11
                     shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
                     next = Input.GetKeyDown(KeyCode.E); // default e
                     previous = Input.GetKeyDown(KeyCode.Q); // default q
@@ -916,10 +915,10 @@ namespace Tournament
                     break;
             }
 
-            /*if (pause)
+            if (pause)
             {
                 Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }*/
+            }
             if (shift)
             {
                 orbitcam.xSpeed = 1000;
@@ -1083,7 +1082,7 @@ namespace Tournament
         public void FixedUpdate(ITimeStep dt)
         {
 
-            if (GameSpeedManager.Instance.GamePaused)
+            if (Time.timeScale>0)
             {
                 if (matconv == -1f)
                 {
@@ -1367,12 +1366,12 @@ namespace Tournament
             }
             if (overtimeCounter == 0&& timerTotal > maxtime)
             {
-                GameSpeedManager.Instance.TogglePause();
+                Time.timeScale = 0;
                 overtimeCounter = 1;
             }
             else if (overtime > 0) {//Verlängerung ist eingeschaltet.
                 if (timerTotal > maxtime + overtimeCounter * overtime) {
-                    GameSpeedManager.Instance.TogglePause();
+                    Time.timeScale = 0;
                     overtimeCounter++;
                 }
             }

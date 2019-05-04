@@ -41,7 +41,6 @@ namespace Tournament
             GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
-                GameSpeedManager.Instance.Reset();
                 _t._GUI.ActivateGui(_t, 0);
             }
         }
