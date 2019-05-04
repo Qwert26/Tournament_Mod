@@ -451,7 +451,7 @@ namespace Tournament
             GameEvents.Twice_Second += SlowUpdate;
             GameEvents.FixedUpdateEvent += FixedUpdate;
             GameEvents.OnGui += OnGUI;
-            Time.timeScale = 0f;
+            GameSpeedManager.Instance.TogglePause();
         }
 
         public void ClearArea()
@@ -1083,7 +1083,7 @@ namespace Tournament
         public void FixedUpdate(ITimeStep dt)
         {
 
-            if (Time.timeScale > 0f)
+            if (GameSpeedManager.Instance.GamePaused)
             {
                 if (matconv == -1f)
                 {
@@ -1367,12 +1367,12 @@ namespace Tournament
             }
             if (overtimeCounter == 0&& timerTotal > maxtime)
             {
-                Time.timeScale = 0;
+                GameSpeedManager.Instance.TogglePause();
                 overtimeCounter = 1;
             }
             else if (overtime > 0) {//Verlängerung ist eingeschaltet.
                 if (timerTotal > maxtime + overtimeCounter * overtime) {
-                    Time.timeScale = 0;
+                    GameSpeedManager.Instance.TogglePause();
                     overtimeCounter++;
                 }
             }
