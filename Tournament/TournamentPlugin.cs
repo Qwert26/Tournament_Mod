@@ -44,7 +44,9 @@ namespace Tournament
                 _t._GUI.ActivateGui(_t, 0);
             }
         }
-
+        /// <summary>
+        /// Creates and Adds the instance and the required factions.
+        /// </summary>
         public static void OnPlanetChange()
         {
             @is = new InstanceSpecification();

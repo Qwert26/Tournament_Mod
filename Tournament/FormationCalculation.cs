@@ -3,7 +3,7 @@ using System;
 namespace Tournament
 {
 	internal static class FormationCalculation {
-		static readonly float factorFor1To1GapRation = Mathf.Tan(Mathf.Deg2Rad*68);
+		static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad*68);
 		public static float CalculateYComponent(float offset, Tournament.SPAWN.LOC spawnLocation)
 		{
 			switch (spawnLocation)
@@ -124,7 +124,7 @@ namespace Tournament
 		}
 		public static Vector3 ParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
-			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRation));
+			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRatio));
 			int lines = (int)Math.Ceiling((double)count / shipsPerLine);
 			float x = (lines - 1) * gapLeftRight / 2f - index % lines * gapLeftRight;
 			float z = isKing ? (distance / 2f) + (index / lines * gapForwardBackward) : (distance / -2f) - (index / lines * gapForwardBackward);
@@ -132,7 +132,7 @@ namespace Tournament
 		}
 		public static Vector3 CommandedParallelColumns(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
-			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * factorFor1To1GapRation)); //Schiffe sind doppel so weit voneinander entfernt.
+			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
 			float x, z;
 			if (index < groups) //Platziere Kommandoschiffe
