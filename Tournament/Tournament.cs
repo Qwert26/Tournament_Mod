@@ -799,7 +799,8 @@ namespace Tournament
                     //    $"/{Math.Round(StaticConstructablesManager.constructables[targetIndex].PowerUsageCreationAndFuel.MaxPower, 0)}";
                     // power as available /max#
                     string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power, 0)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower, 0)}";
-                    string altitude = Math.Round(targetConstruct.CentreOfMass.y, 0).ToString();
+                    string speed = $"{Math.Round(targetConstruct.Velocity.magnitude, 1)}m/s";
+                    string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y, 0)}m";
 
                     float closest = -1f;
                     foreach (MainConstruct construct in StaticConstructablesManager.constructables.ToArray())
@@ -838,8 +839,9 @@ namespace Tournament
                     GUI.Label(new Rect(xOffsetLabel, 152, 90f, 38f), "Fuel:", _Left);
                     GUI.Label(new Rect(xOffsetLabel, 190, 90f, 38f), "Battery:", _Left);
                     GUI.Label(new Rect(xOffsetLabel, 228, 90f, 38f), "Power:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 266, 90f, 38f), "Altitude:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 304, 90f, 38f), "Nearest Enemy:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 266, 90f, 38f), "Speed:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 304, 90f, 38f), "Altitude:", _Left);
+                    GUI.Label(new Rect(xOffsetLabel, 342, 90f, 38f), "Nearest Enemy:", _Left);
 
                     GUI.Label(new Rect(xOffsetValue, 0f, 110f, 38f), name, _RightWrap);
                     GUI.Label(new Rect(xOffsetValue, 38f, 110f, 38f), hp, _Right);
@@ -848,8 +850,9 @@ namespace Tournament
                     GUI.Label(new Rect(xOffsetValue, 152, 110f, 38f), fuel, _Right);
                     GUI.Label(new Rect(xOffsetValue, 190, 110f, 38f), battery, _Right);
                     GUI.Label(new Rect(xOffsetValue, 228, 110f, 38f), power, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 266, 110f, 38f), altitude, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 304, 110f, 38f), nearest, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 266, 110f, 38f), speed, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 304, 110f, 38f), altitude, _Right);
+                    GUI.Label(new Rect(xOffsetValue, 342, 110f, 38f), nearest, _Right);
                 }
             }
         }
