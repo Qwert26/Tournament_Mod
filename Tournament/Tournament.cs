@@ -925,10 +925,10 @@ namespace Tournament
                     break;
             }
 
-            if (pause)
+            /*if (pause)
             {
                 Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }
+            }*/
             if (shift)
             {
                 orbitcam.xSpeed = 1000;
