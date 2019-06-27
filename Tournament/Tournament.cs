@@ -9,6 +9,7 @@ using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
 using BrilliantSkies.Effects.Cameras;
 using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
+using BrilliantSkies.Ftd.Avatar.Build;
 using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Planets.Instances;
@@ -386,6 +387,7 @@ namespace Tournament
                     switch (healthCalculation)
                     {
                         case HealthCalculation.NumberOfBlocks:
+                            
                             HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
                             {
                                 TeamId = constructable.GetTeam(),
@@ -395,8 +397,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = (!spawnStick) ? constructable.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberAliveBlocks(),
-                                HPMAX = (!spawnStick) ? constructable.iMainStatus.GetNumberBlocksIncludingSubConstructables() : constructable.iMainStatus.GetNumberBlocks()
+                                HPCUR = (!spawnStick) ? constructable.AllBasics.GetNumberAliveBlocksIncludingSubConstructables() : constructable.AllBasics.GetNumberAliveBlocks(),
+                                HPMAX = (!spawnStick) ? constructable.AllBasics.GetNumberBlocksIncludingSubConstructables() : constructable.AllBasics.GetNumberBlocks()
                             });
                             break;
                         case HealthCalculation.ResourceCost:
@@ -409,8 +411,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = (!spawnStick) ? constructable.iMainResourceCosts.CalculateResourceCostAllOfAliveBlocksIncludingSubVehicles_ForCashBack(true).Material : constructable.iMainResourceCosts.GetResourceCost().Material,
-                                HPMAX = (!spawnStick) ? constructable.iMainResourceCosts.CalculateResourceCostAllOfAliveBlocksIncludingSubVehicles_ForCashBack(true).Material : constructable.iMainResourceCosts.GetResourceCost().Material
+                                HPCUR = spawnStick ? constructable.AllBasics.GetResourceCost().Material : constructable.AllBasics.GetResourceCostAllNotIncludingSubVehicles().Material,
+                                HPMAX = spawnStick ? constructable.AllBasics.GetResourceCost().Material : constructable.AllBasics.GetResourceCostAllNotIncludingSubVehicles().Material
                             });
                             break;
                         case HealthCalculation.Volume:
@@ -423,8 +425,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = constructable.iSize.VolumeAliveUsed,
-                                HPMAX = constructable.iSize.VolumeAliveUsed
+                                HPCUR = constructable.AllBasics.VolumeAliveUsed,
+                                HPMAX = constructable.AllBasics.VolumeAliveUsed
                             });
                             break;
                         case HealthCalculation.ArrayElements:
@@ -437,8 +439,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = constructable.iSize.VolumeOfFullAliveBlocksUsed,
-                                HPMAX = constructable.iSize.VolumeOfFullAliveBlocksUsed
+                                HPCUR = constructable.AllBasics.VolumeOfFullAliveBlocksUsed,
+                                HPMAX = constructable.AllBasics.VolumeOfFullAliveBlocksUsed
                             });
                             break;
                         default:
@@ -468,6 +470,9 @@ namespace Tournament
             {
                 UnityEngine.Object.Destroy(@object.gameObject);
             }
+            if (cam != null) {
+                UnityEngine.Object.Destroy(cam);
+            }
             cam = R_Avatars.JustOrbitCamera.InstantiateACopy().gameObject;
             cam.gameObject.transform.position = new Vector3(-500f, 50f, 0f);
             cam.gameObject.transform.rotation = Quaternion.LookRotation(Vector3.right);
@@ -477,16 +482,17 @@ namespace Tournament
             flycam.transform.position = new Vector3(-500f, 50f, 0f);
             flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
             orbitcam = cam.GetComponent<MouseOrbit>();
-            orbitcam.OperateRegardlessOfUiOptions = true;
+            orbitcam.OperateRegardlessOfUiOptions = false;
             orbitcam.distance = 100f;
             orbitcam.enabled = false;
+            cBuild build=cam.AddComponent<cBuild>();
+            build.buildMode = enumBuildMode.inactive;
             //orbittarget = StaticConstructablesManager.constructables[0].UniqueId;
             orbittarget = 0;
             orbitindex = 0;
             orbitMothership = -1;
             extraInfo = false;
             cammode = false;
-
         }
 
         public void MoveCam()
@@ -789,7 +795,7 @@ namespace Tournament
                     //MainConstruct targetConstruct = StaticConstructablesManager.constructables[targetIndex];
 
                     string name = targetConstruct.blueprintName;
-                    string hp = $"{Math.Round(targetConstruct.iMainStatus.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
+                    string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
                     string resources = $"{Math.Round(targetConstruct.RawResource.Material.Quantity, 0)}/{Math.Round(targetConstruct.RawResource.Material.Maximum, 0)}";
                     string ammo = $"{Math.Round(targetConstruct.Ammo.Ammo.Quantity, 0)}/{Math.Round(targetConstruct.Ammo.Ammo.Maximum, 0)}";
                     string fuel = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Maximum, 0)}";
@@ -1229,21 +1235,21 @@ namespace Tournament
                     switch (healthCalculation)
                     {
                         case HealthCalculation.NumberOfBlocks:
-                            tournamentParticipant.HPMAX = val.iMainStatus.GetNumberBlocksIncludingSubConstructables();
+                            tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
                             break;
                         case HealthCalculation.ResourceCost:
-                            tournamentParticipant.HPMAX = val.iMainResourceCosts.GetResourceCostAllIncludingSubVehicles().Material;
+                            tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost().Material;
                             break;
                         case HealthCalculation.Volume:
                         case HealthCalculation.ArrayElements:
                             tournamentParticipant.HPMAX = 0;
-                            for (int x = val.ArrayBasics.minx_; x <= val.ArrayBasics.maxx_; x++)
+                            for (int x = val.AllBasics.minx_; x <= val.AllBasics.maxx_; x++)
                             {
-                                for (int y = val.ArrayBasics.miny_; x <= val.ArrayBasics.maxy_; y++)
+                                for (int y = val.AllBasics.miny_; x <= val.AllBasics.maxy_; y++)
                                 {
-                                    for (int z = val.ArrayBasics.minz_; x <= val.ArrayBasics.maxz_; z++)
+                                    for (int z = val.AllBasics.minz_; x <= val.AllBasics.maxz_; z++)
                                     {
-                                        Block b = val.ArrayBasics[x, y, z];
+                                        Block b = val.AllBasics[x, y, z];
                                         if (b!=null) {
                                             if (healthCalculation == HealthCalculation.Volume)
                                             {
@@ -1268,16 +1274,16 @@ namespace Tournament
                     switch (healthCalculation)
                     {
                         case HealthCalculation.NumberOfBlocks:
-                            tournamentParticipant.HPCUR = val.iMainStatus.GetNumberAliveBlocksIncludingSubConstructables();
+                            tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
                             break;
                         case HealthCalculation.ResourceCost:
-                            tournamentParticipant.HPCUR = val.iMainResourceCosts.CalculateResourceCostOfAliveBlocksIncludingSubConstructs_ForCashBack(true).Material;
+                            tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost().Material;
                             break;
                         case HealthCalculation.Volume:
-                            tournamentParticipant.HPCUR = val.iSize.VolumeAliveUsed;
+                            tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
                             break;
                         case HealthCalculation.ArrayElements:
-                            tournamentParticipant.HPCUR = val.iSize.VolumeOfFullAliveBlocksUsed;
+                            tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
                             break;
                     }
                     tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;
