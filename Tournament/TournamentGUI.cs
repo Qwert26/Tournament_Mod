@@ -172,11 +172,6 @@ namespace Tournament
                 t.minimumHealth = t.minimumHealthD;
 				kingIndexTF = challengerIndexTF = 0;
             }
-            if (GUILayout.Button("Delete Pools")) {
-                Pooler.DeleteAll();
-            }
-            GUILayout.Label("Usually changing the Poolsize requires a restart, but by deleting the current pools this change can happen while the game is running. " +
-                "This might sound radical, but Pools are created dynamicly by the game. <b>You will experience lag, while the new Pool is filled with Objects.</b>");
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
                 GUILayout.Label("If you are bored of the same fleet colors for every match, you can change them here. <b>But there are no color selectors only predefined packages!</b>");
