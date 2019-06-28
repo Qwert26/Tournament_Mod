@@ -359,8 +359,9 @@ namespace Tournament
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
             InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = cleanUp;
-            Time.timeScale = 0;
-
+            if (!GameSpeedManager.Instance.IsPaused) {
+                GameSpeedManager.Instance.TogglePause();
+            }
             orbitindex = 0;
             orbittarget = 0;
 

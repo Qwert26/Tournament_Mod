@@ -22,9 +22,7 @@ namespace Tournament
         public Version version => new Version("2.4.7.1");
 
         public static FactionSpecificationFaction kingFaction, challengerFaction;
-
-        private bool removedGSM = false;
-
+        
         public void OnLoad()
         {
             _t = new Tournament();
@@ -44,14 +42,7 @@ namespace Tournament
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
                 _t._GUI.ActivateGui(_t, 0);
-                //GameEvents.UpdateEvent -= GameSpeedManager.Instance.Update;
-                //removedGSM = true;
             }
-            /*else if (removedGSM) {
-                GameEvents.UpdateEvent += GameSpeedManager.Instance.Update;
-                GameSpeedManager.Instance.Reset();
-                removedGSM = false;
-            }*/
         }
         /// <summary>
         /// Creates and Adds the instance and the required factions.
