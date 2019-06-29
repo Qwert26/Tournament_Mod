@@ -925,11 +925,6 @@ namespace Tournament
                     orbitcamOn = Input.GetMouseButtonDown(0); // default right click
                     break;
             }
-
-            /*if (pause)
-            {
-                Time.timeScale = (Time.timeScale > 0f) ? 0f : 1f;
-            }*/
             if (shift)
             {
                 orbitcam.xSpeed = 1000;
@@ -1093,7 +1088,7 @@ namespace Tournament
         public void FixedUpdate(ITimeStep dt)
         {
 
-            if (Time.timeScale>0)
+            if (GameSpeedManager.Instance.IsPaused)
             {
                 if (matconv == -1f)
                 {
@@ -1377,12 +1372,12 @@ namespace Tournament
             }
             if (overtimeCounter == 0&& timerTotal > maxtime)
             {
-                Time.timeScale = 0;
+                GameSpeedManager.Instance.TogglePause();
                 overtimeCounter = 1;
             }
             else if (overtime > 0) {//Verlängerung ist eingeschaltet.
                 if (timerTotal > maxtime + overtimeCounter * overtime) {
-                    Time.timeScale = 0;
+                    GameSpeedManager.Instance.TogglePause();
                     overtimeCounter++;
                 }
             }
