@@ -488,6 +488,7 @@ namespace Tournament
             orbitcam.enabled = false;
             cBuild build=cam.AddComponent<cBuild>();
             build.buildMode = enumBuildMode.inactive;
+            build.team = ObjectId.NoLinkage;
             //orbittarget = StaticConstructablesManager.constructables[0].UniqueId;
             orbittarget = 0;
             orbitindex = 0;

@@ -7,6 +7,8 @@ using BrilliantSkies.Core.Text;
 using BrilliantSkies.Modding;
 using System;
 using System.Collections.Generic;
+using BrilliantSkies.Core.Id;
+
 namespace Tournament
 {
     public class TournamentPlugin : GamePlugin
@@ -41,6 +43,7 @@ namespace Tournament
             GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
+                GAMESTATE.MyTeam = ObjectId.NoLinkage;
                 _t._GUI.ActivateGui(_t, 0);
             }
         }
