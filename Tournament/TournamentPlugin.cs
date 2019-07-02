@@ -8,6 +8,7 @@ using BrilliantSkies.Modding;
 using System;
 using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
+using BrilliantSkies.Ftd.Planets.Instances.Factions;
 
 namespace Tournament
 {
@@ -106,6 +107,8 @@ namespace Tournament
                 FleetColors = TournamentFleetColor.classicRed.Colors
             };
             i.AddNew(challengerFaction);
+            @is.Factions.GetFaction(kingFaction.Id).eController = FactionController.AI_General;
+            @is.Factions.GetFaction(challengerFaction.Id).eController = FactionController.AI_General;
         }
     }
 }
