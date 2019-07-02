@@ -486,8 +486,7 @@ namespace Tournament
             orbitcam.OperateRegardlessOfUiOptions = false;
             orbitcam.distance = 100f;
             orbitcam.enabled = false;
-            cBuild build=cam.AddComponent<cBuild>();
-            build.buildMode = enumBuildMode.inactive;
+            cBuild build = cam.AddComponent<cBuild>();
             build.team = ObjectId.NoLinkage;
             //orbittarget = StaticConstructablesManager.constructables[0].UniqueId;
             orbittarget = 0;
@@ -921,7 +920,7 @@ namespace Tournament
                     next = Input.GetKeyDown(KeyCode.E); // default e
                     previous = Input.GetKeyDown(KeyCode.Q); // default q
                     changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
-                    changeShowLists = Input.GetKeyDown(KeyCode.X);
+                    changeShowLists = Input.GetKeyDown(KeyCode.X); // default x
                     freecamOn = Input.GetMouseButtonDown(1); // default left click
                     orbitcamOn = Input.GetMouseButtonDown(0); // default right click
                     break;
@@ -1088,8 +1087,7 @@ namespace Tournament
 
         public void FixedUpdate(ITimeStep dt)
         {
-
-            if (GameSpeedManager.Instance.IsPaused)
+            if (!GameSpeedManager.Instance.IsPaused)
             {
                 if (matconv == -1f)
                 {
