@@ -54,6 +54,7 @@ namespace Tournament
         public static void OnPlanetChange()
         {
             @is = new InstanceSpecification();
+            @is.GenerateBlankInstance();
             @is.Header.Name = "Tournament Creator";
             @is.Header.Summary = "Create custom tournament style matches.";
             @is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {
@@ -91,6 +92,8 @@ namespace Tournament
             @is.Header.CommonSettings.FogOfWarType = FogOfWarType.None;
             @is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
             @is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
+            @is.Territory.SetAllUnowned();
+            @is.PostLoadInitiate();
             Planet.i.Designers.AddInstance(@is);
             FactionSpecifications i = FactionSpecifications.i;
             kingFaction = new FactionSpecificationFaction
