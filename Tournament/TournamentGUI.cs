@@ -9,7 +9,6 @@ using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
-using BrilliantSkies.Core.Pooling;
 namespace Tournament
 {
     public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
@@ -81,7 +80,42 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 0, 10000, 0, new ToolTip("Spawn distance between teams"));
+            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 0, 40000, 0, new ToolTip("Spawn distance between teams"));
+            string describeDistance() {
+                if (t.spawndis <= 400)
+                {
+                    return "You are under the limit for campaign engagements.";
+                }
+                else if (t.spawndis <= 1000)
+                {
+                    return "You are under blockade distance for campaigns.";
+                }
+                else if (t.spawndis <= 2500)
+                {
+                    return "Under this distance, AI-fleets will diverge to support currently blockaded fleets.";
+                }
+                else if (t.spawndis <= 5000)
+                {
+                    return "Under this distance can a fight be started in campaign.";
+                }
+                else if (t.spawndis >= 7500)
+                {
+                    return "AI-Fleets will not defend an objective that is being attacked, if they are more than this distance away.";
+                }
+                else if (t.spawndis >= 10000)
+                {
+                    return "AI-Fleets in campaigns will leave the battle automatically if they are at this distance or further away.";
+                }
+                else if (t.spawndis >= WorldSpecification.i.BoardLayout.BoardSectionSize)
+                {
+                    return "<b><color=red>Distance is now greater than a single Mapsection! Terrain loading issues might arise!</color></b>";
+                }
+                else
+                {
+                    return "Blind Spot in Campaign.";
+                }
+            };
+            GUILayout.Label(describeDistance());
             t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.spawngap, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
             t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.minalt = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
