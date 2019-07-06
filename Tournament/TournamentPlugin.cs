@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
 using BrilliantSkies.Ftd.Planets.Instances.Factions;
-
 namespace Tournament
 {
     public class TournamentPlugin : GamePlugin
@@ -60,7 +59,8 @@ namespace Tournament
             @is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {
                 new HeaderAndParagraph() {
                     Header = "Two Teams",
-                    Paragraph = "Add any Vehicle in any Order to the two opposing Teams. Then let the Fight begin!"
+                    Paragraph = "Add any Vehicle in any Order to the two opposing Teams. For pre-tournament qualications, " +
+                    "you can also add a vehicle to both teams for a mirror match. Then let the Fight begin!"
                 }, new HeaderAndParagraph() {
                     Header="A lot of Options",
                     Paragraph="Determine the starting Distance, Offsets from teammates, Start-Materials, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
@@ -75,7 +75,7 @@ namespace Tournament
                     "Use the Location sliders to select the perfect Map-Sector for the fight. And finally rotate them around the center point of it."
                 }, new HeaderAndParagraph() {
                     Header="I want a Rematch!",
-                    Paragraph="Simply use two Buttons to swap both Teams or even swap Teams while also swapping the orientation of each Entry, " +
+                    Paragraph="Simply use two Buttons to swap both Teams, both orientations or even swap Teams while also swapping the orientation of each Entry, " +
                     "thus keeping the orientations relative to the battlegrounds the same."
                 }
             };
