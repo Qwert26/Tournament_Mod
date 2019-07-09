@@ -56,7 +56,42 @@ namespace Tournament
             Trim = new Color(1f, 0.5f, 0.5f, 1f), //Hotpink
             Detail = new Color(0f, 0.5f, 0f, 1f) //Green
         };
-
-        public readonly static TournamentFleetColor[] colorSchemes = { classicYellow, classicRed, medievalOldRoyal, medievalMiddleRoyal, medievalYoungRoyal };
+        public readonly static TournamentFleetColor terranRepublic = new TournamentFleetColor()
+        {
+            Name = "Terran Republic, Planetside",
+            Description = "TBD",
+            Main = new Color(1f, 0f, 0f, 1f), //Red
+            Secondary = new Color(0f, 0f, 0f, 1f), //Black
+            Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
+            Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+        };
+        public readonly static TournamentFleetColor newConglomerate = new TournamentFleetColor()
+        {
+            Name = "New Conglomerate, Planetside",
+            Description = "TBD",
+            Main = new Color(0f, 0f, 1f, 1f), //Blue
+            Secondary = new Color(1f, 1f, 0f, 1f), //Yellow
+            Trim = new Color(0.96f, 0.96f, 0.86f, 1f), //Beige
+            Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+        };
+        public readonly static TournamentFleetColor vanuSovereignty = new TournamentFleetColor()
+        {
+            Name = "Vanu Sovereignty, Planetside",
+            Description = "TBD",
+            Main = new Color(0.5f, 0f, 0.5f, 1f), //Purple
+            Secondary = new Color(0f, 1f, 1f, 1f), //Aqua
+            Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
+            Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+        };
+        public readonly static TournamentFleetColor[] colorSchemes = {
+            classicYellow,
+            classicRed,
+            medievalOldRoyal,
+            medievalMiddleRoyal,
+            medievalYoungRoyal,
+            terranRepublic,
+            newConglomerate,
+            vanuSovereignty
+        };
     }
 }
