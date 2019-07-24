@@ -350,7 +350,8 @@ namespace Tournament
             if (GUILayout.Button("Save Settings"))
             {
                 GUISoundManager.GetSingleton().PlayBeep();
-                t.SaveSettings();
+                t.SaveSettingsOld();
+                t.SaveSettingsNew();
             }
             //new Rect(140f, 300f, 200f, 50f),
             if (GUILayout.Button("Restore Defaults"))

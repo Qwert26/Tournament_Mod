@@ -44,7 +44,7 @@ namespace Tournament
             if (@is.Header.Name == InstanceSpecification.i.Header.Name)
             {
                 GAMESTATE.MyTeam = ObjectId.NoLinkage;
-                _t._GUI.ActivateGui(_t, 0);
+                _t._GUI.ActivateGui(_t);
             }
         }
         /// <summary>

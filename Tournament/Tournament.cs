@@ -163,7 +163,7 @@ namespace Tournament
 
         public int defaultKeysD = 1;
 
-        public float oobReverseD = 0; // out of bounds and maoving away speed limit before dq time. 0 will add dq time if move away at all, positve increases away speed limit, negative you need to move towards at at least this speed or pick up dq
+        public float oobReverseD = 0; // out of bounds and moving away speed limit before dq time. 0 will add dq time if move away at all, positve increases away speed limit, negative you need to move towards at at least this speed or pick up dq
 
         public float oobMaxBufferD = 3; //out of bounds and moving away too fast buffer time in secs
 
@@ -228,6 +228,8 @@ namespace Tournament
         public float overtime = 0;
 
         public float overtimeD = 0;
+
+        public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
 
         public enum HealthCalculation
         {
@@ -295,7 +297,7 @@ namespace Tournament
                 clipping = TextClipping.Clip
             };
 
-            LoadSettings();
+            LoadOldSettings();
         }
 
         public void LoadCraft()
@@ -511,17 +513,8 @@ namespace Tournament
             return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[eastWestBoard, northSouthBoard].BoardSectionCoords);
         }
 
-        public void SaveSettings()
+        public void SaveSettingsOld()
         {
-            if (defaultKeysBool == true)
-            {
-                defaultKeys = 1;
-            }
-            else
-            {
-                defaultKeys = 0;
-            }
-
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "settings.cfg");
             List<float> settingsList = new List<float>
@@ -537,7 +530,7 @@ namespace Tournament
                 offset,
                 (float)Dir,
                 (float)Loc,
-                defaultKeys,
+                defaultKeysBool?1:0,
                 eastWestBoard,
                 northSouthBoard,
                 spawngap2,
@@ -561,7 +554,22 @@ namespace Tournament
             settingsFile.SaveData(settingsList, Formatting.None);
         }
 
-        public void LoadSettings()
+        public void SaveSettingsNew() {
+            string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "parameters.json");
+            settingsFile.SaveJson(Parameters);
+        }
+
+        public void LoadNewSettings() {
+            string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "parameters.json");
+            if (settingsFile.Exists)
+            {
+                Parameters = settingsFile.LoadJson<TournamentParameters>();
+            }
+        }
+
+        public void LoadOldSettings()
         {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "settings.cfg");
@@ -571,37 +579,94 @@ namespace Tournament
 
                 minalt = settingsList[0];
                 maxalt = settingsList[1];
+                Parameters.AltitudeLimits.Us.Set(minalt, maxalt);
+
                 maxdis = settingsList[2];
+                Parameters.DistanceLimit.Us = (int)maxdis;
+
                 maxoob = settingsList[3];
+                Parameters.MaximumPenaltyTime.Us = (int)maxoob;
+
                 maxtime = settingsList[4];
+                Parameters.MaximumTime.Us = (int)maxtime;
+
                 maxmat = settingsList[5];
+                Parameters.ResourcesTeam1.Us = (int)maxmat;
+                Parameters.ResourcesTeam2.Us = (int)maxmat;
+
                 spawndis = settingsList[6];
+                Parameters.StartingDistance.Us = (int)spawndis;
+
                 spawngap = settingsList[7];
+                Parameters.SpawngapLR.Us = (int)spawngap;
+
                 offset = settingsList[8];
+                Parameters.Offset.Us = (int)offset;
+
                 Dir = (SPAWN.DIR)settingsList[9];
+                Parameters.Direction.Us = (int)settingsList[0];
+
                 Loc = (SPAWN.LOC)settingsList[10];
+                Parameters.Location.Us = (int)settingsList[10];
+
                 defaultKeys = (int)settingsList[11];
                 eastWestBoard = (int)settingsList[12];
+                Parameters.EastWestBoard.Us = eastWestBoard;
+
                 northSouthBoard = (int)settingsList[13];
+                Parameters.NorthSouthBoard.Us = northSouthBoard;
+
                 spawngap2 = settingsList[14];
+                Parameters.SpawngapFB.Us = (int)spawngap2;
+
                 localResources = settingsList[15] != 0;
+                Parameters.LocalResources.Us = localResources;
+
                 oobMaxBuffer = settingsList[16];
+                Parameters.MaximumBufferTime.Us = (int)oobMaxBuffer;
+
                 oobReverse = settingsList[17];
+                Parameters.AltitudeReverse.Us = (int)oobReverse;
                 if (settingsList.Count >= 31)
                 {
                     showAdvancedOptions = settingsList[18] != 0;
+                    Parameters.ShowAdvancedOptions.Us = showAdvancedOptions;
+
                     matconv = settingsList[19];
+                    Parameters.MaterialConversion.Us = (int)matconv;
+
                     cleanUp = (ConstructableCleanUp)settingsList[20];
+                    Parameters.CleanUpMode.Us = (int)settingsList[20];
+
                     healthCalculation = (HealthCalculation)settingsList[21];
+                    Parameters.HealthCalculation.Us = (int)settingsList[21];
+
                     minimumHealth = settingsList[22];
+                    Parameters.MinimumHealth.Us = (int)minimumHealth;
+
                     rotation = settingsList[23];
+                    Parameters.Rotation.Us = (int)rotation;
+
                     sameMaterials = settingsList[24] != 0;
+                    Parameters.SameMaterials.Us = sameMaterials;
+
                     infinteResourcesT1 = settingsList[25] != 0;
+                    Parameters.InfinteResourcesTeam1.Us = infinteResourcesT1;
+
                     infinteResourcesT2 = settingsList[26] != 0;
+                    Parameters.InfinteResourcesTeam2.Us = infinteResourcesT2;
+
                     project2D = settingsList[27] != 0;
+                    Parameters.ProjectedDistance.Us = project2D;
+
                     softLimits = settingsList[28] != 0;
+                    Parameters.SoftLimits.Us = softLimits;
+
                     altitudeReverse = settingsList[29];
+                    Parameters.AltitudeReverse.Us = (int)altitudeReverse;
+
                     overtime = settingsList[30];
+                    Parameters.Overtime.Us = (int)overtime;
                 }
                 else {
                     showAdvancedOptions = showAdvancedOptionsD;
@@ -626,6 +691,7 @@ namespace Tournament
                 {
                     defaultKeysBool = false;
                 }
+                Parameters.DefaultKeys.Us = defaultKeysBool;
             }
             else
             {
@@ -674,6 +740,7 @@ namespace Tournament
             softLimits = softLimitsD;
             altitudeReverse = altitudeReverseD;
             overtime = overtimeD;
+            Parameters.ResetToDefault();
         }
 
         public void OnGUI()

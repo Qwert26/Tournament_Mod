@@ -8,7 +8,7 @@ namespace Tournament
         public TournamentParameters(uint uniqueId) : base(uniqueId) {}
         #region Standard-Parameter
         [Variable(0,"Starting Distance(m)","The Initial starting distance of the two teams.")]
-        public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 10000);
+        public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 40000);
         [Variable(1, "Spawn gap Left-Right(m)", "Spawn distance between team members left to right.")]
         public Var<int> SpawngapLR { get; set; } = new VarIntClamp(100, -1000, 1000);
         [Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
@@ -48,6 +48,26 @@ namespace Tournament
         public Var<int> ResourcesTeam1 { get; set; } = new VarIntClamp(10000, 0, 1000000);
         [Variable(18, "Resources for Team 1")]
         public Var<int> ResourcesTeam2 { get; set; } = new VarIntClamp(10000, 0, 1000000);
+        [Variable(19,"Rotation")]
+        public Var<int> Rotation { get; set; } = new VarIntClamp(0, -90, 90);
+        [Variable(20,"Default Keymapping","When true uses the Tournament-Mod a static keymap, otherwise it uses your currently configured Keymap.")]
+        public Var<bool> DefaultKeys { get; set; } = new VarBool(false);
+        [Variable(21,"Height Offset","Height Offset for the next entry.")]
+        public Var<int> Offset { get; set; } = new VarIntClamp(0, -100, 400);
+        [Variable(22,"Location")]
+        public Var<int> Location { get; set; } = new VarIntClamp(1, 0, 3);
+        [Variable(23, "Direction")]
+        public Var<int> Direction { get; set; } = new VarIntClamp(0, 0, 3);
+        /// <summary>
+        /// Es gibt maximal 31 Bordsektionen, nummeriert von 0 bis 30. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
+        /// </summary>
+        [Variable(24,"East-West-Section")]
+        public Var<int> EastWestBoard { get; set; } = new VarIntClamp(7, 0, 30);
+        /// <summary>
+        /// Es gibt maximal 31 Bordsektionen, nummeriert von 0 bis 30. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
+        /// </summary>
+        [Variable(25, "North-South-Section")]
+        public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(7, 0, 30);
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]

@@ -282,6 +282,8 @@
     <Compile Include="Tournament\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tournament\Tournament.cs" />
+    <Compile Include="Tournament\UI\BaseSettingsTab.cs" />
+    <Compile Include="Tournament\UI\TournamentConsole.cs" />
     <Compile Include="Tournament\TournamentEntry.cs" />
     <Compile Include="Tournament\TournamentFleetColors.cs" />
     <Compile Include="Tournament\TournamentFormation.cs" />
