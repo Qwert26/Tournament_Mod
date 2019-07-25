@@ -297,7 +297,7 @@ namespace Tournament
                 clipping = TextClipping.Clip
             };
 
-            LoadOldSettings();
+            LoadNewSettings();
         }
 
         public void LoadCraft()
@@ -566,6 +566,9 @@ namespace Tournament
             if (settingsFile.Exists)
             {
                 Parameters = settingsFile.LoadJson<TournamentParameters>();
+            }
+            else {
+                LoadOldSettings();
             }
         }
 
