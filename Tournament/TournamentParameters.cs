@@ -85,7 +85,7 @@ namespace Tournament
         [Variable(105, "Health calculation")]
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
         [Variable(106, "Minimum health(%)")]
-        public Var<int> MinimumHealth { get; set; } = new VarIntClamp(0, 0, 100);
+        public Var<int> MinimumHealth { get; set; } = new VarIntClamp(55, 0, 100);
         #endregion
         #region Augenschmaus
         [Variable(200,"Show Eyecandy")]

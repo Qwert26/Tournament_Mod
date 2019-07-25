@@ -21,8 +21,6 @@ namespace Tournament
 
         private BrilliantSkies.Ui.TreeSelection.TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> _treeSelector;
 
-        public BrilliantSkies.ScriptableObjects.SO_LoadVehicleGUI _Style;
-
         private int sectionsNorthSouth, sectionsEastWest;
 
         private Tournament t;
@@ -34,7 +32,6 @@ namespace Tournament
 
         public TournamentGUI(Tournament tourny)
         {
-            _Style = LazyLoader.LoadVehicle.Get();
             t = tourny;
         }
 
@@ -48,7 +45,6 @@ namespace Tournament
 
         public override void OnActivateGui()
         {
-            _Style = LazyLoader.LoadVehicle.Get();
             BlueprintFolder val = GameFolders.GetCombinedBlueprintFolder();
             sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
             sectionsEastWest = WorldSpecification.i.BoardLayout.EastWestBoardSectionCount - 1;
