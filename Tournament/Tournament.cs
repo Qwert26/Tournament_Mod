@@ -20,6 +20,7 @@ using BrilliantSkies.PlayerProfiles;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -376,61 +377,19 @@ namespace Tournament
         {
             return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
         }
-        [Obsolete("The new Prototype-System will be use to save the Parameters in a JSON-File.")]
-        public void SaveSettingsOld()
-        {
-            string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
-            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "settings.cfg");
-            List<float> settingsList = new List<float>
-            {
-                Parameters.AltitudeLimits.Lower,
-                Parameters.AltitudeLimits.Upper,
-                Parameters.DistanceLimit,
-                Parameters.MaximumPenaltyTime,
-                Parameters.MaximumTime,
-                Parameters.ResourcesTeam1,
-                Parameters.StartingDistance,
-                Parameters.SpawngapLR,
-                Parameters.Offset,
-                Parameters.Direction,
-                Parameters.Location,
-                Parameters.DefaultKeys?1:0,
-                Parameters.EastWestBoard,
-                Parameters.NorthSouthBoard,
-                Parameters.SpawngapFB,
-                Parameters.LocalResources ? 1:0,
-                Parameters.MaximumBufferTime,
-                Parameters.DistanceReverse,
-                Parameters.ShowAdvancedOptions ? 1 : 0,
-                Parameters.MaterialConversion,
-                Parameters.CleanUpMode,
-                Parameters.HealthCalculation,
-                Parameters.MinimumHealth,
-                Parameters.Rotation,
-                Parameters.SameMaterials ? 1 : 0,
-                Parameters.InfinteResourcesTeam1?1:0,
-                Parameters.InfinteResourcesTeam2?1:0,
-                Parameters.ProjectedDistance?1:0,
-                Parameters.SoftLimits?1:0,
-                Parameters.AltitudeReverse,
-                Parameters.Overtime
-            };
-            settingsFile.SaveData(settingsList, Formatting.None);
-        }
 
         public void SaveSettingsNew() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
-            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "parameters.json");
-            settingsFile.SaveJson(Parameters);
+            FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+            settingsFile.SaveData(Parameters,Formatting.Indented);
         }
 
         public void LoadNewSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
-            Debug.Log(modFolder);
-            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "parameters.json");
+            FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"parameters.json"));
             if (settingsFile.Exists)
             {
-                Parameters = settingsFile.LoadJson<TournamentParameters>();
+                Parameters = settingsFile.LoadData<TournamentParameters>();
             }
             else {
                 LoadOldSettings();
@@ -440,7 +399,7 @@ namespace Tournament
         public void LoadOldSettings()
         {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
-            FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "settings.cfg");
+            FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"settings.cfg"));
             if (settingsFile.Exists)
             {
                 List<float> settingsList = settingsFile.LoadData<List<float>>();
