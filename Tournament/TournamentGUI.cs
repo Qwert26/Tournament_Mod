@@ -383,7 +383,7 @@ namespace Tournament
                     {
                         text = text + "\n" + str;
                     }
-                    GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true).Material, item.Spawn_location, item.Spawn_direction, text,item.Offset));
+                    GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true,false).Material, item.Spawn_location, item.Spawn_direction, text,item.Offset));
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
                         t.entries_t1.Remove(item);
@@ -401,7 +401,7 @@ namespace Tournament
                     {
                         text2 = text2 + "\n" + str2;
                     }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
+                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true,false).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
                     if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
                     {
                         t.entries_t2.Remove(item2);

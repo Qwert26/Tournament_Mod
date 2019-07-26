@@ -278,8 +278,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = spawnStick ? constructable.AllBasics.GetResourceCost().Material : constructable.AllBasics.GetResourceCostAllNotIncludingSubVehicles().Material,
-                                HPMAX = spawnStick ? constructable.AllBasics.GetResourceCost().Material : constructable.AllBasics.GetResourceCostAllNotIncludingSubVehicles().Material
+                                HPCUR = constructable.AllBasics.GetResourceCost(false,true,!spawnStick).Material,
+                                HPMAX = constructable.AllBasics.GetResourceCost(false,true,!spawnStick).Material
                             });
                             break;
                         case 2:
@@ -426,6 +426,7 @@ namespace Tournament
 
         public void LoadNewSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+            Debug.Log(modFolder);
             FilesystemFileSource settingsFile = new FilesystemFileSource(modFolder + "parameters.json");
             if (settingsFile.Exists)
             {
@@ -1072,7 +1073,7 @@ namespace Tournament
                             tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
                             break;
                         case 1:
-                            tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost().Material;
+                            tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false,true,true).Material;
                             break;
                         case 2:
                         case 3:
@@ -1111,7 +1112,7 @@ namespace Tournament
                             tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
                             break;
                         case 1:
-                            tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost().Material;
+                            tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true,true,true).Material;
                             break;
                         case 2:
                             tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
