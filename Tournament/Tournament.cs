@@ -967,6 +967,7 @@ namespace Tournament
             bool next = false;
             bool previous = false;
             bool shift = false;
+            bool strg = false;
             bool freecamOn = false;
             bool orbitcamOn = false;
             bool changeExtraInfo = false;
@@ -976,7 +977,8 @@ namespace Tournament
             {
                 case false:
                     pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-                    shift = Input.GetKey(KeyCode.LeftShift) | Input.GetKey(KeyCode.RightShift);
+                    shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                    strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
                     next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     changeExtraInfo = ftdKeyMap.IsKey(KeyInputsFtd.CharacterSheetUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
@@ -987,6 +989,7 @@ namespace Tournament
                 case true:
                     pause = Input.GetKeyDown(KeyCode.F11); // default f11
                     shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                    strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
                     next = Input.GetKeyDown(KeyCode.E); // default e
                     previous = Input.GetKeyDown(KeyCode.Q); // default q
                     changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
@@ -1000,8 +1003,10 @@ namespace Tournament
                 orbitcam.xSpeed = 1000;
                 orbitcam.ySpeed = 480;
             }
-            else
-            {
+            else if (strg) {
+                orbitcam.xSpeed = 63;
+                orbitcam.ySpeed = 30;
+            } else {
                 orbitcam.xSpeed = 250;
                 orbitcam.ySpeed = 120;
             }
@@ -1018,8 +1023,9 @@ namespace Tournament
                 {
                     orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 100f) : 0f;
                 }
-                else
-                {
+                else if (strg) {
+                    orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 25f) : 0f;
+                } else {
                     orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 50f) : 0f;
                 }
             }
@@ -1130,13 +1136,17 @@ namespace Tournament
                 Vector3 val = new Vector3(x, y, z);
                 if (shift)
                 {
-                    val = Vector3.Scale(val, new Vector3(5f, 5f, 5f)); // increase vector with shift
+                    val *= 5; //increase vector with shift
+                }
+                else if (strg) {
+                    val /= 5; //decrease vector with strg
                 }
                 flycam.transform.position = flycam.transform.position + flycam.transform.localRotation * val;
             }
             if (flycam.enabled && !defaultKeysBool)
             {
                 Vector3 movement = ftdKeyMap.GetMovemementDirection() * (shift ? 5 : 1);
+                movement /= strg ? 5 : 1;
                 flycam.transform.position += flycam.transform.localRotation * movement;
             }
             else if (orbitcam.enabled)

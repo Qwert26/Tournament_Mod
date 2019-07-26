@@ -85,7 +85,7 @@ namespace Tournament.UI
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
                 M.m<TournamentParameters>(_focus.Parameters.MinimumHealth), "Minimum Health", delegate (TournamentParameters tp, float f) {
                     tp.MinimumHealth.Us = (int)f;
-                }, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\"."));
+                }, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
             if (!_focus.Parameters.ShowAdvancedOptions.Us) {
                 _focus.Parameters.Team1FormationIndex.Reset();
                 _focus.Parameters.Team2FormationIndex.Reset();
