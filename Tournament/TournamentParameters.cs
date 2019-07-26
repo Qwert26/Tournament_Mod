@@ -64,12 +64,12 @@ namespace Tournament
         /// Es gibt maximal 31 Bordsektionen, nummeriert von 0 bis 30. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
         /// </summary>
         [Variable(24,"East-West-Section")]
-        public Var<int> EastWestBoard { get; set; } = new VarIntClamp(7, 0, 30);
+        public Var<int> EastWestBoard { get; set; } = new VarIntClamp(0, 0, 30);
         /// <summary>
         /// Es gibt maximal 31 Bordsektionen, nummeriert von 0 bis 30. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
         /// </summary>
         [Variable(25, "North-South-Section")]
-        public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(7, 0, 30);
+        public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(0, 0, 30);
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]

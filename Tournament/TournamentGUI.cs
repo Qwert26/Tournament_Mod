@@ -1,6 +1,5 @@
 using Assets.Scripts.Gui;
 using Assets.Scripts.Persistence;
-using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ui.Layouts;
 using BrilliantSkies.Core.UiSounds;
 using BrilliantSkies.Ui.Tips;
@@ -28,8 +27,6 @@ namespace Tournament
         private int kingIndexTFC = 0, challengerIndexTFC = 1;
         private int kingIndexNew = 0, challengerIndexNew = 1;
 
-		private int kingIndexTF = 0, challengerIndexTF = 0;
-
         public TournamentGUI(Tournament tourny)
         {
             t = tourny;
@@ -48,13 +45,13 @@ namespace Tournament
             BlueprintFolder val = GameFolders.GetCombinedBlueprintFolder();
             sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
             sectionsEastWest = WorldSpecification.i.BoardLayout.EastWestBoardSectionCount - 1;
-            if (t.eastWestBoard > sectionsEastWest)
+            if (t.Parameters.EastWestBoard > sectionsEastWest)
             {
-                t.eastWestBoard = t.eastWestBoardD;
+                t.Parameters.EastWestBoard.Reset();
             }
-            if (t.northSouthBoard > sectionsNorthSouth)
+            if (t.Parameters.NorthSouthBoard > sectionsNorthSouth)
             {
-                t.northSouthBoard = t.northSouthBoardD;
+                t.Parameters.NorthSouthBoard.Reset();
             }
             _treeSelector = FtdGuiUtils.GetFileBrowserFor(val);
             _treeSelector.Refresh();
@@ -76,96 +73,111 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.spawndis = GUISliders.LayoutDisplaySlider("Spawn Distance", t.spawndis, 0, 40000, 0, new ToolTip("Spawn distance between teams"));
-            t.spawngap = GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.spawngap, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
-            t.spawngap2 = GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.spawngap2, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
-            t.minalt = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.minalt, -500, t.maxalt, 0, new ToolTip("Add to penalty time when below this"));
-            t.maxalt = GUISliders.LayoutDisplaySlider("Maximum Altitude", t.maxalt, t.minalt, 3000, 0, new ToolTip("Add to penalty time when above this"));
-            t.maxdis = GUISliders.LayoutDisplaySlider("Maximum Distance", t.maxdis, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
-            t.project2D = GUILayout.Toggle(t.project2D, "Use on Ground projected Distance.");
+            t.Parameters.StartingDistance.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Distance", t.Parameters.StartingDistance, 0, 40000, 0, new ToolTip("Spawn distance between teams"));
+            t.Parameters.SpawngapLR.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.Parameters.SpawngapLR, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
+            t.Parameters.SpawngapFB.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.Parameters.SpawngapFB, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
+            t.Parameters.AltitudeLimits.Lower = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.Parameters.AltitudeLimits.Lower, -500, t.Parameters.AltitudeLimits.Upper, 0, new ToolTip("Add to penalty time when below this"));
+            t.Parameters.AltitudeLimits.Upper = GUISliders.LayoutDisplaySlider("Maximum Altitude", t.Parameters.AltitudeLimits.Upper, t.Parameters.AltitudeLimits.Lower, 3000, 0, new ToolTip("Add to penalty time when above this"));
+            t.Parameters.DistanceLimit.Us = (int)GUISliders.LayoutDisplaySlider("Maximum Distance", t.Parameters.DistanceLimit.Us, 0f, 10000, 0, new ToolTip("Max distance from nearest enemy before penalty time is added"));
+            t.Parameters.ProjectedDistance.Us = GUILayout.Toggle(t.Parameters.ProjectedDistance, "Use on Ground projected Distance.");
             GUILayout.Label("When turned on, the distance for fleeing will be calculated using a top-down view.");
-            t.maxoob = GUISliders.LayoutDisplaySlider("Penalty Time", t.maxoob, 0, 3600, 0, new ToolTip("Max penalty time (seconds)"));
-            if (t.softLimits = GUILayout.Toggle(t.softLimits, "Soft Limits"))
+            t.Parameters.MaximumPenaltyTime.Us = (int)GUISliders.LayoutDisplaySlider("Penalty Time", t.Parameters.MaximumPenaltyTime, 0, 3600, 0, new ToolTip("Max penalty time (seconds)"));
+            if (t.Parameters.SoftLimits.Us = GUILayout.Toggle(t.Parameters.SoftLimits, "Soft Limits"))
             {
                 GUILayout.Label("Soft Limits are active: Entries will <b>not</b> pick up DQ-Time if they do move towards the limits with a certain speed or don't surpass the permitted fleeing speed.");
-                t.oobMaxBuffer = GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.oobMaxBuffer, 0, 360, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds. This buffer will reset, once an entry is back inside."));
-                t.oobReverse = GUISliders.LayoutDisplaySlider("Distance Reverse", t.oobReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
-                t.altitudeReverse = GUISliders.LayoutDisplaySlider("Altitude Reverse", t.altitudeReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to drift away from the set altitude limits, while negative value rquires you to move this many m/s towards the altitude limits."));
+                t.Parameters.MaximumBufferTime.Us = (int)GUISliders.LayoutDisplaySlider("Out Of Bounds Buffer", t.Parameters.MaximumBufferTime, 0, 360, enumMinMax.none, new ToolTip("The Buffer time for being out of bounds. This buffer will reset, once an entry is back inside."));
+                t.Parameters.DistanceReverse.Us = (int)GUISliders.LayoutDisplaySlider("Distance Reverse", t.Parameters.DistanceReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to flee, while a negative value requires you to move this many m/s towards the nearest target."));
+                t.Parameters.AltitudeReverse.Us = (int)GUISliders.LayoutDisplaySlider("Altitude Reverse", t.Parameters.AltitudeReverse, -300, 300, enumMinMax.none, new ToolTip("A positive Value allows this many m/s to drift away from the set altitude limits, while negative value rquires you to move this many m/s towards the altitude limits."));
             }
             else {
                 GUILayout.Label("Hard Limits are active: Entries will pick up DQ-Time, for as long as they are out of bounds.");
             }
-            t.maxtime = GUISliders.LayoutDisplaySlider("Match Time", t.maxtime, 0, 3600, 0, new ToolTip("Max match time (seconds)"));
-            t.overtime = GUISliders.LayoutDisplaySlider("Overtime", t.overtime, 0, t.maxtime, enumMinMax.min, new ToolTip("Length of one Overtime-section (seconds)"));
+            t.Parameters.MaximumTime.Us = (int)GUISliders.LayoutDisplaySlider("Match Time", t.Parameters.MaximumTime, 0, 3600, 0, new ToolTip("Max match time (seconds)"));
+            t.Parameters.Overtime.Us = (int)GUISliders.LayoutDisplaySlider("Overtime", t.Parameters.Overtime, 0, t.Parameters.MaximumTime, enumMinMax.min, new ToolTip("Length of one Overtime-section (seconds)"));
 
-            t.localResources = GUILayout.Toggle(t.localResources, "Use local Resources");
-            if (t.sameMaterials = GUILayout.Toggle(t.sameMaterials, "Same Materials for both teams"))
+            t.Parameters.LocalResources.Us = GUILayout.Toggle(t.Parameters.LocalResources, "Use local Resources");
+            if (t.Parameters.SameMaterials.Us = GUILayout.Toggle(t.Parameters.SameMaterials, "Same Materials for both teams"))
             {
-                if (!(t.infinteResourcesT1 = t.infinteResourcesT2 = GUILayout.Toggle(t.infinteResourcesT1, "Infinte Resources")))
+                if (!(t.Parameters.InfinteResourcesTeam1.Us = t.Parameters.InfinteResourcesTeam2.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam1, "Infinte Resources")))
                 {
-                    t.maxmat = GUISliders.LayoutDisplaySlider("Starting Materials", t.maxmat, 0, 1000000, 0, new ToolTip(t.localResources ? "Amount of material on each constructable (localised)" : "Amount of material per team (centralised)"));
-                    t.t1_res = t.t2_res = t.maxmat;
+                    t.Parameters.ResourcesTeam1.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials", t.Parameters.ResourcesTeam1, 0, 1000000, 0, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable (localised)" : "Amount of material per team (centralised)"));
+                    t.Parameters.ResourcesTeam2.Us = t.Parameters.ResourcesTeam1.Us;
                 }
             }
             else {
-                if (!(t.infinteResourcesT1 = GUILayout.Toggle(t.infinteResourcesT1, "Infinite Resources for Team 1")))
+                if (!(t.Parameters.InfinteResourcesTeam1.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam1, "Infinite Resources for Team 1")))
                 {
-                    t.t1_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.t1_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources ? "Amount of material on each constructable of team 1 (localised)" : "Amount of material of team 1 (centralised)"));
+                    t.Parameters.ResourcesTeam1.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials Team 1", t.Parameters.ResourcesTeam1, 0, 1000000, enumMinMax.none, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable of team 1 (localised)" : "Amount of material of team 1 (centralised)"));
                 }
-                if (!(t.infinteResourcesT2 = GUILayout.Toggle(t.infinteResourcesT2, "Infinite Resources for Team 2")))
+                if (!(t.Parameters.InfinteResourcesTeam2.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam2, "Infinite Resources for Team 2")))
                 {
-                    t.t2_res = GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.t2_res, 0, 1000000, enumMinMax.none, new ToolTip(t.localResources ? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
+                    t.Parameters.ResourcesTeam2.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.Parameters.ResourcesTeam2, 0, 1000000, enumMinMax.none, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
                 }
             }
 			//Fortgeschrittene Optionen
-            if (t.showAdvancedOptions = GUILayout.Toggle(t.showAdvancedOptions,"Show Advanced Battle Options"))
+            if (t.Parameters.ShowAdvancedOptions.Us = GUILayout.Toggle(t.Parameters.ShowAdvancedOptions,"Show Advanced Battle Options"))
             {
                 GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
-				kingIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[kingIndexTF].Name, kingIndexTF, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[kingIndexTF].Description));
-				challengerIndexTF = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[challengerIndexTF].Name, challengerIndexTF, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[challengerIndexTF].Description));
-				t.matconv = GUISliders.LayoutDisplaySlider("Materialconversion", t.matconv, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
+				t.Parameters.Team1FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Name, t.Parameters.Team1FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Description));
+				t.Parameters.Team2FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Name, t.Parameters.Team2FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Description));
+				t.Parameters.MaterialConversion.Us = (int)GUISliders.LayoutDisplaySlider("Materialconversion", t.Parameters.MaterialConversion, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
                 {
-                    switch (t.cleanUp)
+                    switch (t.Parameters.CleanUpMode)
                     {
-                        case ConstructableCleanUp.Off:
+                        case 0:
                             return "Entries will not be auto-removed: They will only be removed by disqualification.";
-                        case ConstructableCleanUp.Ai:
+                        case 1:
                             return "Non-Player Entries will be auto-removed based on recieved damaged and current situation.";
-                        case ConstructableCleanUp.All:
+                        case 2:
                             return "All Entries will be auto-removed based on recieved damaged and current situation.";
-                        case ConstructableCleanUp.AllHeartStone:
+                        case 3:
                             return "All Entries will be auto-removed based on recieved damaged and current situation. A HeartStone must also be present.";
                         default:
                             return "How did you manage to go out of bounds here?";
                     }
                 }
-                t.cleanUp = (ConstructableCleanUp)GUISliders.LayoutDisplaySlider("Constructs-Cleanup: "+t.cleanUp, (float)t.cleanUp, 0, 3, enumMinMax.none, new ToolTip(describeCleanupMode()));
-                string describeHealthCalculation()
+                t.Parameters.CleanUpMode.Us = (int)GUISliders.LayoutDisplaySlider("Constructs-Cleanup: "+(ConstructableCleanUp)t.Parameters.CleanUpMode.Us, t.Parameters.CleanUpMode, 0, 3, enumMinMax.none, new ToolTip(describeCleanupMode()));
+                string healthCalculationTip()
                 {
-                    switch (t.healthCalculation)
+                    switch (t.Parameters.HealthCalculation)
                     {
-                        case Tournament.HealthCalculation.NumberOfBlocks:
+                        case 0:
                             return "Health will be based on the current number of alive blocks. This is the default and should be best for block-count-based Tournaments.";
-                        case Tournament.HealthCalculation.ResourceCost:
+                        case 1:
                             return "Health will be based on the current resource costs of alive blocks. This should be best for resource-based Tournaments.";
-                        case Tournament.HealthCalculation.Volume:
+                        case 2:
                             return "Health will be based on the current volume of alive blocks. This should be best for volume-based Tournaments.";
-                        case Tournament.HealthCalculation.ArrayElements:
+                        case 3:
                             return "Health will be based on the current size of alive blocks. This should be best for Tournaments based on array-elements.";
                         default:
                             return "How did you manage to go out of bounds here?";
                     }
                 }
-                t.healthCalculation = (Tournament.HealthCalculation)GUISliders.LayoutDisplaySlider("Healthcalculation: "+t.healthCalculation, (float)t.healthCalculation, 0, 3, enumMinMax.none, new ToolTip(describeHealthCalculation()));
-                t.minimumHealth = GUISliders.LayoutDisplaySlider("Minimum Health", t.minimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
+                string describeHealthCalculation() {
+                    switch (t.Parameters.HealthCalculation) {
+                        case 0:
+                            return "Blockcount";
+                        case 1:
+                            return "Materialcost";
+                        case 2:
+                            return "Volume";
+                        case 3:
+                            return "Array-Elements";
+                        default:
+                            return "How did you manage to go out of bounds here?";
+                    }
+                }
+                t.Parameters.HealthCalculation.Us = (int)GUISliders.LayoutDisplaySlider("Healthcalculation: "+describeHealthCalculation(), t.Parameters.HealthCalculation, 0, 3, enumMinMax.none, new ToolTip(healthCalculationTip()));
+                t.Parameters.MinimumHealth.Us = (int)GUISliders.LayoutDisplaySlider("Minimum Health", t.Parameters.MinimumHealth, 0, 100, enumMinMax.none, new ToolTip("Add to penalty time when below this."));
             }
             else {
-                t.matconv = t.matconvD;
-                t.cleanUp = t.cleanUpD;
-                t.healthCalculation = t.healthCalculationD;
-                t.minimumHealth = t.minimumHealthD;
-				kingIndexTF = challengerIndexTF = 0;
+                t.Parameters.MaterialConversion.Reset();
+                t.Parameters.CleanUpMode.Reset();
+                t.Parameters.HealthCalculation.Reset();
+                t.Parameters.MinimumHealth.Reset();
+                t.Parameters.Team1FormationIndex.Reset();
+                t.Parameters.Team2FormationIndex.Reset();
             }
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
@@ -229,8 +241,8 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 25;
 
-            t.eastWestBoard = (int)GUISliders.LayoutDisplaySlider("Map Tile East-West", t.eastWestBoard, 0, sectionsEastWest, enumMinMax.none, new ToolTip("The east-west boardindex, it is the first number on the map. 0 is the left side"));
-            t.northSouthBoard = (int)GUISliders.LayoutDisplaySlider("Map Tile North-South", t.northSouthBoard, 0, sectionsNorthSouth, enumMinMax.none, new ToolTip("The north-south boardindex, it is the second number on the map. 0 is the bottom side."));
+            t.Parameters.EastWestBoard.Us = (int)GUISliders.LayoutDisplaySlider("Map Tile East-West", t.Parameters.EastWestBoard, 0, sectionsEastWest, enumMinMax.none, new ToolTip("The east-west boardindex, it is the first number on the map. 0 is the left side"));
+            t.Parameters.NorthSouthBoard.Us = (int)GUISliders.LayoutDisplaySlider("Map Tile North-South", t.Parameters.NorthSouthBoard, 0, sectionsNorthSouth, enumMinMax.none, new ToolTip("The north-south boardindex, it is the second number on the map. 0 is the bottom side."));
             t.MoveCam();
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -243,10 +255,10 @@ namespace Tournament
             optpos3 = GUILayout.BeginScrollView(optpos3);
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            t.Dir = (Tournament.SPAWN.DIR)GUISliders.LayoutDisplaySlider(t.Dir.ToString(), (float)t.Dir, 0f, 3f, 0, new ToolTip("Direction"));
-            t.Loc = (Tournament.SPAWN.LOC)GUISliders.LayoutDisplaySlider(t.Loc.ToString(), (float)t.Loc, 0f, 3f, 0, new ToolTip("Location"));
-            t.offset = GUISliders.LayoutDisplaySlider("Height Offset", t.offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
-            t.rotation = GUISliders.LayoutDisplaySlider("Rotation", t.rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
+            t.Parameters.Direction.Us = (int)GUISliders.LayoutDisplaySlider(((Tournament.SPAWN.DIR)t.Parameters.Direction.Us).ToString(), t.Parameters.Direction, 0f, 3f, 0, new ToolTip("Direction"));
+            t.Parameters.Location.Us = (int)GUISliders.LayoutDisplaySlider(((Tournament.SPAWN.LOC)t.Parameters.Location.Us).ToString(), t.Parameters.Location, 0f, 3f, 0, new ToolTip("Location"));
+            t.Parameters.Offset.Us = (int)GUISliders.LayoutDisplaySlider("Height Offset", t.Parameters.Offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
+            t.Parameters.Rotation.Us = (int)GUISliders.LayoutDisplaySlider("Rotation", t.Parameters.Rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
             if (_treeSelector.CurrentData != null)
@@ -257,9 +269,9 @@ namespace Tournament
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
                         IsKing = true,
-                        Spawn_direction = t.Dir,
-                        Spawn_location = t.Loc,
-                        Offset = t.offset,
+                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
+                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
+                        Offset = t.Parameters.Offset,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t1.Add(tournamentEntry);
@@ -270,9 +282,9 @@ namespace Tournament
                     TournamentEntry tournamentEntry2 = new TournamentEntry
                     {
                         IsKing = false,
-                        Spawn_direction = t.Dir,
-                        Spawn_location = t.Loc,
-                        Offset = t.offset,
+                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
+                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
+                        Offset = t.Parameters.Offset,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry2);
@@ -282,18 +294,18 @@ namespace Tournament
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
                         IsKing = true,
-                        Spawn_direction = t.Dir,
-                        Spawn_location = t.Loc,
-                        Offset = t.offset,
+                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
+                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
+                        Offset = t.Parameters.Offset,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t1.Add(tournamentEntry);
                     tournamentEntry = new TournamentEntry
                     {
                         IsKing = false,
-                        Spawn_direction = t.Dir,
-                        Spawn_location = t.Loc,
-                        Offset = t.offset,
+                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
+                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
+                        Offset = t.Parameters.Offset,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry);
@@ -354,7 +366,7 @@ namespace Tournament
                 GUISoundManager.GetSingleton().PlayBeep();
                 t.LoadDefaults();
             }
-            t.defaultKeysBool = GUILayout.Toggle(t.defaultKeysBool, "Use Default Keybinds");
+            t.Parameters.DefaultKeys.Us = GUILayout.Toggle(t.Parameters.DefaultKeys, "Use Default Keybinds");
             GUILayout.EndVertical();
             GUILayout.EndArea();
 
@@ -403,8 +415,8 @@ namespace Tournament
                 DeactivateGui(0);
                 TournamentPlugin.kingFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[kingIndexTFC].Colors);
                 TournamentPlugin.challengerFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors);
-				t.kingFormation = TournamentFormation.tournamentFormations[kingIndexTF];
-				t.challengerFormation = TournamentFormation.tournamentFormations[challengerIndexTF];
+				t.kingFormation = TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex];
+				t.challengerFormation = TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex];
                 t.LoadCraft();
                 t.StartMatch();
             }

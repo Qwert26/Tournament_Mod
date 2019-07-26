@@ -61,7 +61,7 @@ namespace Tournament.UI
                 M.m<TournamentParameters>("Construct-Cleanup: " + (BrilliantSkies.Ftd.Planets.Instances.Headers.ConstructableCleanUp)_focus.Parameters.CleanUpMode.Us), delegate (TournamentParameters tp, float f) {
                     tp.CleanUpMode.Us = (int)f;
                 }, null, M.m<TournamentParameters>(new ToolTip(describeCleanupMode()))));
-            string describeHealthCalculation()
+            string healthCalculationTip()
             {
                 switch (_focus.Parameters.HealthCalculation)
                 {
@@ -77,11 +77,27 @@ namespace Tournament.UI
                         return "How did you manage to go out of bounds here?";
                 }
             }
+            string describeHealthCalculation()
+            {
+                switch (_focus.Parameters.HealthCalculation)
+                {
+                    case 0:
+                        return "Blockcount";
+                    case 1:
+                        return "Materialcost";
+                    case 2:
+                        return "Volume";
+                    case 3:
+                        return "Array-Elements";
+                    default:
+                        return "How did you manage to go out of bounds here?";
+                }
+            }
             segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(3),
                M.m<TournamentParameters>(_focus.Parameters.HealthCalculation), M.m<TournamentParameters>(1), _focus.Parameters,
-               M.m<TournamentParameters>("Healthcalculation: " + (Tournament.HealthCalculation)_focus.Parameters.HealthCalculation.Us), delegate (TournamentParameters tp, float f) {
+               M.m<TournamentParameters>("Healthcalculation: " + describeHealthCalculation()), delegate (TournamentParameters tp, float f) {
                    tp.HealthCalculation.Us = (int)f;
-               }, null, M.m<TournamentParameters>(new ToolTip(describeHealthCalculation()))));
+               }, null, M.m<TournamentParameters>(new ToolTip(healthCalculationTip()))));
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
                 M.m<TournamentParameters>(_focus.Parameters.MinimumHealth), "Minimum Health", delegate (TournamentParameters tp, float f) {
                     tp.MinimumHealth.Us = (int)f;
