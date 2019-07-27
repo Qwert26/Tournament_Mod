@@ -54,12 +54,10 @@ namespace Tournament
         public Var<int> Rotation { get; set; } = new VarIntClamp(0, -90, 90);
         [Variable(20,"Default Keymapping","When true the Tournament-Mod uses a static keymap, otherwise it uses your currently configured Keymap.")]
         public VarBool DefaultKeys { get; set; } = new VarBool(false);
-        [Variable(21,"Height Offset","Height Offset for the next entry.")]
-        public Var<int> Offset { get; set; } = new VarIntClamp(0, -100, 400);
         [Variable(22,"Location")]
-        public Var<int> Location { get; set; } = new VarIntClamp(1, 0, 3);
+        public Var<int> SpawnHeight { get; set; } = new VarIntClamp(0, -500, 3000);
         [Variable(23, "Direction")]
-        public Var<int> Direction { get; set; } = new VarIntClamp(0, 0, 3);
+        public VarFloatAngle Direction { get; set; } = new VarFloatAngle(0, VarFloatAngle.LimitType.Z180To180);
         /// <summary>
         /// Es gibt maximal 31 Bordsektionen, nummeriert von 0 bis 30. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
         /// </summary>

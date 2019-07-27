@@ -2,7 +2,7 @@
 namespace Tournament
 {
 	public struct TournamentFormation {
-		public delegate Vector3 LocalPosition(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float offset, Tournament.SPAWN.LOC spawnLocation);
+		public delegate Vector3 LocalPosition(bool isKing, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height);
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public LocalPosition DetermineLocalPosition { get; set; }

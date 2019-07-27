@@ -21,12 +21,12 @@ namespace Tournament
             set;
         }
 
-        public Tournament.SPAWN.DIR Spawn_direction {
+        public float Spawn_direction {
             get;
             set;
         }
 
-        public Tournament.SPAWN.LOC Spawn_location {
+        public int Spawn_height {
             get;
             set;
         }
@@ -37,11 +37,6 @@ namespace Tournament
         }
 
         public float Res {
-            get;
-            set;
-        }
-
-        public float Offset {
             get;
             set;
         }
@@ -115,14 +110,14 @@ namespace Tournament
             }
         }
 
-        public void Spawn(float dis, float gap, float gap2, int count, int pos)
+        public void Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
             FactionSpecificationFaction faction = IsKing ? TournamentPlugin.kingFaction : TournamentPlugin.challengerFaction;
             Team_id = faction.Id;
             BlueprintInitialisation initialisation = new BlueprintInitialisation(val)
             {
-                Positioning = new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gap, gap2, count, pos, dis, Offset)), VDir())
+                Positioning = new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gapLR, gapFB, count, pos, dis)), VDir())
                 {
                     PositioningType = SpawnPositioning.OriginOrCentre
                 }
@@ -131,34 +126,15 @@ namespace Tournament
             (val.Owner as ConstructableOwner).SetFleetColors(Team_id);
         }
 
-        public Vector3 VLoc(float gap, float gap2, int count, int pos, float dis, float offset)
+        public Vector3 VLoc(float gapLR, float gapFB, int count, int pos, float dis)
         {
-			Vector3 ret = (IsKing ? Tournament._me.kingFormation : Tournament._me.challengerFormation).DetermineLocalPosition(IsKing, gap, gap2, count, pos, dis, offset, Spawn_location);
+			Vector3 ret = (IsKing ? Tournament._me.kingFormation : Tournament._me.challengerFormation).DetermineLocalPosition(IsKing, gapLR, gapFB, count, pos, dis, Spawn_height);
             return Tournament._me.Rotation * ret;
         }
 
         public Quaternion VDir()
         {
-            Quaternion ret;
-            switch (Spawn_direction)
-            {
-                case Tournament.SPAWN.DIR.Facing:
-                    ret = Quaternion.LookRotation(IsKing ? Vector3.back : Vector3.forward);
-                    break;
-                case Tournament.SPAWN.DIR.Away:
-                    ret = Quaternion.LookRotation(IsKing ? Vector3.forward : Vector3.back);
-                    break;
-                case Tournament.SPAWN.DIR.Left:
-                    ret = Quaternion.LookRotation(IsKing ? Vector3.right : Vector3.left);
-                    break;
-                case Tournament.SPAWN.DIR.Right:
-                    ret = Quaternion.LookRotation(IsKing ? Vector3.left : Vector3.right);
-                    break;
-                default:
-                    ret = Quaternion.LookRotation(IsKing ? Vector3.back : Vector3.forward);
-                    break;
-            }
-            return ret*Tournament._me.Rotation;
+            return Quaternion.Euler(0,Spawn_direction+(IsKing?180:0),0)*Tournament._me.Rotation;
         }
     }
 }

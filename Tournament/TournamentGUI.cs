@@ -255,9 +255,8 @@ namespace Tournament
             optpos3 = GUILayout.BeginScrollView(optpos3);
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical();
-            t.Parameters.Direction.Us = (int)GUISliders.LayoutDisplaySlider(((Tournament.SPAWN.DIR)t.Parameters.Direction.Us).ToString(), t.Parameters.Direction, 0f, 3f, 0, new ToolTip("Direction"));
-            t.Parameters.Location.Us = (int)GUISliders.LayoutDisplaySlider(((Tournament.SPAWN.LOC)t.Parameters.Location.Us).ToString(), t.Parameters.Location, 0f, 3f, 0, new ToolTip("Location"));
-            t.Parameters.Offset.Us = (int)GUISliders.LayoutDisplaySlider("Height Offset", t.Parameters.Offset, -100f, 400f, 0, new ToolTip("Height Offset from location"));
+            t.Parameters.Direction.Us = GUISliders.LayoutDisplaySlider("Angle", t.Parameters.Direction, -180, 180, enumMinMax.none, new ToolTip("Direction to face when spawning. 90° is the old right direction, -90° is the old left direction."));
+            t.Parameters.SpawnHeight.Us = (int)GUISliders.LayoutDisplaySlider("Height", t.Parameters.SpawnHeight, -500, 3000, enumMinMax.none, new ToolTip("Spawnheight."));
             t.Parameters.Rotation.Us = (int)GUISliders.LayoutDisplaySlider("Rotation", t.Parameters.Rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
@@ -269,9 +268,8 @@ namespace Tournament
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
                         IsKing = true,
-                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
-                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
-                        Offset = t.Parameters.Offset,
+                        Spawn_direction = t.Parameters.Direction,
+                        Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t1.Add(tournamentEntry);
@@ -282,9 +280,8 @@ namespace Tournament
                     TournamentEntry tournamentEntry2 = new TournamentEntry
                     {
                         IsKing = false,
-                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
-                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
-                        Offset = t.Parameters.Offset,
+                        Spawn_direction = t.Parameters.Direction,
+                        Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry2);
@@ -294,18 +291,16 @@ namespace Tournament
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
                         IsKing = true,
-                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
-                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
-                        Offset = t.Parameters.Offset,
+                        Spawn_direction = t.Parameters.Direction,
+                        Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t1.Add(tournamentEntry);
                     tournamentEntry = new TournamentEntry
                     {
                         IsKing = false,
-                        Spawn_direction = (Tournament.SPAWN.DIR)t.Parameters.Direction.Us,
-                        Spawn_location = (Tournament.SPAWN.LOC)t.Parameters.Location.Us,
-                        Offset = t.Parameters.Offset,
+                        Spawn_direction = t.Parameters.Direction,
+                        Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry);
@@ -371,8 +366,8 @@ namespace Tournament
             GUILayout.EndArea();
 
             GUILayout.BeginArea(new Rect(940f, 0f, 340f, 580f), "Selected", GUI.skin.window);
-            listpos = GUILayout.BeginScrollView(listpos, new GUILayoutOption[0]);
-            GUILayout.Box("<color=#ffa500ff>~---------T1---------~</color>", new GUILayoutOption[0]);
+            listpos = GUILayout.BeginScrollView(listpos);
+            GUILayout.Box("<color=#ffa500ff>~---------T1---------~</color>");
             if (t.entries_t1.Count != 0)
             {
                 foreach (TournamentEntry item in t.entries_t1)
@@ -383,14 +378,14 @@ namespace Tournament
                     {
                         text = text + "\n" + str;
                     }
-                    GUILayout.Box(string.Format("<color=#ffa500ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true,false).Material, item.Spawn_location, item.Spawn_direction, text,item.Offset));
-                    if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
+                    GUILayout.Box(string.Format("<color=#ffa500ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text));
+                    if (GUILayout.Button("^ Remove ^"))
                     {
                         t.entries_t1.Remove(item);
                     }
                 }
             }
-            GUILayout.Box("<color=#ff0000ff>~---------T2---------~</color>", new GUILayoutOption[0]);
+            GUILayout.Box("<color=#ff0000ff>~---------T2---------~</color>");
             if (t.entries_t2.Count != 0)
             {
                 foreach (TournamentEntry item2 in t.entries_t2)
@@ -401,8 +396,8 @@ namespace Tournament
                     {
                         text2 = text2 + "\n" + str2;
                     }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3} {2}@{5}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true,false).Material, item2.Spawn_location, item2.Spawn_direction, text2, item2.Offset));
-                    if (GUILayout.Button("^ Remove ^", new GUILayoutOption[0]))
+                    GUILayout.Box(string.Format("<color=#ff0000ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true, false).Material, item2.Spawn_height, item2.Spawn_direction, text2));
+                    if (GUILayout.Button("^ Remove ^"))
                     {
                         t.entries_t2.Remove(item2);
                     }

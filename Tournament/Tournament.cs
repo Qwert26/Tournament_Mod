@@ -28,25 +28,6 @@ namespace Tournament
 {
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
     {
-        public static class SPAWN
-        {
-            public enum DIR
-            {
-                Facing,
-                Away,
-                Left,
-                Right
-            }
-
-            public enum LOC
-            {
-                Air,
-                Sea,
-                Sub,
-                Land
-            }
-        }
-
         public static Tournament _me;
 
         public TournamentGUI _GUI;
@@ -411,9 +392,8 @@ namespace Tournament
                 Parameters.ResourcesTeam2.Us = (int)settingsList[5];
                 Parameters.StartingDistance.Us = (int)settingsList[6];
                 Parameters.SpawngapLR.Us = (int)settingsList[7];
-                Parameters.Offset.Us = (int)settingsList[8];
-                Parameters.Direction.Us = (int)settingsList[9];
-                Parameters.Location.Us = (int)settingsList[10];
+                Parameters.Direction.Us = (int)settingsList[9]*90;
+                Parameters.SpawnHeight.Us = (int)settingsList[10];
                 Parameters.DefaultKeys.Us = settingsList[11] != 0;
                 Parameters.EastWestBoard.Us = (int)settingsList[12];
                 Parameters.NorthSouthBoard.Us = (int)settingsList[13];
