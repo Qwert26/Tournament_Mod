@@ -71,7 +71,7 @@ namespace Tournament
                     "Set the Lifesteal-Percentage, change how Vehicles are despawned and how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
                 }, new HeaderAndParagraph() {
                     Header="You go there and we fight here",
-                    Paragraph="Each Vehicle can be spawned in the Air, in the Water, under Water or on Land. Give them their own Height Offset if needed. " +
+                    Paragraph="Each Vehicle can be spawned in any orientation and at any altitude. " +
                     "Use the Location sliders to select the perfect Map-Sector for the fight. And finally rotate them around the center point of it."
                 }, new HeaderAndParagraph() {
                     Header="I want a Rematch!",
