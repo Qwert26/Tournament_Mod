@@ -368,54 +368,76 @@ namespace Tournament
             GUILayout.BeginArea(new Rect(940f, 0f, 340f, 580f), "Selected", GUI.skin.window);
             listpos = GUILayout.BeginScrollView(listpos);
             GUILayout.Box("<color=#ffa500ff>~---------T1---------~</color>");
-            if (t.entries_t1.Count != 0)
+            for (int i=0;i<t.entries_t1.Count;i++)
             {
-                foreach (TournamentEntry item in t.entries_t1)
+                TournamentEntry item = t.entries_t1[i];
+                string text = "";
+                string[] labelCost = item.LabelCost;
+                foreach (string str in labelCost)
                 {
-                    string text = "";
-                    string[] labelCost = item.LabelCost;
-                    foreach (string str in labelCost)
-                    {
-                        text = text + "\n" + str;
-                    }
-                    GUILayout.Box(string.Format("<color=#ffa500ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text));
-                    GUILayout.BeginVertical();
-                    if (GUILayout.Button("^ Remove"))
-                    {
-                        t.entries_t1.Remove(item);
-                    }
-                    if (GUILayout.Button("Update ^"))
-                    {
-                        item.Spawn_height = t.Parameters.SpawnHeight;
-                        item.Spawn_direction = t.Parameters.Direction;
-                    }
-                    GUILayout.EndVertical();
+                    text = text + "\n" + str;
                 }
-            }
+                GUILayout.Box(string.Format("<color=#ffa500ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text));
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                if (GUILayout.Button("^ Remove ^"))
+                {
+                    t.entries_t1.Remove(item);
+                }
+                if (GUILayout.Button("^ Update ^"))
+                {
+                    item.Spawn_height = t.Parameters.SpawnHeight;
+                    item.Spawn_direction = t.Parameters.Direction;
+                }
+                GUILayout.EndVertical();
+                GUILayout.BeginVertical();
+                if (i!=0&&GUILayout.Button("^ Move up ^")) {
+                    t.entries_t1.RemoveAt(i);
+                    t.entries_t1.Insert(i - 1, item);
+                }
+                if (i + 1 != t.entries_t1.Count && GUILayout.Button("^ Move down ^")) {
+                    t.entries_t1.RemoveAt(i);
+                    t.entries_t1.Insert(i + 1, item);
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+                }
             GUILayout.Box("<color=#ff0000ff>~---------T2---------~</color>");
-            if (t.entries_t2.Count != 0)
+            for (int i=0;i<t.entries_t2.Count;i++)
             {
-                foreach (TournamentEntry item in t.entries_t2)
+                TournamentEntry item = t.entries_t2[i];
+                string text2 = "";
+                string[] labelCost2 = item.LabelCost;
+                foreach (string str2 in labelCost2)
                 {
-                    string text2 = "";
-                    string[] labelCost2 = item.LabelCost;
-                    foreach (string str2 in labelCost2)
-                    {
-                        text2 = text2 + "\n" + str2;
-                    }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
-                    GUILayout.BeginVertical();
-                    if (GUILayout.Button("^ Remove"))
-                    {
-                        t.entries_t2.Remove(item);
-                    }
-                    if (GUILayout.Button("Update ^"))
-                    {
-                        item.Spawn_height = t.Parameters.SpawnHeight;
-                        item.Spawn_direction = t.Parameters.Direction;
-                    }
-                    GUILayout.EndVertical();
+                    text2 = text2 + "\n" + str2;
                 }
+                GUILayout.Box(string.Format("<color=#ff0000ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                if (GUILayout.Button("^ Remove ^"))
+                {
+                    t.entries_t2.Remove(item);
+                }
+                if (GUILayout.Button("^ Update ^"))
+                {
+                    item.Spawn_height = t.Parameters.SpawnHeight;
+                    item.Spawn_direction = t.Parameters.Direction;
+                }
+                GUILayout.EndVertical();
+                GUILayout.BeginVertical();
+                if (i != 0 && GUILayout.Button("^ Move up ^"))
+                {
+                    t.entries_t2.RemoveAt(i);
+                    t.entries_t2.Insert(i - 1, item);
+                }
+                if (i + 1 != t.entries_t2.Count && GUILayout.Button("^ Move down ^"))
+                {
+                    t.entries_t2.RemoveAt(i);
+                    t.entries_t2.Insert(i + 1, item);
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
