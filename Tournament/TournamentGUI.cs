@@ -379,28 +379,42 @@ namespace Tournament
                         text = text + "\n" + str;
                     }
                     GUILayout.Box(string.Format("<color=#ffa500ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ffa500ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text));
-                    if (GUILayout.Button("^ Remove ^"))
+                    GUILayout.BeginVertical();
+                    if (GUILayout.Button("^ Remove"))
                     {
                         t.entries_t1.Remove(item);
                     }
+                    if (GUILayout.Button("Update ^"))
+                    {
+                        item.Spawn_height = t.Parameters.SpawnHeight;
+                        item.Spawn_direction = t.Parameters.Direction;
+                    }
+                    GUILayout.EndVertical();
                 }
             }
             GUILayout.Box("<color=#ff0000ff>~---------T2---------~</color>");
             if (t.entries_t2.Count != 0)
             {
-                foreach (TournamentEntry item2 in t.entries_t2)
+                foreach (TournamentEntry item in t.entries_t2)
                 {
                     string text2 = "";
-                    string[] labelCost2 = item2.LabelCost;
+                    string[] labelCost2 = item.LabelCost;
                     foreach (string str2 in labelCost2)
                     {
                         text2 = text2 + "\n" + str2;
                     }
-                    GUILayout.Box(string.Format("<color=#ff0000ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item2.Bpf.Name, item2.bp.CalculateResourceCost(false, true, false).Material, item2.Spawn_height, item2.Spawn_direction, text2));
-                    if (GUILayout.Button("^ Remove ^"))
+                    GUILayout.Box(string.Format("<color=#ff0000ff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#ff0000ff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
+                    GUILayout.BeginVertical();
+                    if (GUILayout.Button("^ Remove"))
                     {
-                        t.entries_t2.Remove(item2);
+                        t.entries_t2.Remove(item);
                     }
+                    if (GUILayout.Button("Update ^"))
+                    {
+                        item.Spawn_height = t.Parameters.SpawnHeight;
+                        item.Spawn_direction = t.Parameters.Direction;
+                    }
+                    GUILayout.EndVertical();
                 }
             }
             GUILayout.EndScrollView();

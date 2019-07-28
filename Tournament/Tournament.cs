@@ -260,8 +260,8 @@ namespace Tournament
                                 BlueprintName = constructable.GetName(),
                                 AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
                                 HP = 100,
-                                HPCUR = constructable.AllBasics.GetResourceCost(false,true,!spawnStick).Material,
-                                HPMAX = constructable.AllBasics.GetResourceCost(false,true,!spawnStick).Material
+                                HPCUR = constructable.AllBasics.GetResourceCost(false,true,false).Material,
+                                HPMAX = constructable.AllBasics.GetResourceCost(false,true,false).Material
                             });
                             break;
                         case 2:
