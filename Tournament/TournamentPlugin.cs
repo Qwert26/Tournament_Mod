@@ -23,7 +23,7 @@ namespace Tournament
 
         public Version version => new Version("2.4.7.16");
 
-        public static FactionSpecificationFaction kingFaction, challengerFaction;
+        public static FactionSpecificationFaction factionTeam1, factionTeam2, factionTeam3;
         
         public void OnLoad()
         {
@@ -96,22 +96,30 @@ namespace Tournament
             @is.PostLoadInitiate();
             Planet.i.Designers.AddInstance(@is);
             FactionSpecifications i = FactionSpecifications.i;
-            kingFaction = new FactionSpecificationFaction
+            factionTeam1 = new FactionSpecificationFaction
             {
-                Name = "King",
-                AbreviatedName = "K",
+                Name = "Team 1",
+                AbreviatedName = "T1",
                 FleetColors = TournamentFleetColor.classicYellow.Colors,
             };
-            i.AddNew(kingFaction);
-            challengerFaction = new FactionSpecificationFaction
+            i.AddNew(factionTeam1);
+            factionTeam2 = new FactionSpecificationFaction
             {
-                Name = "Challenger",
-                AbreviatedName = "C",
+                Name = "Team 2",
+                AbreviatedName = "T2",
                 FleetColors = TournamentFleetColor.classicRed.Colors
             };
-            i.AddNew(challengerFaction);
-            @is.Factions.GetFaction(kingFaction.Id).eController = FactionController.AI_General;
-            @is.Factions.GetFaction(challengerFaction.Id).eController = FactionController.AI_General;
+            i.AddNew(factionTeam2);
+            factionTeam3 = new FactionSpecificationFaction
+            {
+                Name = "Team 3",
+                AbreviatedName = "T3",
+                FleetColors = TournamentFleetColor.neoBlue.Colors
+            };
+            i.AddNew(factionTeam3);
+            @is.Factions.GetFaction(factionTeam1.Id).eController = FactionController.AI_General;
+            @is.Factions.GetFaction(factionTeam2.Id).eController = FactionController.AI_General;
+            @is.Factions.GetFaction(factionTeam3.Id).eController = FactionController.AI_General;
         }
     }
 }

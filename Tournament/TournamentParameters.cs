@@ -9,8 +9,8 @@ namespace Tournament
     {
         public TournamentParameters(uint uniqueId) : base(uniqueId) {}
         #region Standard-Parameter
-        [Variable(0,"Starting Distance(m)","The Initial starting distance of the two teams.")]
-        public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 40000);
+        [Variable(0,"Starting Distance(m)","The Initial starting distance from the center to the teams.")]
+        public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 20000);
         [Variable(1, "Spawn gap Left-Right(m)", "Spawn distance between team members left to right.")]
         public Var<int> SpawngapLR { get; set; } = new VarIntClamp(100, -1000, 1000);
         [Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
@@ -68,6 +68,10 @@ namespace Tournament
         /// </summary>
         [Variable(25, "North-South-Section")]
         public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(0, 0, 30);
+        [Variable(26, "Infinte Resources for Team 3", "When active, Team 3 will have infinte Resources. ")]
+        public VarBool InfinteResourcesTeam3 { get; set; } = new VarBool(false);
+        [Variable(27, "Resources for Team 3")]
+        public Var<int> ResourcesTeam3 { get; set; } = new VarIntClamp(10000, 0, 1000000);
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]
@@ -84,6 +88,10 @@ namespace Tournament
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
         [Variable(106, "Minimum health(%)")]
         public Var<int> MinimumHealth { get; set; } = new VarIntClamp(55, 0, 100);
+        [Variable(107, "Active Factions")]
+        public Var<int> ActiveFactions { get; set; } = new VarIntClamp(2, 2, 3);
+        [Variable(108, "Team 3 formation index", "The index for the formation of Team 3.")]
+        public Var<int> Team3FormationIndex { get; set; } = new VarIntClamp(0, 0, TournamentFormation.tournamentFormations.Length - 1);
         #endregion
         #region Augenschmaus
         [Variable(200,"Show Eyecandy")]
@@ -108,6 +116,19 @@ namespace Tournament
         [Variable(208, "Team 2 Detail Color")]
         public VarColor Team2Detail { get; set; } = new VarColor(new Color(1f, 0.4f, 0.3f, 1f));
         #endregion
+        #region Team 3
+        [Variable(209, "Team 2 Main Color")]
+        public VarColor Team3Main { get; set; } = new VarColor(new Color(0f, 0f, 1f, 1f));
+        [Variable(210, "Team 2 Secondary Color")]
+        public VarColor Team3Secondary { get; set; } = new VarColor(new Color(0f, 0f, 0.55f, 1f));
+        [Variable(211, "Team 2 Trim Color")]
+        public VarColor Team3Trim { get; set; } = new VarColor(new Color(0.15f, 0.15f, 0.7f, 1f));
+        [Variable(212, "Team 2 Detail Color")]
+        public VarColor Team3Detail { get; set; } = new VarColor(new Color(0.35f, 0.35f, 1f, 1f));
         #endregion
+        #endregion
+        public float ComputeFactionRotation(int factionindex) {
+            return 360f * factionindex / ActiveFactions;
+        }
     }
 }

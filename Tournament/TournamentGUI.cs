@@ -8,6 +8,7 @@ using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
+using System;
 namespace Tournament
 {
     public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
@@ -24,8 +25,8 @@ namespace Tournament
 
         private Tournament t;
 
-        private int kingIndexTFC = 0, challengerIndexTFC = 1;
-        private int kingIndexNew = 0, challengerIndexNew = 1;
+        private int team1CurrentIndex = 0, team2CurrentIndex = 1, team3CurrentIndex = -1;
+        private int team1NewIndex = 0, team2NewIndex = 1, team3NewIndex = -1;
 
         public TournamentGUI(Tournament tourny)
         {
@@ -34,10 +35,9 @@ namespace Tournament
 
         public override void SetGuiSettings()
         {
-
             GuiSettings.PausesPlay = false;
             GuiSettings.PausesMultiplayerPlay = false;
-
+            GuiSettings.QGui = false;
         }
 
         public override void OnActivateGui()
@@ -68,12 +68,12 @@ namespace Tournament
             GUILayout.BeginArea(new Rect(340f, 0f, 600f, 430f), "Tournament Settings", GUI.skin.window);
             optpos = GUILayout.BeginScrollView(optpos);
 
-            GUISliders.TotalWidthOfWindow = 580;
+            GUISliders.TotalWidthOfWindow = 600;
             GUISliders.TextWidth = 240;
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.Parameters.StartingDistance.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Distance", t.Parameters.StartingDistance, 0, 40000, 0, new ToolTip("Spawn distance between teams"));
+            t.Parameters.StartingDistance.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Distance", t.Parameters.StartingDistance, 0, 20000, 0, new ToolTip("Spawn distance from the center teams"));
             t.Parameters.SpawngapLR.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.Parameters.SpawngapLR, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
             t.Parameters.SpawngapFB.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.Parameters.SpawngapFB, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.Parameters.AltitudeLimits.Lower = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.Parameters.AltitudeLimits.Lower, -500, t.Parameters.AltitudeLimits.Upper, 0, new ToolTip("Add to penalty time when below this"));
@@ -98,10 +98,10 @@ namespace Tournament
             t.Parameters.LocalResources.Us = GUILayout.Toggle(t.Parameters.LocalResources, "Use local Resources");
             if (t.Parameters.SameMaterials.Us = GUILayout.Toggle(t.Parameters.SameMaterials, "Same Materials for both teams"))
             {
-                if (!(t.Parameters.InfinteResourcesTeam1.Us = t.Parameters.InfinteResourcesTeam2.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam1, "Infinte Resources")))
+                if (!(t.Parameters.InfinteResourcesTeam1.Us = t.Parameters.InfinteResourcesTeam2.Us = t.Parameters.InfinteResourcesTeam3.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam1, "Infinte Resources")))
                 {
                     t.Parameters.ResourcesTeam1.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials", t.Parameters.ResourcesTeam1, 0, 1000000, 0, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable (localised)" : "Amount of material per team (centralised)"));
-                    t.Parameters.ResourcesTeam2.Us = t.Parameters.ResourcesTeam1.Us;
+                    t.Parameters.ResourcesTeam3.Us=t.Parameters.ResourcesTeam2.Us = t.Parameters.ResourcesTeam1.Us;
                 }
             }
             else {
@@ -113,13 +113,20 @@ namespace Tournament
                 {
                     t.Parameters.ResourcesTeam2.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials Team 2", t.Parameters.ResourcesTeam2, 0, 1000000, enumMinMax.none, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable of team 2 (localised)" : "Amount of material of team 2 (centralised)"));
                 }
+                if (t.Parameters.ActiveFactions >= 3&& !(t.Parameters.InfinteResourcesTeam3.Us = GUILayout.Toggle(t.Parameters.InfinteResourcesTeam2, "Infinite Resources for Team 3"))) {
+                    t.Parameters.ResourcesTeam3.Us = (int)GUISliders.LayoutDisplaySlider("Starting Materials Team 3", t.Parameters.ResourcesTeam3, 0, 1000000, enumMinMax.none, new ToolTip(t.Parameters.LocalResources ? "Amount of material on each constructable of team 3 (localised)" : "Amount of material of team 3 (centralised)"));
+                }
             }
 			//Fortgeschrittene Optionen
             if (t.Parameters.ShowAdvancedOptions.Us = GUILayout.Toggle(t.Parameters.ShowAdvancedOptions,"Show Advanced Battle Options"))
             {
                 GUILayout.Label("Usually you don't need to modify these, but if you need to customise the battles further it can be done here.");
+                t.Parameters.ActiveFactions.Us = (int)GUISliders.LayoutDisplaySlider("Active Teams", t.Parameters.ActiveFactions, 2, 3, enumMinMax.none, new ToolTip("Controls how many Factions are active for the fight. Their settings are grouped with the first two teams."));
 				t.Parameters.Team1FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Name, t.Parameters.Team1FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Description));
 				t.Parameters.Team2FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Name, t.Parameters.Team2FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Description));
+                if (t.Parameters.ActiveFactions >= 3) {
+                    t.Parameters.Team3FormationIndex.Us= (int)GUISliders.LayoutDisplaySlider("Team 3 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Name, t.Parameters.Team3FormationIndex, 0, TournamentFormation.tournamentFormations.Length - 1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team3FormationIndex].Description));
+                }
 				t.Parameters.MaterialConversion.Us = (int)GUISliders.LayoutDisplaySlider("Materialconversion", t.Parameters.MaterialConversion, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
                 {
@@ -178,57 +185,33 @@ namespace Tournament
                 t.Parameters.MinimumHealth.Reset();
                 t.Parameters.Team1FormationIndex.Reset();
                 t.Parameters.Team2FormationIndex.Reset();
+                t.Parameters.ActiveFactions.Reset();
             }
             if (showEyecandy = GUILayout.Toggle(showEyecandy, "Show Eyecandy"))
             {
                 GUILayout.Label("If you are bored of the same fleet colors for every match, you can change them here. <b>But there are no color selectors only predefined packages!</b>");
-                kingIndexNew = (int)GUISliders.LayoutDisplaySlider("Team 1: "+TournamentFleetColor.colorSchemes[kingIndexTFC].Name, kingIndexTFC, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[kingIndexTFC].Description));
-                if (kingIndexNew == challengerIndexTFC)
+                team1NewIndex = (int)GUISliders.LayoutDisplaySlider("Team 1: "+TournamentFleetColor.colorSchemes[team1CurrentIndex].Name, team1CurrentIndex, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[team1CurrentIndex].Description));
+                team1CurrentIndex = MakeCollisionFree(team1CurrentIndex,team1NewIndex,team2CurrentIndex,team3CurrentIndex);
+                team2NewIndex = (int)GUISliders.LayoutDisplaySlider("Team 2: "+TournamentFleetColor.colorSchemes[team2CurrentIndex].Name, team2CurrentIndex, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[team2CurrentIndex].Description));
+                team2CurrentIndex = MakeCollisionFree(team2CurrentIndex,team2NewIndex,team1CurrentIndex,team3CurrentIndex);
+                if (t.Parameters.ActiveFactions >= 3)
                 {
-                    if (kingIndexNew < kingIndexTFC)
+                    if (team3CurrentIndex == -1)
                     {
-                        kingIndexNew--;
-                        if (kingIndexNew < 0)
-                        {
-                            kingIndexNew = 1;
-                        }
+                        team3CurrentIndex = MakeCollisionFree(team3CurrentIndex, 2, team1CurrentIndex, team2CurrentIndex);
                     }
-                    else
-                    {
-                        kingIndexNew++;
-                        if (kingIndexNew >= TournamentFleetColor.colorSchemes.Length)
-                        {
-                            kingIndexNew = TournamentFleetColor.colorSchemes.Length - 2;
-                        }
-                    }
+                    team3NewIndex = (int)GUISliders.LayoutDisplaySlider("Team 3: " + TournamentFleetColor.colorSchemes[team3CurrentIndex].Name, team3CurrentIndex, 0, TournamentFleetColor.colorSchemes.Length - 1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[team3CurrentIndex].Description));
+                    team3CurrentIndex = MakeCollisionFree(team3CurrentIndex, team3NewIndex, team1CurrentIndex, team2CurrentIndex);
                 }
-                kingIndexTFC = kingIndexNew;
-                challengerIndexNew = (int)GUISliders.LayoutDisplaySlider("Team 2: "+TournamentFleetColor.colorSchemes[challengerIndexTFC].Name, challengerIndexTFC, 0, TournamentFleetColor.colorSchemes.Length-1, enumMinMax.none, new ToolTip(TournamentFleetColor.colorSchemes[challengerIndexTFC].Description));
-                if (challengerIndexNew == kingIndexTFC)
-                {
-                    if (challengerIndexNew < challengerIndexTFC)
-                    {
-                        challengerIndexNew--;
-                        if (challengerIndexNew < 0)
-                        {
-                            challengerIndexNew = 1;
-                        }
-                    }
-                    else
-                    {
-                        challengerIndexNew++;
-                        if (challengerIndexNew >= TournamentFleetColor.colorSchemes.Length)
-                        {
-                            challengerIndexNew = TournamentFleetColor.colorSchemes.Length - 2;
-                        }
-                    }
+                else {
+                    team3CurrentIndex = team3NewIndex = -1;
                 }
-                challengerIndexTFC = challengerIndexNew;
             }
             else
             {
-                kingIndexTFC = kingIndexNew = 0;
-                challengerIndexTFC = challengerIndexNew = 1;
+                team1CurrentIndex = team1NewIndex = 0;
+                team2CurrentIndex = team2NewIndex = 1;
+                team3CurrentIndex = team3NewIndex = (t.Parameters.ActiveFactions>=3)?2:-1;
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
@@ -236,7 +219,7 @@ namespace Tournament
             GUILayout.BeginArea(new Rect(340f, 430f, 600f, 150f), "Battle Location", GUI.skin.window);
             optpos2 = GUILayout.BeginScrollView(optpos2);
 
-            GUISliders.TotalWidthOfWindow = 580;
+            GUISliders.TotalWidthOfWindow = 600;
             GUISliders.TextWidth = 240;
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 25;
@@ -248,7 +231,7 @@ namespace Tournament
             GUILayout.EndArea();
 
             GUILayout.BeginArea(new Rect(0f, 580f, 600f, 200f), "Spawn Settings", GUI.skin.window);
-            GUISliders.TotalWidthOfWindow = 580;
+            GUISliders.TotalWidthOfWindow = 600;
             GUISliders.TextWidth = 100;
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 40;
@@ -257,40 +240,51 @@ namespace Tournament
             GUILayout.BeginVertical();
             t.Parameters.Direction.Us = GUISliders.LayoutDisplaySlider("Angle", t.Parameters.Direction, -180, 180, enumMinMax.none, new ToolTip("Direction to face when spawning. 90° is the old right direction, -90° is the old left direction."));
             t.Parameters.SpawnHeight.Us = (int)GUISliders.LayoutDisplaySlider("Height", t.Parameters.SpawnHeight, -500, 3000, enumMinMax.none, new ToolTip("Spawnheight."));
-            t.Parameters.Rotation.Us = (int)GUISliders.LayoutDisplaySlider("Rotation", t.Parameters.Rotation, -90, 90, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
+            t.Parameters.Rotation.Us = (int)GUISliders.LayoutDisplaySlider("Rotation", t.Parameters.Rotation, -180/t.Parameters.ActiveFactions, 180/t.Parameters.ActiveFactions, enumMinMax.none, new ToolTip("Rotation angle of the entire battlefield around the origin point."));
             GUILayout.EndVertical();
             GUILayout.BeginVertical();
             if (_treeSelector.CurrentData != null)
             {
-                if (GUILayout.Button(new GUIContent("Add to Team 1","Add the currently selected Blueprint to the King-Faction.")))
+                if (GUILayout.Button(new GUIContent("Add to Team 1","Add the currently selected Blueprint to the Team 1-Faction.")))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
-                        IsKing = true,
+                        FactionIndex = 0,
                         Spawn_direction = t.Parameters.Direction,
                         Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t1.Add(tournamentEntry);
                 }
-                if (GUILayout.Button(new GUIContent("Add to Team 2", "Add the currently selected Blueprint to the Challenger-Faction.")))
+                if (GUILayout.Button(new GUIContent("Add to Team 2", "Add the currently selected Blueprint to the Team 2-Faction.")))
                 {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry2 = new TournamentEntry
                     {
-                        IsKing = false,
+                        FactionIndex = 1,
                         Spawn_direction = t.Parameters.Direction,
                         Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry2);
                 }
-                if (GUILayout.Button(new GUIContent("Add to both Teams", "Add the currently selected Blueprint to both Factions."))) {
+                if (t.Parameters.ActiveFactions >= 3 && GUILayout.Button(new GUIContent("Add to Team 3", "Add the currently selected Blueprint to the Team 3-Faction."))) {
+                    GUISoundManager.GetSingleton().PlayBeep();
+                    TournamentEntry tournamentEntry3 = new TournamentEntry
+                    {
+                        FactionIndex = 2,
+                        Spawn_direction = t.Parameters.Direction,
+                        Spawn_height = t.Parameters.SpawnHeight,
+                        Bpf = _treeSelector.CurrentData
+                    };
+                    t.entries_t3.Add(tournamentEntry3);
+                }
+                if (GUILayout.Button(new GUIContent("Add to all Teams", "Add the currently selected Blueprint to all active Factions."))) {
                     GUISoundManager.GetSingleton().PlayBeep();
                     TournamentEntry tournamentEntry = new TournamentEntry
                     {
-                        IsKing = true,
+                        FactionIndex = 0,
                         Spawn_direction = t.Parameters.Direction,
                         Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
@@ -298,48 +292,100 @@ namespace Tournament
                     t.entries_t1.Add(tournamentEntry);
                     tournamentEntry = new TournamentEntry
                     {
-                        IsKing = false,
+                        FactionIndex = 1,
                         Spawn_direction = t.Parameters.Direction,
                         Spawn_height = t.Parameters.SpawnHeight,
                         Bpf = _treeSelector.CurrentData
                     };
                     t.entries_t2.Add(tournamentEntry);
+                    if (t.Parameters.ActiveFactions >= 3) {
+                        tournamentEntry = new TournamentEntry
+                        {
+                            FactionIndex = 2,
+                            Spawn_direction = t.Parameters.Direction,
+                            Spawn_height = t.Parameters.SpawnHeight,
+                            Bpf = _treeSelector.CurrentData
+                        };
+                        t.entries_t3.Add(tournamentEntry);
+                    }
                 }
             }
             if (GUILayout.Button(new GUIContent("Swap Teams", "Each Entry swaps Teams, for a quick rematch.")))
             {
                 List<TournamentEntry> temp = new List<TournamentEntry>();
                 temp.AddRange(t.entries_t1);
-                t.entries_t1.Clear();
-                t.entries_t1.AddRange(t.entries_t2);
-                t.entries_t2.Clear();
-                t.entries_t2.AddRange(temp);
+                switch (t.Parameters.ActiveFactions) {
+                    case 2:
+                        GUISoundManager.GetSingleton().PlayBeep();
+                        t.entries_t1.Clear();
+                        t.entries_t1.AddRange(t.entries_t2);
+                        t.entries_t2.Clear();
+                        t.entries_t2.AddRange(temp);
+                        break;
+                    case 3:
+                        GUISoundManager.GetSingleton().PlayBeep();
+                        t.entries_t1.Clear();
+                        t.entries_t1.AddRange(t.entries_t2);
+                        t.entries_t2.Clear();
+                        t.entries_t2.AddRange(t.entries_t3);
+                        t.entries_t3.Clear();
+                        t.entries_t3.AddRange(temp);
+                        break;
+                    default:
+                        GUISoundManager.GetSingleton().PlayFailure();
+                        break;
+                }
                 temp.Clear();
                 temp = null;
-                t.entries_t1.ForEach((te) => { te.IsKing = true; });
-                t.entries_t2.ForEach((te) => { te.IsKing = false; });
+                t.entries_t1.ForEach((te) => { te.FactionIndex = 0; });
+                t.entries_t2.ForEach((te) => { te.FactionIndex = 1; });
+                t.entries_t3.ForEach((te) => { te.FactionIndex = 2; });
             }
             if (GUILayout.Button(new GUIContent("Swap Orientations", "Each Entry swaps its orientation."))) {
-                t.entries_t1.ForEach((te) => { te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1; });
-                t.entries_t2.ForEach((te) => { te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1; });
+                GUISoundManager.GetSingleton().PlayBeep();
+                t.entries_t1.ForEach((te) => { te.Spawn_direction = (te.Spawn_direction + 180) % 360; });
+                t.entries_t2.ForEach((te) => { te.Spawn_direction = (te.Spawn_direction + 180) % 360; });
+                t.entries_t3.ForEach((te) => { te.Spawn_direction = (te.Spawn_direction + 180) % 360; });
             }
             if (GUILayout.Button(new GUIContent("Swap Teams\nand orientations", "Each Entry swaps Teams and inverts its orientation, for a quick rematch in an asymmetric enviroment.")))
             {
                 List<TournamentEntry> temp = new List<TournamentEntry>();
                 temp.AddRange(t.entries_t1);
-                t.entries_t1.Clear();
-                t.entries_t1.AddRange(t.entries_t2);
-                t.entries_t2.Clear();
-                t.entries_t2.AddRange(temp);
+                switch (t.Parameters.ActiveFactions)
+                {
+                    case 2:
+                        GUISoundManager.GetSingleton().PlayBeep();
+                        t.entries_t1.Clear();
+                        t.entries_t1.AddRange(t.entries_t2);
+                        t.entries_t2.Clear();
+                        t.entries_t2.AddRange(temp);
+                        break;
+                    case 3:
+                        GUISoundManager.GetSingleton().PlayBeep();
+                        t.entries_t1.Clear();
+                        t.entries_t1.AddRange(t.entries_t2);
+                        t.entries_t2.Clear();
+                        t.entries_t2.AddRange(t.entries_t3);
+                        t.entries_t3.Clear();
+                        t.entries_t3.AddRange(temp);
+                        break;
+                    default:
+                        GUISoundManager.GetSingleton().PlayFailure();
+                        break;
+                }
                 temp.Clear();
                 temp = null;
                 t.entries_t1.ForEach((te) => {
-                    te.IsKing = true;
-                    te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1;
+                    te.FactionIndex = 0;
+                    te.Spawn_direction = te.Spawn_direction = (te.Spawn_direction + 180) % 360;
                 });
                 t.entries_t2.ForEach((te) => {
-                    te.IsKing = false;
-                    te.Spawn_direction = ((int)te.Spawn_direction % 2 == 0) ? te.Spawn_direction + 1 : te.Spawn_direction - 1;
+                    te.FactionIndex = 1;
+                    te.Spawn_direction = te.Spawn_direction = (te.Spawn_direction + 180) % 360;
+                });
+                t.entries_t3.ForEach((te) => {
+                    te.FactionIndex = 2;
+                    te.Spawn_direction = te.Spawn_direction = (te.Spawn_direction + 180) % 360;
                 });
             }
             GUILayout.EndVertical();
@@ -439,18 +485,72 @@ namespace Tournament
                 GUILayout.EndVertical();
                 GUILayout.EndHorizontal();
             }
+            GUILayout.Box("<color=#0000ffff>~---------T3---------~</color>");
+            for (int i = 0; i < t.entries_t3.Count; i++)
+            {
+                TournamentEntry item = t.entries_t3[i];
+                string text2 = "";
+                string[] labelCost2 = item.LabelCost;
+                foreach (string str2 in labelCost2)
+                {
+                    text2 = text2 + "\n" + str2;
+                }
+                GUILayout.Box(string.Format("<color=#0000ffff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#0000ffff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
+                GUILayout.BeginHorizontal();
+                GUILayout.BeginVertical();
+                if (GUILayout.Button("^ Remove ^"))
+                {
+                    t.entries_t3.Remove(item);
+                }
+                if (GUILayout.Button("^ Update ^"))
+                {
+                    item.Spawn_height = t.Parameters.SpawnHeight;
+                    item.Spawn_direction = t.Parameters.Direction;
+                }
+                GUILayout.EndVertical();
+                GUILayout.BeginVertical();
+                if (i != 0 && GUILayout.Button("^ Move up ^"))
+                {
+                    t.entries_t3.RemoveAt(i);
+                    t.entries_t3.Insert(i - 1, item);
+                }
+                if (i + 1 != t.entries_t3.Count && GUILayout.Button("^ Move down ^"))
+                {
+                    t.entries_t3.RemoveAt(i);
+                    t.entries_t3.Insert(i + 1, item);
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
+            }
             GUILayout.EndScrollView();
             GUILayout.EndArea();
             if (GUI.Button(new Rect(970f, 660f, 280f, 50f), "Start") && t.entries_t1.Count > 0 && t.entries_t2.Count > 0)
             {
                 DeactivateGui(0);
-                TournamentPlugin.kingFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[kingIndexTFC].Colors);
-                TournamentPlugin.challengerFaction.OverrideFleetColors(TournamentFleetColor.colorSchemes[challengerIndexTFC].Colors);
-				t.kingFormation = TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex];
-				t.challengerFormation = TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex];
+                TournamentPlugin.factionTeam1.OverrideFleetColors(TournamentFleetColor.colorSchemes[team1CurrentIndex].Colors);
+                TournamentPlugin.factionTeam2.OverrideFleetColors(TournamentFleetColor.colorSchemes[team2CurrentIndex].Colors);
+				t.formationTeam1 = TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex];
+				t.formationTeam2 = TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex];
+                if (t.Parameters.ActiveFactions >= 3) {
+                    TournamentPlugin.factionTeam3.OverrideFleetColors(TournamentFleetColor.colorSchemes[team3CurrentIndex].Colors);
+                    t.formationTeam3 = TournamentFormation.tournamentFormations[t.Parameters.Team3FormationIndex];
+                }
                 t.LoadCraft();
                 t.StartMatch();
             }
+        }
+        private int MakeCollisionFree(int currentIndex, int newIndex, params int[] otherCurrentIndices) {
+            bool ascending = newIndex > currentIndex;
+            while (Array.Exists(otherCurrentIndices,(current)=>current==newIndex)) {
+                if (ascending)
+                {
+                    newIndex = (newIndex + 1) % TournamentFleetColor.colorSchemes.Length;
+                }
+                else {
+                    newIndex = (newIndex - 1 + TournamentFleetColor.colorSchemes.Length) % TournamentFleetColor.colorSchemes.Length;
+                }
+            }
+            return newIndex;
         }
     }
 }

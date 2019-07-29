@@ -16,7 +16,7 @@ namespace Tournament
 
         public Blueprint bp;
 
-        public bool IsKing {
+        public int FactionIndex {
             get;
             set;
         }
@@ -87,14 +87,14 @@ namespace Tournament
                     int count = list.Count;
                     if (count > 0)
                     {
-                        string[] array = new string[checked(count + 1)];
+                        string[] array = new string[(count + 1)];
                         float num = 0f;
                         float num2 = 0f;
-                        for (int i = 0; i < count; i = checked(i + 1))
+                        for (int i = 0; i < count; i = (i + 1))
                         {
                             float material = list[i].CalculateResourceCost(false, true,false).Material;
                             float material2 = list[i].CalculateResourceCost(true, true,false).Material;
-                            array[checked(i + 1)] = $"{list[i].blueprintName} {Math.Round(material2 / material * 100f, 1)}";
+                            array[(i + 1)] = $"{list[i].blueprintName} {Math.Round(material2 / material * 100f, 1)}";
                             num += material;
                             num2 += material2;
                         }
@@ -113,7 +113,18 @@ namespace Tournament
         public void Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
-            FactionSpecificationFaction faction = IsKing ? TournamentPlugin.kingFaction : TournamentPlugin.challengerFaction;
+            FactionSpecificationFaction faction;
+             switch (FactionIndex) {
+                case 0:
+                    faction =TournamentPlugin.factionTeam1;
+                    break;
+                case 1:
+                    faction=TournamentPlugin.factionTeam2;
+                    break;
+                default:
+                    Debug.LogError("Factionless Entry!");
+                    return;
+            }
             Team_id = faction.Id;
             BlueprintInitialisation initialisation = new BlueprintInitialisation(val)
             {
@@ -128,13 +139,13 @@ namespace Tournament
 
         public Vector3 VLoc(float gapLR, float gapFB, int count, int pos, float dis)
         {
-			Vector3 ret = (IsKing ? Tournament._me.kingFormation : Tournament._me.challengerFormation).DetermineLocalPosition(IsKing, gapLR, gapFB, count, pos, dis, Spawn_height);
+			Vector3 ret = Tournament._me.GetFormation(FactionIndex).DetermineLocalPosition(Tournament._me.Parameters.ComputeFactionRotation(FactionIndex), gapLR, gapFB, count, pos, dis, Spawn_height);
             return Tournament._me.Rotation * ret;
         }
 
         public Quaternion VDir()
         {
-            return Quaternion.Euler(0,Spawn_direction+(IsKing?180:0),0)*Tournament._me.Rotation;
+            return Quaternion.Euler(0,Spawn_direction,0)*Tournament._me.Rotation;
         }
     }
 }

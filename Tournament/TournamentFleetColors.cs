@@ -14,7 +14,7 @@ namespace Tournament
         public readonly static TournamentFleetColor classicYellow = new TournamentFleetColor()
         {
             Name = "Classic Yellow",
-            Description = "The classic yellow colorscheme by Wo0tness, usually used for the King-Faction.",
+            Description = "The classic yellow colorscheme by Wo0tness, usually used for the Team 1-Faction.",
             Main = new Color(1f, 0.84f, 0f, 1f),
             Secondary = new Color(0.85f, 0.65f, 0.13f, 1f),
             Trim = new Color(1f, 0.65f, 0f, 1f),
@@ -23,11 +23,20 @@ namespace Tournament
         public readonly static TournamentFleetColor classicRed = new TournamentFleetColor()
         {
             Name = "Classic Red",
-            Description = "The classic red colorscheme by Wo0tness, usually used for the Challenger-Faction.",
+            Description = "The classic red colorscheme by Wo0tness, usually used for the Team 2-Faction.",
             Main = new Color(1f, 0f, 0f, 1f),
             Secondary = new Color(0.55f, 0f, 0f, 1f),
             Trim = new Color(0.7f, 0.15f, 0.15f, 1f),
-            Detail = new Color(1f, 0.4f, 0.3f, 1f)
+            Detail = new Color(1f, 0.35f, 0.35f, 1f)
+        };
+        public readonly static TournamentFleetColor neoBlue = new TournamentFleetColor()
+        {
+            Name = "Neo Blue",
+            Description = "A new blue colorscheme by Qwert26, usually used for the Team 3-Faction.",
+            Main = new Color(0f, 0f, 1f, 1f),
+            Secondary = new Color(0f, 0f, 0.55f, 1f),
+            Trim = new Color(0.15f, 0.15f, 0.7f, 0.1f),
+            Detail = new Color(0.35f, 0.35f, 1f, 1f)
         };
         public readonly static TournamentFleetColor medievalOldRoyal = new TournamentFleetColor()
         {
@@ -86,6 +95,7 @@ namespace Tournament
         public readonly static TournamentFleetColor[] colorSchemes = {
             classicYellow,
             classicRed,
+            neoBlue,
             medievalOldRoyal,
             medievalMiddleRoyal,
             medievalYoungRoyal,

@@ -32,39 +32,29 @@ namespace Tournament
 
         public TournamentGUI _GUI;
 
-        public Font _Font;
+        private readonly GUIStyle timerStyle;
 
-        public GUIStyle _Top;
+        private readonly GUIStyle extrainfoLeft;
 
-        public GUIStyle _Left;
+        private readonly GUIStyle _TopLeft2;
 
-        public GUIStyle _Left2;
+        private readonly GUIStyle extrainfoRight;
 
-        public GUIStyle _Right;
+        private readonly GUIStyle extrainfoName;
 
-        public GUIStyle _Right2;
+        private GameObject cam;
 
-        public GUIStyle _RightWrap;
+        private MouseLook flycam;
 
-        public bool started;
+        private MouseOrbit orbitcam;
 
-        public GameObject cam;
+        private int orbittarget;
 
-        public MouseLook flycam;
+        private int orbitMothership;
 
-        public MouseOrbit orbitcam;
+        private int orbitindex;
 
-        public Vector3 lastpos;
-
-        public int orbittarget;
-
-        public int orbitMothership;
-
-        public int orbitindex;
-
-        public bool cammode;
-
-        public bool extraInfo;
+        private bool extraInfo;
 
         private float timerTotal;
 
@@ -72,19 +62,21 @@ namespace Tournament
 
         private byte overtimeCounter;
 
-        public float timer;
+        private Vector2 scrollPos=Vector2.zero;
         
         //Management
 
-        private SortedDictionary<int, SortedDictionary<string, TournamentParticipant>> HUDLog = new SortedDictionary<int, SortedDictionary<string, TournamentParticipant>>();
+        private SortedDictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new SortedDictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
 
         public List<TournamentEntry> entries_t1 = new List<TournamentEntry>();
 
         public List<TournamentEntry> entries_t2 = new List<TournamentEntry>();
 
-        public bool showLists = true;
+        public List<TournamentEntry> entries_t3 = new List<TournamentEntry>();
 
-		public TournamentFormation kingFormation, challengerFormation;
+        private bool showLists = true;
+
+		public TournamentFormation formationTeam1, formationTeam2, formationTeam3;
 
         public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
 
@@ -93,14 +85,14 @@ namespace Tournament
             _me = this;
             _GUI = new TournamentGUI(_me);
 
-            _Top = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.MiddleCenter,
                 richText = true,
                 fontSize = 12
             };
 
-            _Left = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            extrainfoLeft = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperLeft,
                 richText = true,
@@ -109,23 +101,15 @@ namespace Tournament
                 clipping = TextClipping.Clip
             };
 
-            _Left2 = new GUIStyle
+            _TopLeft2 = new GUIStyle
             {
                 alignment = TextAnchor.UpperLeft,
                 richText = true,
                 fontSize = 12
             };
-            _Left2.normal.textColor = Color.white;
+            _TopLeft2.normal.textColor = Color.white;
 
-            _Right2 = new GUIStyle
-            {
-                alignment = TextAnchor.UpperRight,
-                richText = true,
-                fontSize = 12
-            };
-            _Right2.normal.textColor = Color.white;
-
-            _Right = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperRight,
                 richText = true,
@@ -133,8 +117,7 @@ namespace Tournament
                 wordWrap = false,
                 clipping = TextClipping.Clip
             };
-
-            _RightWrap = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+            extrainfoName = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperRight,
                 richText = true,
@@ -142,7 +125,6 @@ namespace Tournament
                 wordWrap = true,
                 clipping = TextClipping.Clip
             };
-
             LoadNewSettings();
         }
 
@@ -182,18 +164,41 @@ namespace Tournament
                     item2.Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam2);
                 }
             }
+            if (Parameters.ActiveFactions >= 3)
+            {
+                foreach (TournamentEntry item3 in entries_t3)
+                {
+                    item3.Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, entries_t3.Count, entries_t3.IndexOf(item3));
+                    if (Parameters.LocalResources)
+                    {
+                        item3.Team_id.FactionInst().ResourceStore.SetResources(0);
+                    }
+                    else if (Parameters.InfinteResourcesTeam2)
+                    {
+                        item3.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
+                    }
+                    else
+                    {
+                        item3.Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam2);
+                    }
+                }
+            }
             if (Parameters.LocalResources)
             {
                 foreach (MainConstruct construct in StaticConstructablesManager.constructables) {
-                    if (construct.GetTeam() == TournamentPlugin.kingFaction.Id)
+                    if (construct.GetTeam() == TournamentPlugin.factionTeam1.Id)
                     {
                         construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam1));
                     }
-                    else if (construct.GetTeam() == TournamentPlugin.challengerFaction.Id)
+                    else if (construct.GetTeam() == TournamentPlugin.factionTeam2.Id)
                     {
                         construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam2));
                     }
-                    else {
+                    else if (construct.GetTeam() == TournamentPlugin.factionTeam3.Id) {
+                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam3));
+                    }
+                    else
+                    {
                         construct.RawResource.Material.SetQuantity(0);
                     }
                 }
@@ -203,7 +208,6 @@ namespace Tournament
         public void StartMatch()
         {
             overtimeCounter = 0;
-            timer = 0f;
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
             InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
@@ -215,7 +219,6 @@ namespace Tournament
 
             flycam.transform.position = new Vector3(-500f, 50f, 0f);
             flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
-            cammode = false;
             foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
             {
                 int id = 0;
@@ -225,19 +228,18 @@ namespace Tournament
                 }
                 string key = "" + constructable.UniqueId + "," + id;
 
-                if (!HUDLog.ContainsKey(constructable.GetTeam().Id))
+                if (!HUDLog.ContainsKey(constructable.GetTeam()))
                 {
-                    HUDLog.Add(constructable.GetTeam().Id, new SortedDictionary<string, TournamentParticipant>());
+                    HUDLog.Add(constructable.GetTeam(), new SortedDictionary<string, TournamentParticipant>());
                 }
 
-                if (!HUDLog[constructable.GetTeam().Id].ContainsKey(key))
+                if (!HUDLog[constructable.GetTeam()].ContainsKey(key))
                 {
                     bool spawnStick = constructable.BlockTypeStorage.MainframeStore.Count == 0;
                     switch (Parameters.HealthCalculation)
                     {
                         case 0:
-                            
-                            HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
+                            HUDLog[constructable.GetTeam()].Add(key, new TournamentParticipant
                             {
                                 TeamId = constructable.GetTeam(),
                                 TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -251,7 +253,7 @@ namespace Tournament
                             });
                             break;
                         case 1:
-                            HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
+                            HUDLog[constructable.GetTeam()].Add(key, new TournamentParticipant
                             {
                                 TeamId = constructable.GetTeam(),
                                 TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -265,7 +267,7 @@ namespace Tournament
                             });
                             break;
                         case 2:
-                            HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
+                            HUDLog[constructable.GetTeam()].Add(key, new TournamentParticipant
                             {
                                 TeamId = constructable.GetTeam(),
                                 TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -279,7 +281,7 @@ namespace Tournament
                             });
                             break;
                         case 3:
-                            HUDLog[constructable.GetTeam().Id].Add(key, new TournamentParticipant
+                            HUDLog[constructable.GetTeam()].Add(key, new TournamentParticipant
                             {
                                 TeamId = constructable.GetTeam(),
                                 TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -297,7 +299,6 @@ namespace Tournament
                     }
                 }
             }
-            started = true;
             GameEvents.UpdateEvent -= UpdateBoardSectionPreview;
             GameEvents.PreLateUpdate += LateUpdate;
             GameEvents.Twice_Second += SlowUpdate;
@@ -341,7 +342,6 @@ namespace Tournament
             orbitindex = 0;
             orbitMothership = -1;
             extraInfo = false;
-            cammode = false;
         }
 
         public void MoveCam()
@@ -431,6 +431,9 @@ namespace Tournament
                     Parameters.SoftLimits.Reset();
                     Parameters.AltitudeReverse.Reset();
                     Parameters.Overtime.Reset();
+                    Parameters.ActiveFactions.Reset();
+                    Parameters.InfinteResourcesTeam3.Reset();
+                    Parameters.ResourcesTeam3.Reset();
                 }
             }
             else
@@ -449,110 +452,47 @@ namespace Tournament
         {
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
             GUI.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
-            GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", _Top);
+            GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", timerStyle);
             if (showLists)
             {
-                foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> team in HUDLog)
-                {
-                    bool teamOne = entries_t1[0].Team_id.Id == team.Key;
-
-                    float xOffset = 0f;
-                    float oobOffset = 2f;
-                    float hpOffset = 42f;
-                    float nameOffset = 78f;
-
-                    GUIStyle style = _Left2;
-                    if (!teamOne)
-                    {
-                        style = _Right2;
-                        xOffset = 1080f;
-                        oobOffset = 160f;
-                        hpOffset = 128f;
-                        nameOffset = 2f;
-                    }
-
-                    float height = 38f + 16f * HUDLog[team.Key].Values.Count;
-
-                    float teamCurrentHP = 0f;
-                    float teamMaxHP = 0f;
-
-                    string teamName = $"Team {(teamOne ? 1f : 2f)}";
-                    string materials = "M: "+FactionSpecifications.i.Factions.Where(x => x.Id.Id == team.Key).First().InstanceOfFaction.ResourceStore.Material.ToString();
-
-                    GUILayout.BeginArea(new Rect(xOffset, 0f, 200f, height), "", _Top);
-
-                    int entries = 0;
-
-                    foreach (KeyValuePair<string, TournamentParticipant> entry in team.Value)
-                    {
-                        string oob = "";
-                        string percentHP = "";
-                        string nameBP = $"{entry.Value.BlueprintName}";
-                        string dq = "DQ";
-                        bool dqed = true;
-
-                        teamMaxHP += entry.Value.HPMAX;
-
-                        if (!entry.Value.Disqual && !entry.Value.Scrapping && entry.Value.AICount != 0)
-                        {
-                            dqed = false;
-                            teamCurrentHP += entry.Value.HPCUR;
-                            oob = $"{Math.Floor(entry.Value.OoBTime / 60f)}m{Math.Floor(entry.Value.OoBTime) % 60.0}s";
-                            percentHP = $"{Math.Round(entry.Value.HP, 1)}%";
-                            //text = ((!flag) ? (text + string.Format("\n{2} {1,4} {0,6}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)) : (text + string.Format("\n{0,-6} {1,-4} {2}", Math.Floor((double)(item2.Value.OoBTime / 60f)) + "m" + Math.Floor((double)item2.Value.OoBTime) % 60.0 + "s", Math.Round((double)item2.Value.HP, 1) + "%", item2.Value.BlueprintName)));
-                        }
-
-                        // member name, hp + oob time or DQ
-                        if (!dqed)
-                        {
-                            GUI.Label(new Rect(hpOffset, 38f + entries * 16f, 30f, 16f), percentHP, style);
-                            GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 38f, 16f), oob, style);
+                GUILayout.BeginArea(new Rect(0, 0, 200, 800), "Current Participants", timerStyle);
+                scrollPos = GUILayout.BeginScrollView(scrollPos,GUILayout.ExpandHeight(false));
+                float t = Time.realtimeSinceStartup * 30;
+                foreach (KeyValuePair<ObjectId, SortedDictionary<string,TournamentParticipant>> team in HUDLog) {
+                    string teamMaterials = "M: "+team.Key.FactionInst().ResourceStore.Material.ToString();
+                    float teamMaxHP = 0, teamCurHP=0;
+                    team.Value.Values.Aggregate(teamMaxHP, (currentSum, member) => currentSum + member.HPMAX);
+                    team.Value.Values.Aggregate(teamCurHP, (currentSum, member) => currentSum + member.HPCUR);
+                    string teamHP = $"{Math.Round(100*teamCurHP/teamMaxHP,1)}%";
+                    GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>");
+                    foreach (KeyValuePair <string,TournamentParticipant> member in team.Value) {
+                        string name = member.Value.BlueprintName;
+                        string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
+                        string penaltyTime = $"{Math.Floor(member.Value.OoBTime / 60)}m{Math.Floor(member.Value.OoBTime) % 60}s";
+                        bool disqualified = member.Value.Disqual || member.Value.Scrapping;
+                        GUIContent memberContent;
+                        if (disqualified) {
+                            memberContent = new GUIContent($"{name} DQ");
                         }
                         else
                         {
-                            GUI.Label(new Rect(oobOffset, 38f + entries * 16f, 30f, 16f), dq, style);
+                            memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
                         }
-
-                        //GUI.Label(new Rect(nameOffset, 38f + entries*16f, 124f, 16f), nameBP, style);
-
-                        float scrollSpeed = 30;
-                        float t = Time.realtimeSinceStartup * scrollSpeed;
-
-                        //float dimensions = _Left2.fontSize * nameBP.Length;
-                        var dimensions = _Left2.CalcSize(new GUIContent(nameBP));
-                        float width = dimensions.x + 120f;
-
-                        if (dimensions.x <= 120f)
+                        Vector2 size=timerStyle.CalcSize(memberContent);
+                        if (size.x <= 150)
                         {
-                            GUI.Label(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), nameBP, style);
+                            GUILayout.Label(memberContent);
                         }
-                        else
-                        {
-                            GUI.BeginScrollView(new Rect(nameOffset, 38f + entries * 16f, 120f, 16f), new Vector2(t % width, 0), new Rect(-width, 0, 2 * dimensions.x + 120f, 16f), GUIStyle.none, GUIStyle.none);
-                            GUI.Label(new Rect(-dimensions.x, 0, dimensions.x, 16f), nameBP, style);
-                            GUI.EndScrollView();
+                        else {
+                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), GUIStyle.none, GUIStyle.none, GUILayout.ExpandWidth(false));
+                            GUILayout.Label(memberContent);
+                            GUILayout.EndScrollView();
                         }
-
-                        entries++;
                     }
-
-                    // team name , hp , mats
-                    string teamHP = Math.Round(teamCurrentHP / teamMaxHP * 100, 1) + "%";
-                    string topLabel = "";
-                    if (teamOne)
-                    {
-                        topLabel = $"{teamName}  <color=#ffa500ff>{teamHP}</color>  <color=cyan>{materials}</color>";
-                    }
-                    else
-                    {
-                        topLabel = $"<color=cyan>{materials}</color>  <color=#ffa500ff>{teamHP}</color>  {teamName}";
-                    }
-                    GUI.Label(new Rect(4f, 6f, 192f, 32f), topLabel, style);
-
-                    GUILayout.EndArea();
                 }
+                GUILayout.EndScrollView();
+                GUILayout.EndArea();
             }
-
             // extra info panel
             if (extraInfo)
             {
@@ -565,6 +505,7 @@ namespace Tournament
                     //MainConstruct targetConstruct = StaticConstructablesManager.constructables[targetIndex];
 
                     string name = targetConstruct.blueprintName;
+                    string team = targetConstruct.GetTeam().FactionSpec().Name;
                     string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
                     string resources = $"{Math.Round(targetConstruct.RawResource.Material.Quantity, 0)}/{Math.Round(targetConstruct.RawResource.Material.Maximum, 0)}";
                     string ammo = $"{Math.Round(targetConstruct.Ammo.Ammo.Quantity, 0)}/{Math.Round(targetConstruct.Ammo.Ammo.Maximum, 0)}";
@@ -590,45 +531,31 @@ namespace Tournament
                             }
                         }
                     }
-                    string nearest = Math.Round(closest, 0).ToString();
+                    string nearest = Math.Round(closest, 0).ToString()+"m";
 
+                    GUI.Label(new Rect(980, 0, 90f, 38f), "Name:", extrainfoLeft);
+                    //GUI.Label(new Rect(980, 38, 90f, 38f), "Team:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 76, 90f, 38f), "HP:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 114, 90f, 38f), "Materials:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 152, 90f, 38f), "Ammo:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 190, 90f, 38f), "Fuel:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 228, 90f, 38f), "Battery:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 266, 90f, 38f), "Power:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 304, 90f, 38f), "Speed:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 342, 90f, 38f), "Altitude:", extrainfoLeft);
+                    GUI.Label(new Rect(980, 380, 90f, 38f), "Nearest Enemy:", extrainfoLeft);
 
-                    float xOffsetLabel;
-                    float xOffsetValue;
-
-                    int kingId = TournamentPlugin.kingFaction.Id.Id;
-                    if (targetConstruct.GetTeam().Id == kingId) // team 1
-                    {
-                        xOffsetLabel = 200;
-                        xOffsetValue = 290;
-                    }
-                    else
-                    {
-                        xOffsetLabel = 880;
-                        xOffsetValue = 970;
-                    }
-
-                    GUI.Label(new Rect(xOffsetLabel, 0f, 90f, 38f), "Name:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 38f, 90f, 38f), "HP:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 76, 90, 38), "Materials:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 114, 90f, 38f), "Ammo:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 152, 90f, 38f), "Fuel:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 190, 90f, 38f), "Battery:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 228, 90f, 38f), "Power:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 266, 90f, 38f), "Speed:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 304, 90f, 38f), "Altitude:", _Left);
-                    GUI.Label(new Rect(xOffsetLabel, 342, 90f, 38f), "Nearest Enemy:", _Left);
-
-                    GUI.Label(new Rect(xOffsetValue, 0f, 110f, 38f), name, _RightWrap);
-                    GUI.Label(new Rect(xOffsetValue, 38f, 110f, 38f), hp, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 76, 110, 38), resources, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 114, 110f, 38f), ammo, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 152, 110f, 38f), fuel, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 190, 110f, 38f), battery, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 228, 110f, 38f), power, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 266, 110f, 38f), speed, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 304, 110f, 38f), altitude, _Right);
-                    GUI.Label(new Rect(xOffsetValue, 342, 110f, 38f), nearest, _Right);
+                    GUI.Label(new Rect(1070, 0, 110f, 38f), name, extrainfoName);
+                    GUI.Label(new Rect(980, 38, 200f, 38f), team, extrainfoRight);
+                    GUI.Label(new Rect(1070, 76, 110f, 38f), hp, extrainfoRight);
+                    GUI.Label(new Rect(1070, 114, 110f, 38f), resources, extrainfoRight);
+                    GUI.Label(new Rect(1070, 152, 110f, 38f), ammo, extrainfoRight);
+                    GUI.Label(new Rect(1070, 190, 110f, 38f), fuel, extrainfoRight);
+                    GUI.Label(new Rect(1070, 228, 110f, 38f), battery, extrainfoRight);
+                    GUI.Label(new Rect(1070, 266, 110f, 38f), power, extrainfoRight);
+                    GUI.Label(new Rect(1070, 304, 110f, 38f), speed, extrainfoRight);
+                    GUI.Label(new Rect(1070, 342, 110f, 38f), altitude, extrainfoRight);
+                    GUI.Label(new Rect(1070, 380, 110f, 38f), nearest, extrainfoRight);
                 }
             }
         }
@@ -898,7 +825,7 @@ namespace Tournament
                     }
                     string key = "" + val.UniqueId + "," + id;
                     //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
-                    TournamentParticipant tournamentParticipant = HUDLog[val.GetTeam().Id][key];
+                    TournamentParticipant tournamentParticipant = HUDLog[val.GetTeam()][key];
                     if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                     {
                         tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
@@ -993,7 +920,7 @@ namespace Tournament
                     id = val.Drones.LoadedMothershipC.UniqueId;
                 }
                 string key = val.UniqueId + "," + id;
-                if (!HUDLog[val.GetTeam().Id].TryGetValue(key, out TournamentParticipant tournamentParticipant))
+                if (!HUDLog[val.GetTeam()].TryGetValue(key, out TournamentParticipant tournamentParticipant))
                 {
                     tournamentParticipant = new TournamentParticipant
                     {
@@ -1012,7 +939,7 @@ namespace Tournament
                             tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
                             break;
                         case 1:
-                            tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false,true,true).Material;
+                            tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false, true, false).Material;
                             break;
                         case 2:
                         case 3:
@@ -1041,7 +968,7 @@ namespace Tournament
                             Debug.LogError("Health calculation of newly spawned in Construct is not available!");
                             break;
                     }
-                    HUDLog[tournamentParticipant.TeamId.Id][key] = tournamentParticipant;
+                    HUDLog[tournamentParticipant.TeamId][key] = tournamentParticipant;
                 }
                 if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                 {
@@ -1051,7 +978,7 @@ namespace Tournament
                             tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
                             break;
                         case 1:
-                            tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true,true,true).Material;
+                            tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true, true, false).Material;
                             break;
                         case 2:
                             tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
@@ -1068,7 +995,7 @@ namespace Tournament
                     tournamentParticipant.HP = 0f;
                 }
             }
-            foreach (KeyValuePair<int, SortedDictionary<string, TournamentParticipant>> item in HUDLog)
+            foreach (KeyValuePair<ObjectId, SortedDictionary<string, TournamentParticipant>> item in HUDLog)
             {
                 foreach (KeyValuePair<string, TournamentParticipant> item2 in HUDLog[item.Key])
                 {
@@ -1165,6 +1092,19 @@ namespace Tournament
             a.y = 0;
             b.y = 0;
             return Vector3.Distance(a, b);
+        }
+        public TournamentFormation GetFormation(int index) {
+            switch (index) {
+                case 0:
+                    return formationTeam1;
+                case 1:
+                    return formationTeam2;
+                case 2:
+                    return formationTeam3;
+                default:
+                    Debug.LogError("Invalid index!");
+                    throw new ArgumentOutOfRangeException("index", index, "Only valid values are 0, 1 and 2!");
+            }
         }
     }
 }
