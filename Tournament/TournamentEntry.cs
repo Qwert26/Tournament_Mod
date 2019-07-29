@@ -121,6 +121,9 @@ namespace Tournament
                 case 1:
                     faction=TournamentPlugin.factionTeam2;
                     break;
+                case 2:
+                    faction = TournamentPlugin.factionTeam3;
+                    break;
                 default:
                     Debug.LogError("Factionless Entry!");
                     return;
@@ -145,7 +148,7 @@ namespace Tournament
 
         public Quaternion VDir()
         {
-            return Quaternion.Euler(0,Spawn_direction,0)*Tournament._me.Rotation;
+            return FormationCalculation.FactionRotation(Tournament._me.Parameters.ComputeFactionRotation(FactionIndex) + Spawn_direction + Tournament._me.Parameters.Rotation + 180);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Tournament
 {
 	internal static class FormationCalculation {
 		static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad*68);
-        private static Quaternion FactionRotation(float angle) {
+        public static Quaternion FactionRotation(float angle) {
             return Quaternion.Euler(0, angle, 0);
         }
 		public static Vector3 LineFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
@@ -15,7 +15,7 @@ namespace Tournament
 		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			if (index == 0) //Ist es das Flaggschiff?
 			{
-				return new Vector3(0, height,distance);
+				return FactionRotation(factionRotation) * new Vector3(0, height,distance);
 			}
 			else
 			{
@@ -38,7 +38,7 @@ namespace Tournament
 		public static Vector3 DividedWedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			if (index == 0) //Ist es das Flaggschiff?
 			{
-				return new Vector3(0, height, distance);
+				return FactionRotation(factionRotation) * new Vector3(0, height, distance);
 			}
 			else
 			{

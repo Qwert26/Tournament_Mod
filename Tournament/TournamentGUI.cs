@@ -73,7 +73,7 @@ namespace Tournament
             GUISliders.DecimalPlaces = 0;
             GUISliders.UpperMargin = 0;
 
-            t.Parameters.StartingDistance.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Distance", t.Parameters.StartingDistance, 0, 20000, 0, new ToolTip("Spawn distance from the center teams"));
+            t.Parameters.StartingDistance.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Distance", t.Parameters.StartingDistance, 0, 20000, 0, new ToolTip("Spawn distance from the center of the map to the teams."));
             t.Parameters.SpawngapLR.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Left-Right", t.Parameters.SpawngapLR, -1000, 1000, 0, new ToolTip("Spawn distance between team members left to right"));
             t.Parameters.SpawngapFB.Us = (int)GUISliders.LayoutDisplaySlider("Spawn Gap Forward-Back", t.Parameters.SpawngapFB, -1000, 1000, 0, new ToolTip("Spawn distance between team members front to back"));
             t.Parameters.AltitudeLimits.Lower = GUISliders.LayoutDisplaySlider("Minimum Altitude", t.Parameters.AltitudeLimits.Lower, -500, t.Parameters.AltitudeLimits.Upper, 0, new ToolTip("Add to penalty time when below this"));
@@ -125,7 +125,7 @@ namespace Tournament
 				t.Parameters.Team1FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 1 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Name, t.Parameters.Team1FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team1FormationIndex].Description));
 				t.Parameters.Team2FormationIndex.Us = (int)GUISliders.LayoutDisplaySlider("Team 2 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Name, t.Parameters.Team2FormationIndex, 0, TournamentFormation.tournamentFormations.Length-1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Description));
                 if (t.Parameters.ActiveFactions >= 3) {
-                    t.Parameters.Team3FormationIndex.Us= (int)GUISliders.LayoutDisplaySlider("Team 3 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team2FormationIndex].Name, t.Parameters.Team3FormationIndex, 0, TournamentFormation.tournamentFormations.Length - 1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team3FormationIndex].Description));
+                    t.Parameters.Team3FormationIndex.Us= (int)GUISliders.LayoutDisplaySlider("Team 3 Formation: " + TournamentFormation.tournamentFormations[t.Parameters.Team3FormationIndex].Name, t.Parameters.Team3FormationIndex, 0, TournamentFormation.tournamentFormations.Length - 1, enumMinMax.none, new ToolTip(TournamentFormation.tournamentFormations[t.Parameters.Team3FormationIndex].Description));
                 }
 				t.Parameters.MaterialConversion.Us = (int)GUISliders.LayoutDisplaySlider("Materialconversion", t.Parameters.MaterialConversion, -1, 100, enumMinMax.none, new ToolTip("Conversionfactor Damage to Materials, also known as Lifesteal."));
                 string describeCleanupMode()
@@ -310,7 +310,7 @@ namespace Tournament
                     }
                 }
             }
-            if (GUILayout.Button(new GUIContent("Swap Teams", "Each Entry swaps Teams, for a quick rematch.")))
+            if (GUILayout.Button(new GUIContent("Rotate Teams", "Each Entry Rotates through the Teams, for a quick rematch.")))
             {
                 List<TournamentEntry> temp = new List<TournamentEntry>();
                 temp.AddRange(t.entries_t1);
@@ -347,7 +347,7 @@ namespace Tournament
                 t.entries_t2.ForEach((te) => { te.Spawn_direction = (te.Spawn_direction + 180) % 360; });
                 t.entries_t3.ForEach((te) => { te.Spawn_direction = (te.Spawn_direction + 180) % 360; });
             }
-            if (GUILayout.Button(new GUIContent("Swap Teams\nand orientations", "Each Entry swaps Teams and inverts its orientation, for a quick rematch in an asymmetric enviroment.")))
+            if (GUILayout.Button(new GUIContent("Swap Teams\nand orientations", "Each Entry rotates through the Teams and inverts its orientation, for a quick rematch in an asymmetric enviroment.")))
             {
                 List<TournamentEntry> temp = new List<TournamentEntry>();
                 temp.AddRange(t.entries_t1);
@@ -486,41 +486,47 @@ namespace Tournament
                 GUILayout.EndHorizontal();
             }
             GUILayout.Box("<color=#0000ffff>~---------T3---------~</color>");
-            for (int i = 0; i < t.entries_t3.Count; i++)
+            if (t.Parameters.ActiveFactions >= 3)
             {
-                TournamentEntry item = t.entries_t3[i];
-                string text2 = "";
-                string[] labelCost2 = item.LabelCost;
-                foreach (string str2 in labelCost2)
+                for (int i = 0; i < t.entries_t3.Count; i++)
                 {
-                    text2 = text2 + "\n" + str2;
+                    TournamentEntry item = t.entries_t3[i];
+                    string text2 = "";
+                    string[] labelCost2 = item.LabelCost;
+                    foreach (string str2 in labelCost2)
+                    {
+                        text2 = text2 + "\n" + str2;
+                    }
+                    GUILayout.Box(string.Format("<color=#0000ffff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#0000ffff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
+                    GUILayout.BeginHorizontal();
+                    GUILayout.BeginVertical();
+                    if (GUILayout.Button("^ Remove ^"))
+                    {
+                        t.entries_t3.Remove(item);
+                    }
+                    if (GUILayout.Button("^ Update ^"))
+                    {
+                        item.Spawn_height = t.Parameters.SpawnHeight;
+                        item.Spawn_direction = t.Parameters.Direction;
+                    }
+                    GUILayout.EndVertical();
+                    GUILayout.BeginVertical();
+                    if (i != 0 && GUILayout.Button("^ Move up ^"))
+                    {
+                        t.entries_t3.RemoveAt(i);
+                        t.entries_t3.Insert(i - 1, item);
+                    }
+                    if (i + 1 != t.entries_t3.Count && GUILayout.Button("^ Move down ^"))
+                    {
+                        t.entries_t3.RemoveAt(i);
+                        t.entries_t3.Insert(i + 1, item);
+                    }
+                    GUILayout.EndVertical();
+                    GUILayout.EndHorizontal();
                 }
-                GUILayout.Box(string.Format("<color=#0000ffff>{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~</color>{4}\n<color=#0000ffff>~--------------------~</color>", item.Bpf.Name, item.bp.CalculateResourceCost(false, true, false).Material, item.Spawn_height, item.Spawn_direction, text2));
-                GUILayout.BeginHorizontal();
-                GUILayout.BeginVertical();
-                if (GUILayout.Button("^ Remove ^"))
-                {
-                    t.entries_t3.Remove(item);
-                }
-                if (GUILayout.Button("^ Update ^"))
-                {
-                    item.Spawn_height = t.Parameters.SpawnHeight;
-                    item.Spawn_direction = t.Parameters.Direction;
-                }
-                GUILayout.EndVertical();
-                GUILayout.BeginVertical();
-                if (i != 0 && GUILayout.Button("^ Move up ^"))
-                {
-                    t.entries_t3.RemoveAt(i);
-                    t.entries_t3.Insert(i - 1, item);
-                }
-                if (i + 1 != t.entries_t3.Count && GUILayout.Button("^ Move down ^"))
-                {
-                    t.entries_t3.RemoveAt(i);
-                    t.entries_t3.Insert(i + 1, item);
-                }
-                GUILayout.EndVertical();
-                GUILayout.EndHorizontal();
+            }
+            else {
+                GUILayout.Label($"There are currently {t.entries_t3.Count} entries for Team 3, which are currently hidden away.");
             }
             GUILayout.EndScrollView();
             GUILayout.EndArea();

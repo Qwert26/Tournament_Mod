@@ -11,7 +11,6 @@ using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
 using BrilliantSkies.Ftd.Avatar.Build;
 using BrilliantSkies.Ftd.Planets;
-using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Planets.Instances;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Ftd.Planets.World;
@@ -36,7 +35,7 @@ namespace Tournament
 
         private readonly GUIStyle extrainfoLeft;
 
-        private readonly GUIStyle _TopLeft2;
+        private readonly GUIStyle sidelist;
 
         private readonly GUIStyle extrainfoRight;
 
@@ -66,7 +65,7 @@ namespace Tournament
         
         //Management
 
-        private SortedDictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new SortedDictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
+        private Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
 
         public List<TournamentEntry> entries_t1 = new List<TournamentEntry>();
 
@@ -101,13 +100,16 @@ namespace Tournament
                 clipping = TextClipping.Clip
             };
 
-            _TopLeft2 = new GUIStyle
+            sidelist = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperLeft,
                 richText = true,
-                fontSize = 12
+                fontSize = 12,
+                wordWrap = false,
+                clipping = TextClipping.Clip,
+                stretchHeight = false
             };
-            _TopLeft2.normal.textColor = Color.white;
+            sidelist.normal.textColor = Color.white;
 
             extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
@@ -455,16 +457,16 @@ namespace Tournament
             GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", timerStyle);
             if (showLists)
             {
-                GUILayout.BeginArea(new Rect(0, 0, 200, 800), "Current Participants", timerStyle);
-                scrollPos = GUILayout.BeginScrollView(scrollPos,GUILayout.ExpandHeight(false));
+                GUILayout.BeginArea(new Rect(0, 50, 200, 700),sidelist);
+                scrollPos = GUILayout.BeginScrollView(scrollPos);
                 float t = Time.realtimeSinceStartup * 30;
                 foreach (KeyValuePair<ObjectId, SortedDictionary<string,TournamentParticipant>> team in HUDLog) {
                     string teamMaterials = "M: "+team.Key.FactionInst().ResourceStore.Material.ToString();
                     float teamMaxHP = 0, teamCurHP=0;
-                    team.Value.Values.Aggregate(teamMaxHP, (currentSum, member) => currentSum + member.HPMAX);
-                    team.Value.Values.Aggregate(teamCurHP, (currentSum, member) => currentSum + member.HPCUR);
+                    teamMaxHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPMAX);
+                    teamCurHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPCUR);
                     string teamHP = $"{Math.Round(100*teamCurHP/teamMaxHP,1)}%";
-                    GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>");
+                    GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>", sidelist);
                     foreach (KeyValuePair <string,TournamentParticipant> member in team.Value) {
                         string name = member.Value.BlueprintName;
                         string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
@@ -478,14 +480,14 @@ namespace Tournament
                         {
                             memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
                         }
-                        Vector2 size=timerStyle.CalcSize(memberContent);
+                        Vector2 size= sidelist.CalcSize(memberContent);
                         if (size.x <= 150)
                         {
-                            GUILayout.Label(memberContent);
+                            GUILayout.Label(memberContent,sidelist);
                         }
                         else {
-                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), GUIStyle.none, GUIStyle.none, GUILayout.ExpandWidth(false));
-                            GUILayout.Label(memberContent);
+                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), false, false, GUIStyle.none, GUIStyle.none, GUILayout.ExpandWidth(false));
+                            GUILayout.Label(memberContent,sidelist);
                             GUILayout.EndScrollView();
                         }
                     }
@@ -546,7 +548,7 @@ namespace Tournament
                     GUI.Label(new Rect(980, 380, 90f, 38f), "Nearest Enemy:", extrainfoLeft);
 
                     GUI.Label(new Rect(1070, 0, 110f, 38f), name, extrainfoName);
-                    GUI.Label(new Rect(980, 38, 200f, 38f), team, extrainfoRight);
+                    GUI.Label(new Rect(980, 38, 200f, 38f), team, extrainfoName);
                     GUI.Label(new Rect(1070, 76, 110f, 38f), hp, extrainfoRight);
                     GUI.Label(new Rect(1070, 114, 110f, 38f), resources, extrainfoRight);
                     GUI.Label(new Rect(1070, 152, 110f, 38f), ammo, extrainfoRight);
@@ -565,7 +567,7 @@ namespace Tournament
             IMainConstructBlock target = null;
 
             Transform myTransform = flycam.enabled ? flycam.transform : orbitcam.transform;
-            GridCastReturn gridCastReturn = GridCasting.GridCastAllConstructables(new GridCastReturn(myTransform.position, myTransform.forward, 500.0f, 10, true));
+            GridCastReturn gridCastReturn = GridCasting.GridCastAllConstructables(new GridCastReturn(myTransform.position, myTransform.forward, 1000, 1, true));
             if (gridCastReturn.HitSomething)
             {
                 if (gridCastReturn.FirstHit.BlockHit.IsOnSubConstructable)

@@ -68,15 +68,18 @@ namespace Tournament
                 }, new HeaderAndParagraph() {
                     Header="Even more Options",
                     Paragraph="Decide to use local or centralised Resources, Give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
-                    "Set the Lifesteal-Percentage, change how Vehicles are despawned and how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
+                    "Set the Lifesteal-Percentage, use a naval march formation, change how Vehicles are despawned, how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
                 }, new HeaderAndParagraph() {
                     Header="You go there and we fight here",
                     Paragraph="Each Vehicle can be spawned in any orientation and at any altitude. " +
                     "Use the Location sliders to select the perfect Map-Sector for the fight. And finally rotate them around the center point of it."
                 }, new HeaderAndParagraph() {
                     Header="I want a Rematch!",
-                    Paragraph="Simply use two Buttons to swap both Teams, both orientations or even swap Teams while also swapping the orientation of each Entry, " +
+                    Paragraph="Simply use three Buttons to cycle through Teams, swap orientations or even cycle Teams while also swapping the orientation of each Entry, " +
                     "thus keeping the orientations relative to the battlegrounds the same."
+                }, new HeaderAndParagraph() {
+                    Header="Where did YOU came from?",
+                    Paragraph="Unleash even more mayhem by allowing a third team to compete! Spontaneous alliances and treason are bound to happen."
                 }
             };
             @is.Header.Type = InstanceType.None;
