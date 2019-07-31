@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System;
 namespace Tournament
 {
+    [Obsolete("No longer needed, replaced by the Console",true)]
     public class TournamentGUI : BrilliantSkies.Ui.Displayer.Types.ThrowAwayObjectGui<Tournament>
     {
         public Vector2 listpos;

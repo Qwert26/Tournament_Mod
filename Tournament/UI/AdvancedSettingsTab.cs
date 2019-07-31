@@ -5,6 +5,7 @@ using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
+using Tournament.Serialisation;
 namespace Tournament.UI
 {
     public class AdvancedSettingsTab : SuperScreen<Tournament>
@@ -17,24 +18,29 @@ namespace Tournament.UI
             base.Build();
             CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
             ScreenSegmentStandard segment1 = CreateStandardSegment();
+            segment1.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(2), M.m<TournamentParameters>(6),
+                M.m<TournamentParameters>(_focus.Parameters.ActiveFactions), M.m<TournamentParameters>(1), _focus.Parameters,
+                M.m<TournamentParameters>("Active Teams"), delegate (TournamentParameters tp, float f)
+                {
+                    tp.ActiveFactions.Us = (int)f;
+                    TournamentPlugin.factionManagement.EnsureFactionCount((int)f);
+                    _focus.Parameters.EnsureEnoughData();
+                    TriggerScreenRebuild();
+                }, null, M.m<TournamentParameters>(new ToolTip("The amount of active Teams, it can take values from 2 to 6"))));
             segment1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters,"Activate Advanced Options",new ToolTip(""),delegate (TournamentParameters tp,bool b)
             {
                 tp.ShowAdvancedOptions.Us = b;
             },(tp)=>tp.ShowAdvancedOptions.Us));
             ScreenSegmentStandard segment2 = CreateStandardSegment();
             segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
-            segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0),M.m<TournamentParameters>(TournamentFormation.tournamentFormations.GetLength(0)-1),
-                M.m<TournamentParameters>(_focus.Parameters.Team1FormationIndex),M.m<TournamentParameters>(1),_focus.Parameters,
-                M.m<TournamentParameters>($"Team 1 Formation: {TournamentFormation.tournamentFormations[_focus.Parameters.Team1FormationIndex].Name}"),delegate (TournamentParameters tp,float f)
-                {
-                    tp.Team1FormationIndex.Us = (int)f;
-                },null,M.m<TournamentParameters>(new ToolTip(TournamentFormation.tournamentFormations[_focus.Parameters.Team1FormationIndex].Description))));
-            segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(TournamentFormation.tournamentFormations.GetLength(0) - 1),
-                M.m<TournamentParameters>(_focus.Parameters.Team2FormationIndex), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>($"Team 2 Formation: {TournamentFormation.tournamentFormations[_focus.Parameters.Team2FormationIndex].Name}"), delegate (TournamentParameters tp, float f)
-                {
-                    tp.Team2FormationIndex.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip(TournamentFormation.tournamentFormations[_focus.Parameters.Team2FormationIndex].Description))));
+            for (int i = 0; i < _focus.Parameters.ActiveFactions; i++) {
+                segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(TournamentFormation.tournamentFormations.Length - 1),
+                    M.m<TournamentParameters>(_focus.Parameters.FormationIndexPerTeam[i]), M.m<TournamentParameters>(1), _focus.Parameters,
+                    M.m<TournamentParameters>($"Formation Team 1: {TournamentFormation.tournamentFormations[_focus.Parameters.FormationIndexPerTeam[i]].Name}"), delegate (TournamentParameters tp, float f)
+                    {
+                        tp.FormationIndexPerTeam.Us[i] = (int)f;
+                    }, null, M.m<TournamentParameters>(new ToolTip(TournamentFormation.tournamentFormations[_focus.Parameters.FormationIndexPerTeam[i]].Description))));
+            }
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
                 M.m<TournamentParameters>(_focus.Parameters.MaterialConversion), "Material-Conversion", delegate (TournamentParameters tp, float f)
                 {
@@ -103,8 +109,6 @@ namespace Tournament.UI
                     tp.MinimumHealth.Us = (int)f;
                 }, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
             if (!_focus.Parameters.ShowAdvancedOptions.Us) {
-                _focus.Parameters.Team1FormationIndex.Reset();
-                _focus.Parameters.Team2FormationIndex.Reset();
                 _focus.Parameters.MaterialConversion.Reset();
                 _focus.Parameters.CleanUpMode.Reset();
                 _focus.Parameters.HealthCalculation.Reset();

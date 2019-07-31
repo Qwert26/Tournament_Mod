@@ -1,4 +1,5 @@
-﻿using BrilliantSkies.Ui.Consoles;
+﻿using BrilliantSkies.Core.Timing;
+using BrilliantSkies.Ui.Consoles;
 namespace Tournament.UI
 {
     public class TournamentConsole : ConsoleUi<Tournament>
@@ -17,6 +18,17 @@ namespace Tournament.UI
             window.DisplayTextPrompt = false;
             window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus));
             return window;
+        }
+        public override void OnActivateGui()
+        {
+            base.OnActivateGui();
+            _focus.ResetCam();
+            GameEvents.UpdateEvent += _focus.UpdateBoardSectionPreview;
+        }
+        public override void OnDeactivateGui()
+        {
+            base.OnDeactivateGui();
+            GameEvents.UpdateEvent -= _focus.UpdateBoardSectionPreview;
         }
     }
 }

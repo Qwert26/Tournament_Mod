@@ -7,6 +7,7 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
+using Tournament.Serialisation;
 namespace Tournament.UI
 {
     public class BaseSettingsTab : SuperScreen<Tournament>
@@ -20,24 +21,21 @@ namespace Tournament.UI
             base.Build();
             CreateHeader("Customize basic fighting parameters:", new ToolTip(""));
             ScreenSegmentStandard segment = CreateStandardSegment();
-            segment.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(40000),
-                M.m<TournamentParameters>(_focus.Parameters.StartingDistance), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Starting Distance"), delegate (TournamentParameters tp, float f)
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 20000, 1, 2500,
+                M.m<TournamentParameters>(_focus.Parameters.StartingDistance), "Starting Distance", delegate (TournamentParameters tp, float f)
                 {
                     tp.StartingDistance.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("How many meters apart should the two teams or \"flagships\" be at the start of the fight?"))));
-            segment.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(1000),
-                M.m<TournamentParameters>(_focus.Parameters.SpawngapLR), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Spawngap Left-Right"), delegate (TournamentParameters tp, float f)
+                }, new ToolTip("The distance from the center towards the \"Flagship(s)\" of a team.")));
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+                M.m<TournamentParameters>(_focus.Parameters.SpawngapLR), "Spawngap Left-Right", delegate (TournamentParameters tp, float f)
                 {
                     tp.SpawngapLR.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("How many meters should entries on the same team be apart in the left-right direction?"))));
-            segment.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(1000),
-                M.m<TournamentParameters>(_focus.Parameters.SpawngapFB), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Spawngap Forward-Backward"), delegate (TournamentParameters tp, float f)
+                }, new ToolTip("How many meters should entries on the same team be apart in the left-right direction?")));
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+                M.m<TournamentParameters>(_focus.Parameters.SpawngapFB), "Spawngap Forward-Backward", delegate (TournamentParameters tp, float f)
                 {
                     tp.SpawngapFB.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("How many meters should entries on the same team be apart in the forward-backward direction?"))));
+                }, new ToolTip("How many meters should entries on the same team be apart in the forward-backward direction?")));
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 3000, 1, _focus.Parameters.AltitudeLimits.Upper,
                 M.m<TournamentParameters>(_focus.Parameters.AltitudeLimits.Lower), "Lower Altitude Limit", delegate (TournamentParameters tp, float f)
                 {
@@ -48,22 +46,19 @@ namespace Tournament.UI
                 {
                     tp.AltitudeLimits.Upper = f;
                 }, new ToolTip("What is the maximum altitude for all entries?")));
-            segment.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(15000),
-                M.m<TournamentParameters>(_focus.Parameters.DistanceLimit), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Maximum Distance"), delegate (TournamentParameters tp, float f)
-                {
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters,0,10000,1,1500,
+                M.m<TournamentParameters>(_focus.Parameters.DistanceLimit),"Distance Limit",delegate(TournamentParameters tp,float f) {
                     tp.DistanceLimit.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum distance that enemies can be apart?"))));
+                },new ToolTip("What is the maximum distance for all entries towards the nearest enemy?")));
             segment.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use projected Distance", new ToolTip("When turned on, a ground projected distance will be used. This is better for fights with a lot of vertical freedom."), delegate (TournamentParameters tp, bool b)
             {
                 tp.ProjectedDistance.Us = b;
             }, (tp) => tp.ProjectedDistance.Us));
-            segment.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(3600),
-                M.m<TournamentParameters>(_focus.Parameters.DistanceLimit), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Penalty Time"), delegate (TournamentParameters tp, float f)
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
+                M.m<TournamentParameters>(_focus.Parameters.MaximumPenaltyTime), "Maximum Penalty Time", delegate (TournamentParameters tp, float f)
                 {
                     tp.MaximumPenaltyTime.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum penalty for entries before self-destruct?"))));
+                }, new ToolTip("How much penalty time can a participant have, before it self-destructs?")));
             segment.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use soft Limits", new ToolTip("When turned on, entries are given the chance to be considered in bounds under certain conditions. Turned off, entries will pickup penalty time as long as they are outside the bounds."), delegate (TournamentParameters tp, bool b)
             {
                 tp.SoftLimits.Us = b;
@@ -71,26 +66,25 @@ namespace Tournament.UI
             #region Puffer-Einstellungen
             ScreenSegmentStandard segment2 = CreateStandardSegment();
             segment2.SetConditionalDisplay(() => _focus.Parameters.SoftLimits.Us);
-            segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(360),
-                M.m<TournamentParameters>(_focus.Parameters.MaximumBufferTime), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Buffer Time"), delegate (TournamentParameters tp, float f)
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
+                M.m<TournamentParameters>(_focus.Parameters.MaximumBufferTime), "Maximum Buffer Time", delegate (TournamentParameters tp, float f)
                 {
                     tp.MaximumBufferTime.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip("When considered out of bounds, the time buffer must deplete first before penalty time is added. Will be reset once an entry is considered back in bounds."))));
-            segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(-300), M.m<TournamentParameters>(300),
-                M.m<TournamentParameters>(_focus.Parameters.DistanceReverse), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Distance Reverse"), delegate (TournamentParameters tp, float f)
+                }, new ToolTip("How much buffer time can a participant have, before it gains penalty time? This Buffer will reset, once a participant is considered to be back in bounds.")));
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
+                M.m<TournamentParameters>(_focus.Parameters.DistanceReverse), "Distance Reversal", delegate (TournamentParameters tp, float f)
                 {
                     tp.DistanceReverse.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.DistanceReverse.Us > 0 ? $"Entries are currently allowed to move at most {_focus.Parameters.DistanceReverse.Us}m/s away from the nearest enemy." :
-                _focus.Parameters.DistanceReverse.Us < 0 ? $"Entries must move at least {-_focus.Parameters.DistanceReverse.Us}m/s towards the nearest enemy." : "Entries are allowed to hold the distance, even if it is above the limit."))));
-            segment2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(-300), M.m<TournamentParameters>(300),
-               M.m<TournamentParameters>(_focus.Parameters.AltitudeReverse), M.m<TournamentParameters>(1), _focus.Parameters,
-               M.m<TournamentParameters>("Altitude Reverse"), delegate (TournamentParameters tp, float f)
-               {
-                   tp.DistanceReverse.Us = (int)f;
-               }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.AltitudeReverse.Us > 0 ? $"Entries are currently allowed to move at most {_focus.Parameters.DistanceReverse.Us}m/s away from the altitude limits." :
-               _focus.Parameters.DistanceReverse.Us < 0 ? $"Entries must move at least {-_focus.Parameters.AltitudeReverse.Us}m/s towards the altitude limits." : "Entries are allowed to hold their altitude, even if it is outside the limits."))));
+                }, new ToolTip(_focus.Parameters.DistanceReverse>0?$"Participants are allowed to move up to {_focus.Parameters.DistanceReverse}m/s away from the nearest, assumed to be stationary, enemy.":
+                _focus.Parameters.DistanceReverse<0?$"Participants are required to move at least {-_focus.Parameters.DistanceReverse}m/s towards the nearest, assumed to be stationary, enemy.":
+                "Participants are allowed to hold their distance to the nearest, assumed to be stationary, enemy, even if it is outside the limit.")));
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
+                M.m<TournamentParameters>(_focus.Parameters.AltitudeReverse), "Altitude Reversal", delegate (TournamentParameters tp, float f)
+                {
+                    tp.AltitudeReverse.Us = (int)f;
+                }, new ToolTip(_focus.Parameters.AltitudeReverse > 0 ? $"Participants are allowed to move up to {_focus.Parameters.AltitudeReverse}m/s away from the altitude limits." :
+                _focus.Parameters.AltitudeReverse < 0 ? $"Participants are required to move at least {-_focus.Parameters.AltitudeReverse}m/s towards the altitude limits." :
+                "Participants are allowed to hold their altitude, even if it is outside the limits.")));
             #endregion
             ScreenSegmentStandard segment3 = CreateStandardSegment();
             segment3.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(3600),
@@ -109,58 +103,49 @@ namespace Tournament.UI
                {
                    tp.LocalResources.Us = b;
                }, (tp) => tp.LocalResources.Us));
-            segment3.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give both Teams the same amount of resources of make it uneven."), delegate (TournamentParameters tp, bool b)
+            segment3.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (TournamentParameters tp, bool b)
             {
                 tp.SameMaterials.Us = b;
             }, (tp) => tp.SameMaterials.Us));
             #region Resourcen-Einstellungen
-            ScreenSegmentStandard segment4_1 = CreateStandardSegment();
-            segment4_1.SetConditionalDisplay(() => _focus.Parameters.SameMaterials.Us);
-            segment4_1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Infinte Resources both Teams", new ToolTip("Enable or Disable Infinte Resources for both teams"), delegate (TournamentParameters tp, bool b)
+            ScreenSegmentStandard segmentIdenticalMaterials1 = CreateStandardSegment();
+            segmentIdenticalMaterials1.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
+            _focus.Parameters.EnsureEnoughData();
+            segmentIdenticalMaterials1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Infinte Resources", new ToolTip("Give all Teams infinte Materials"), delegate (TournamentParameters tp, bool b)
             {
-                tp.InfinteResourcesTeam1.Us = tp.InfinteResourcesTeam2.Us = b;
-            }, (tp) => tp.InfinteResourcesTeam1.Us));
-
-            ScreenSegmentStandard segment4_2 = CreateStandardSegment();
-            segment4_2.SetConditionalDisplay(() => !_focus.Parameters.InfinteResourcesTeam1.Us);
-            segment4_2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(1000000),
-                M.m<TournamentParameters>(_focus.Parameters.ResourcesTeam1), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Starting Materials both Teams"), delegate (TournamentParameters tp, float f)
-                 {
-                     tp.ResourcesTeam1.Us = tp.ResourcesTeam2.Us = (int)f;
-                 }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.LocalResources.Us ? "Amount of localised Materials for each entry on both teams." : "Amount of centralised Materials for both teams."))));
-
-            ScreenSegmentStandard segment4_3_1 = CreateStandardSegment();
-            segment4_3_1.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials.Us);
-            segment4_3_1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Infinte Resources Team 1", new ToolTip("Enable or Disable Infinte Resources for both teams"), delegate (TournamentParameters tp, bool b)
-               {
-                   tp.InfinteResourcesTeam1.Us = b;
-               }, (tp) => tp.InfinteResourcesTeam1.Us));
-
-            ScreenSegmentStandard segment4_3_2 = CreateStandardSegment();
-            segment4_3_2.SetConditionalDisplay(() => !_focus.Parameters.InfinteResourcesTeam1.Us);
-            segment4_3_2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(1000000),
-                M.m<TournamentParameters>(_focus.Parameters.ResourcesTeam1), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Starting Materials Team 1"), delegate (TournamentParameters tp, float f)
+                for (int i = 0; i < tp.ActiveFactions; i++)
                 {
-                    tp.ResourcesTeam1.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.LocalResources.Us ? "Amount of localised Materials for each entry on Team 1." : "Amount of centralised Materials for Team 1."))));
-
-            ScreenSegmentStandard segment4_4_1 = CreateStandardSegment();
-            segment4_4_1.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials.Us);
-            segment4_4_1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Infinte Resources Team 2", new ToolTip("Enable or Disable Infinte Resources for both teams"), delegate (TournamentParameters tp, bool b)
-            {
-                tp.InfinteResourcesTeam2.Us = b;
-            }, (tp) => tp.InfinteResourcesTeam2.Us));
-
-            ScreenSegmentStandard segment4_4_2 = CreateStandardSegment();
-            segment4_4_2.SetConditionalDisplay(() => !_focus.Parameters.InfinteResourcesTeam2.Us);
-            segment4_4_2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(1000000),
-                M.m<TournamentParameters>(_focus.Parameters.ResourcesTeam1), M.m<TournamentParameters>(1), _focus.Parameters,
-                M.m<TournamentParameters>("Starting Materials Team 1"), delegate (TournamentParameters tp, float f)
+                    tp.InfinteResourcesPerTeam.Us[i] = b;
+                }
+            }, (tp) => tp.InfinteResourcesPerTeam[0]));
+            ScreenSegmentStandard segmentIdenticalMaterials2 = CreateStandardSegment();
+            segmentIdenticalMaterials2.SetConditionalDisplay(() => _focus.Parameters.SameMaterials && _focus.Parameters.InfinteResourcesPerTeam[0]);
+            segmentIdenticalMaterials2.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(1000000),
+                M.m<TournamentParameters>(_focus.Parameters.ResourcesPerTeam[0]), M.m<TournamentParameters>(1), _focus.Parameters,
+                M.m<TournamentParameters>("Resources for all Teams"), delegate (TournamentParameters tp, float f)
                 {
-                    tp.ResourcesTeam2.Us = (int)f;
-                }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.LocalResources.Us ? "Amount of localised Materials for each entry on Team 2." : "Amount of centralised Materials for Team 2."))));
+                    for (int i = 0; i < tp.ActiveFactions; i++)
+                    {
+                        tp.ResourcesPerTeam.Us[i] = (int)f;
+                    }
+                }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.LocalResources ? "Give each entry this amount of Materials to start with." : "Give all Teams this amount of Materials to start with."))));
+            ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
+            segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
+            for (int i = 0; i < _focus.Parameters.ActiveFactions; i++) {
+                segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {i}", new ToolTip($"Give Team {i} infinte Materials."), delegate (TournamentParameters tp, bool b)
+                {
+                    tp.InfinteResourcesPerTeam.Us[i] = b;
+                    TriggerScreenRebuild();
+                }, (tp) => tp.InfinteResourcesPerTeam[i]));
+                if (!_focus.Parameters.InfinteResourcesPerTeam[i]) {
+                    segmentIndividualMaterials.AddInterpretter(new SubjectiveFloatClamped<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(1000000),
+                        M.m<TournamentParameters>(_focus.Parameters.ResourcesPerTeam[i]), M.m<TournamentParameters>(1), _focus.Parameters,
+                        M.m<TournamentParameters>($"Resources for Team {i}"), delegate (TournamentParameters tp, float f)
+                        {
+                            tp.ResourcesPerTeam.Us[i] = (int)f;
+                        }, null, M.m<TournamentParameters>(new ToolTip(_focus.Parameters.LocalResources ? $"Give each entry on Team {i} this amount of Materials to start with." : $"Give Team {i} this amount of Materials to start with."))));
+                }
+            }
             #endregion
             ScreenSegmentTable table1 = CreateTableSegment(3,2);
             table1.eTableOrder = ScreenSegmentTable.TableOrder.Rows;
@@ -174,12 +159,12 @@ namespace Tournament.UI
                 {
                     tp.NorthSouthBoard.Us = (int)f;
                 }, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
-            table1.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -90, 90, 1, 0,
+            table1.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -180/_focus.Parameters.ActiveFactions, 180/_focus.Parameters.ActiveFactions, 1, 0,
                 M.m<TournamentParameters>(_focus.Parameters.Rotation), "Rotation", delegate (TournamentParameters tp, float f)
                 {
                     tp.Rotation.Us = (int)f;
                 }, new ToolTip("Rotate the entire Field before the fight starts.")));
-            table1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder"), (t) => t.SaveSettingsNew()));
+            table1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder"), (t) => t.SaveSettings()));
             table1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
             table1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (TournamentParameters tp, bool b)
                {

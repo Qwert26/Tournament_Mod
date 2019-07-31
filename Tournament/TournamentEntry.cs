@@ -113,21 +113,7 @@ namespace Tournament
         public void Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
-            FactionSpecificationFaction faction;
-             switch (FactionIndex) {
-                case 0:
-                    faction =TournamentPlugin.factionTeam1;
-                    break;
-                case 1:
-                    faction=TournamentPlugin.factionTeam2;
-                    break;
-                case 2:
-                    faction = TournamentPlugin.factionTeam3;
-                    break;
-                default:
-                    Debug.LogError("Factionless Entry!");
-                    return;
-            }
+            FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
             Team_id = faction.Id;
             BlueprintInitialisation initialisation = new BlueprintInitialisation(val)
             {

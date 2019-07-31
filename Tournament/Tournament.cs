@@ -22,14 +22,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-
+using Tournament.UI;
+using Tournament.Serialisation;
 namespace Tournament
 {
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
     {
         public static Tournament _me;
 
-        public TournamentGUI _GUI;
+        public TournamentConsole _GUI;
 
         private readonly GUIStyle timerStyle;
 
@@ -67,22 +68,16 @@ namespace Tournament
 
         private Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
 
-        public List<TournamentEntry> entries_t1 = new List<TournamentEntry>();
-
-        public List<TournamentEntry> entries_t2 = new List<TournamentEntry>();
-
-        public List<TournamentEntry> entries_t3 = new List<TournamentEntry>();
-
         private bool showLists = true;
 
-		public TournamentFormation formationTeam1, formationTeam2, formationTeam3;
+        public List<TournamentFormation> teamFormations = new List<TournamentFormation>();
 
         public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
 
         public Tournament()
         {
             _me = this;
-            _GUI = new TournamentGUI(_me);
+            _GUI = new TournamentConsole(_me);
 
             timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
@@ -127,7 +122,7 @@ namespace Tournament
                 wordWrap = true,
                 clipping = TextClipping.Clip
             };
-            LoadNewSettings();
+            LoadSettings();
         }
 
         public void LoadCraft()
@@ -136,75 +131,7 @@ namespace Tournament
             HUDLog.Clear();
             InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
             InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
-            foreach (TournamentEntry item in entries_t1)
-            {
-                item.Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, entries_t1.Count, entries_t1.IndexOf(item));
-                if (Parameters.LocalResources)
-                {
-                    item.Team_id.FactionInst().ResourceStore.SetResources(0);
-                }
-                else if(Parameters.InfinteResourcesTeam1)
-                {
-                    item.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
-                } else
-                {
-                    item.Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam1);
-                }
-            }
-            foreach (TournamentEntry item2 in entries_t2)
-            {
-                item2.Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, entries_t2.Count, entries_t2.IndexOf(item2));
-                if (Parameters.LocalResources)
-                {
-                    item2.Team_id.FactionInst().ResourceStore.SetResources(0);
-                }
-                else if (Parameters.InfinteResourcesTeam2) {
-                    item2.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
-                }
-                else
-                {
-                    item2.Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam2);
-                }
-            }
-            if (Parameters.ActiveFactions >= 3)
-            {
-                foreach (TournamentEntry item3 in entries_t3)
-                {
-                    item3.Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, entries_t3.Count, entries_t3.IndexOf(item3));
-                    if (Parameters.LocalResources)
-                    {
-                        item3.Team_id.FactionInst().ResourceStore.SetResources(0);
-                    }
-                    else if (Parameters.InfinteResourcesTeam2)
-                    {
-                        item3.Team_id.FactionInst().ResourceStore.SetResourcesInfinite();
-                    }
-                    else
-                    {
-                        item3.Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam2);
-                    }
-                }
-            }
-            if (Parameters.LocalResources)
-            {
-                foreach (MainConstruct construct in StaticConstructablesManager.constructables) {
-                    if (construct.GetTeam() == TournamentPlugin.factionTeam1.Id)
-                    {
-                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam1));
-                    }
-                    else if (construct.GetTeam() == TournamentPlugin.factionTeam2.Id)
-                    {
-                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam2));
-                    }
-                    else if (construct.GetTeam() == TournamentPlugin.factionTeam3.Id) {
-                        construct.RawResource.Material.SetQuantity(Math.Max(construct.RawResource.Material.Maximum, Parameters.ResourcesTeam3));
-                    }
-                    else
-                    {
-                        construct.RawResource.Material.SetQuantity(0);
-                    }
-                }
-            }
+            //TODO
         }
 
         public void StartMatch()
@@ -361,13 +288,13 @@ namespace Tournament
             return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
         }
 
-        public void SaveSettingsNew() {
+        public void SaveSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
             settingsFile.SaveData(Parameters,Formatting.Indented);
         }
 
-        public void LoadNewSettings() {
+        public void LoadSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"parameters.json"));
             if (settingsFile.Exists)
@@ -375,81 +302,14 @@ namespace Tournament
                 Parameters = settingsFile.LoadData<TournamentParameters>();
             }
             else {
-                LoadOldSettings();
-            }
-        }
-
-        public void LoadOldSettings()
-        {
-            string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
-            FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"settings.cfg"));
-            if (settingsFile.Exists)
-            {
-                List<float> settingsList = settingsFile.LoadData<List<float>>();
-                Parameters.AltitudeLimits.Us.Set(settingsList[0], settingsList[1]);
-                Parameters.DistanceLimit.Us = (int)settingsList[2];
-                Parameters.MaximumPenaltyTime.Us = (int)settingsList[3];
-                Parameters.MaximumTime.Us = (int)settingsList[4];
-                Parameters.ResourcesTeam1.Us = (int)settingsList[5];
-                Parameters.ResourcesTeam2.Us = (int)settingsList[5];
-                Parameters.StartingDistance.Us = (int)settingsList[6];
-                Parameters.SpawngapLR.Us = (int)settingsList[7];
-                Parameters.Direction.Us = (int)settingsList[9]*90;
-                Parameters.SpawnHeight.Us = (int)settingsList[10];
-                Parameters.DefaultKeys.Us = settingsList[11] != 0;
-                Parameters.EastWestBoard.Us = (int)settingsList[12];
-                Parameters.NorthSouthBoard.Us = (int)settingsList[13];
-                Parameters.SpawngapFB.Us = (int)settingsList[14];
-                Parameters.LocalResources.Us = settingsList[15] != 0;
-                Parameters.MaximumBufferTime.Us = (int)settingsList[16];
-                Parameters.AltitudeReverse.Us = (int)settingsList[17];
-                if (settingsList.Count >= 31)
-                {
-                    Parameters.ShowAdvancedOptions.Us = settingsList[18] != 0;
-                    Parameters.MaterialConversion.Us = (int)settingsList[19];
-                    Parameters.CleanUpMode.Us = (int)settingsList[20];
-                    Parameters.HealthCalculation.Us = (int)settingsList[21];
-                    Parameters.MinimumHealth.Us = (int)settingsList[22];
-                    Parameters.Rotation.Us = (int)settingsList[23];
-                    Parameters.SameMaterials.Us = settingsList[24] != 0;
-                    Parameters.InfinteResourcesTeam1.Us = settingsList[25] != 0;
-                    Parameters.InfinteResourcesTeam2.Us = settingsList[26] != 0;
-                    Parameters.ProjectedDistance.Us = settingsList[27] != 0;
-                    Parameters.SoftLimits.Us = settingsList[28] != 0;
-                    Parameters.AltitudeReverse.Us = (int)settingsList[29];
-                    Parameters.Overtime.Us = (int)settingsList[30];
-                }
-                else {
-                    Parameters.ShowAdvancedOptions.Reset();
-                    Parameters.MaterialConversion.Reset();
-                    Parameters.CleanUpMode.Reset();
-                    Parameters.HealthCalculation.Reset();
-                    Parameters.MinimumHealth.Reset();
-                    Parameters.Rotation.Reset();
-                    Parameters.SameMaterials.Reset();
-                    Parameters.InfinteResourcesTeam1.Reset();
-                    Parameters.InfinteResourcesTeam2.Reset();
-                    Parameters.ProjectedDistance.Reset();
-                    Parameters.SoftLimits.Reset();
-                    Parameters.AltitudeReverse.Reset();
-                    Parameters.Overtime.Reset();
-                    Parameters.ActiveFactions.Reset();
-                    Parameters.InfinteResourcesTeam3.Reset();
-                    Parameters.ResourcesTeam3.Reset();
-                }
-            }
-            else
-            {
                 LoadDefaults();
             }
+            Parameters.EnsureEnoughData();
         }
-
-
         public void LoadDefaults()
         {
             Parameters.ResetToDefault();
         }
-
         public void OnGUI()
         {
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
@@ -799,22 +659,15 @@ namespace Tournament
             {
                 if (Parameters.MaterialConversion == -1f)
                 {
-                    if (Parameters.ResourcesTeam1 < entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
+                    //TODO: Folgendes Codefragment für alle Teams
+                    /*if (Parameters.ResourcesTeam1 < entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
                     {
                         entries_t1[0].Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam1);
                     }
                     else
                     {
                         Parameters.ResourcesTeam1.Us = (int)entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
-                    }
-                    if (Parameters.ResourcesTeam2 < entries_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
-                    {
-                        entries_t2[0].Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam2);
-                    }
-                    else
-                    {
-                        Parameters.ResourcesTeam2.Us = (int)entries_t2[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
-                    }
+                    }*/
                 }
                 MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
                 foreach (MainConstruct val in array)
@@ -1096,17 +949,7 @@ namespace Tournament
             return Vector3.Distance(a, b);
         }
         public TournamentFormation GetFormation(int index) {
-            switch (index) {
-                case 0:
-                    return formationTeam1;
-                case 1:
-                    return formationTeam2;
-                case 2:
-                    return formationTeam3;
-                default:
-                    Debug.LogError("Invalid index!");
-                    throw new ArgumentOutOfRangeException("index", index, "Only valid values are 0, 1 and 2!");
-            }
+            return teamFormations[index];
         }
     }
 }
