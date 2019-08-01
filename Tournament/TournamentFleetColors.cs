@@ -35,7 +35,7 @@ namespace Tournament
             Description = "A new blue colorscheme by Qwert26, usually used for the Team 3-Faction.",
             Main = new Color(0f, 0f, 1f, 1f),
             Secondary = new Color(0f, 0f, 0.55f, 1f),
-            Trim = new Color(0.15f, 0.15f, 0.7f, 0.1f),
+            Trim = new Color(0.15f, 0.15f, 0.7f, 1f),
             Detail = new Color(0.35f, 0.35f, 1f, 1f)
         };
         public readonly static TournamentFleetColor medievalOldRoyal = new TournamentFleetColor()

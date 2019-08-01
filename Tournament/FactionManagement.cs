@@ -37,13 +37,14 @@ namespace Tournament
                 }
                 added = false;
             }
-            else if (!added && GAMESTATE.GetGameType() == enumGameType.instance) {
+            else if (!added) {
                 foreach (FactionSpecificationFaction fsf in factions)
                 {
                     FactionSpecifications.i.AddNew(fsf);
                 }
                 added = true;
             }
+            FactionSpecifications.i.PostLoadInitiate();
         }
         public void OnUniverseChange() {
             added = false;
@@ -55,6 +56,7 @@ namespace Tournament
             });
             if (added) {
                 FactionSpecifications.i.AddNew(factions[factions.Count-1]);
+                FactionSpecifications.i.PostLoadInitiate();
             }
         }
         public void EnsureFactionCount(int activeFactions) {

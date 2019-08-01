@@ -287,10 +287,12 @@
     <Compile Include="Tournament\Tournament.cs" />
     <Compile Include="Tournament\UI\BaseSettingsTab.cs" />
     <Compile Include="Tournament\UI\EyecandyTab.cs" />
+    <Compile Include="Tournament\UI\ParticipantManagementTab.cs" />
     <Compile Include="Tournament\UI\TournamentConsole.cs" />
     <Compile Include="Tournament\TournamentEntry.cs" />
     <Compile Include="Tournament\TournamentFleetColors.cs" />
     <Compile Include="Tournament\TournamentFormation.cs" />
+    <Compile Include="Tournament\UI\ParticipantGUI.cs" />
     <None Include="Tournament\TournamentGUI.cs" />
     <Compile Include="Tournament\Serialisation\TournamentParameters.cs" />
     <Compile Include="Tournament\TournamentParticipant.cs" />

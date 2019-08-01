@@ -74,6 +74,8 @@ namespace Tournament
 
         public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
 
+        public Dictionary<int, List<TournamentEntry>> entries = new Dictionary<int, List<TournamentEntry>>();
+
         public Tournament()
         {
             _me = this;
@@ -131,7 +133,39 @@ namespace Tournament
             HUDLog.Clear();
             InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
             InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
-            //TODO
+            if (Parameters.LocalResources)
+            {
+                for (int i = 0; i < Parameters.ActiveFactions; i++)
+                {
+                    TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+                }
+                foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+                {
+                    for (int pos = 0; pos < team.Value.Count; pos++)
+                    {
+                        team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                        MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
+                        mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, Parameters.ResourcesPerTeam[team.Key]));
+                    }
+                }
+            }
+            else {
+                for (int i = 0; i < Parameters.ActiveFactions; i++) {
+                    if (Parameters.InfinteResourcesPerTeam[i]) {
+                        TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResourcesInfinite();
+                    }
+                    else
+                    {
+                        TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Parameters.ResourcesPerTeam[i]);
+                    }
+                }
+                foreach (KeyValuePair<int, List<TournamentEntry>> team in entries) {
+                    for (int pos=0;pos< team.Value.Count;pos++) {
+                        team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                        StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].RawResource.Material.SetQuantity(0);
+                    }
+                }
+            }
         }
 
         public void StartMatch()
@@ -305,6 +339,9 @@ namespace Tournament
                 LoadDefaults();
             }
             Parameters.EnsureEnoughData();
+            for (int i = 0; i < Parameters.ActiveFactions; i++) {
+                entries.Add(i, new List<TournamentEntry>());
+            }
         }
         public void LoadDefaults()
         {
@@ -949,7 +986,12 @@ namespace Tournament
             return Vector3.Distance(a, b);
         }
         public TournamentFormation GetFormation(int index) {
-            return teamFormations[index];
+            return TournamentFormation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
+        }
+        public void ApplyFactionColors() {
+            for (int i = 0; i < Parameters.ActiveFactions; i++) {
+                TournamentPlugin.factionManagement.factions[i].OverrideFleetColors(new Color[] { Parameters.MainColorsPerTeam[i], Parameters.SecondaryColorsPerTeam[i], Parameters.TrimColorsPerTeam[i], Parameters.DetailColorsPerTeam[i] });
+            }
         }
     }
 }

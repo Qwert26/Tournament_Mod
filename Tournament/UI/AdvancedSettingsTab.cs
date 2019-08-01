@@ -7,7 +7,7 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
 using Tournament.Serialisation;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
-
+using System.Collections.Generic;
 namespace Tournament.UI
 {
     public class AdvancedSettingsTab : SuperScreen<Tournament>
@@ -26,6 +26,12 @@ namespace Tournament.UI
                     tp.ActiveFactions.Us = (int)f;
                     TournamentPlugin.factionManagement.EnsureFactionCount((int)f);
                     tp.EnsureEnoughData();
+                    for (int i = 0; i < f; i++) {
+                        if (!_focus.entries.ContainsKey(i)) {
+                            _focus.entries.Add(i, new List<TournamentEntry>());
+                        }
+                    }
+                    TriggerRebuild();
                 }, new ToolTip("The amount of active Teams.")));
             segment1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters,"Activate Advanced Options",new ToolTip(""),delegate (TournamentParameters tp,bool b)
             {

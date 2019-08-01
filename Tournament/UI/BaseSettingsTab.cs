@@ -1,5 +1,4 @@
-﻿using System;
-using BrilliantSkies.Ui.Consoles;
+﻿using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Tips;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
@@ -8,7 +7,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
 using Tournament.Serialisation;
-using UnityEngine;
 namespace Tournament.UI
 {
     public class BaseSettingsTab : SuperScreen<Tournament>
@@ -20,7 +18,7 @@ namespace Tournament.UI
         public override void Build()
         {
             base.Build();
-            CreateHeader("Customize basic fighting parameters:", new ToolTip(""));
+            CreateHeader("Basic Parameters", new ToolTip("Customize the most basic Parameters here."));
             ScreenSegmentStandard segment = CreateStandardSegment();
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 20000, 1, 2500,
                 M.m((TournamentParameters tp)=>tp.StartingDistance), "Starting Distance", delegate (TournamentParameters tp, float f)

@@ -16,7 +16,7 @@ namespace Tournament.UI
         {
             ConsoleWindow window = NewWindow("Tournament Setup", new CentralRectangle(0.8f,0.8f));
             window.DisplayTextPrompt = false;
-            window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus));
+            window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus), new ParticipantManagementTab(window, _focus));
             return window;
         }
         public override void OnActivateGui()
@@ -33,6 +33,11 @@ namespace Tournament.UI
         public override void FixedUpdateWhenActive(ITimeStep t)
         {
             base.FixedUpdateWhenActive(t);
+        }
+        protected override void OnRisenOutOfStack()
+        {
+            base.OnRisenOutOfStack();
+            TriggerScreenRebuild();
         }
     }
 }
