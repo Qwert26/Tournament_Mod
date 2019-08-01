@@ -31,6 +31,7 @@ namespace Tournament
             GameEvents.StartEvent += OnInstanceChange;
             GameEvents.StartEvent += factionManagement.OnInstanceChange;
             GameEvents.UniverseChange += OnPlanetChange;
+            GameEvents.UniverseChange += factionManagement.OnUniverseChange;
         }
 
         public void OnSave() { }

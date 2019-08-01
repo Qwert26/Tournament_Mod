@@ -33,20 +33,29 @@ namespace Tournament
             {
                 foreach (FactionSpecificationFaction fsf in factions)
                 {
-                    FactionSpecifications.i.Factions.Remove(fsf);
+                    FactionSpecifications.i.RemoveFaction(fsf);
                 }
                 added = false;
             }
             else if (!added && GAMESTATE.GetGameType() == enumGameType.instance) {
-                FactionSpecifications.i.Factions.AddRange(factions);
+                foreach (FactionSpecificationFaction fsf in factions)
+                {
+                    FactionSpecifications.i.AddNew(fsf);
+                }
                 added = true;
             }
+        }
+        public void OnUniverseChange() {
+            added = false;
         }
         public void CreateFaction() {
             factions.Add(new FactionSpecificationFaction() {
                 Name=$"Team {factions.Count+1}",
                 AbreviatedName=$"T{factions.Count+1}"
             });
+            if (added) {
+                FactionSpecifications.i.AddNew(factions[factions.Count-1]);
+            }
         }
         public void EnsureFactionCount(int activeFactions) {
             while (factions.Count < activeFactions) {

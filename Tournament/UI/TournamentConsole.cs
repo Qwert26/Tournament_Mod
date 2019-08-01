@@ -30,5 +30,9 @@ namespace Tournament.UI
             base.OnDeactivateGui();
             GameEvents.UpdateEvent -= _focus.UpdateBoardSectionPreview;
         }
+        public override void FixedUpdateWhenActive(ITimeStep t)
+        {
+            base.FixedUpdateWhenActive(t);
+        }
     }
 }
