@@ -160,11 +160,12 @@ namespace Tournament.UI
                     tp.NorthSouthBoard.Us = (int)f;
                     _focus.MoveCam();
                 }, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
-            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -180/_focus.Parameters.ActiveFactions, 180/_focus.Parameters.ActiveFactions, 1, 0,
-                M.m((TournamentParameters tp) => tp.Rotation), "Rotation", delegate (TournamentParameters tp, float f)
+            horizontal.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m((TournamentParameters tp) => -180f / tp.ActiveFactions), M.m((TournamentParameters tp) => 180f / tp.ActiveFactions),
+                M.m((TournamentParameters tp) => tp.Rotation), M.m<TournamentParameters>(1), M.m<TournamentParameters>(1),
+                _focus.Parameters, M.m<TournamentParameters>("Rotation"), delegate (TournamentParameters tp, float f)
                 {
                     tp.Rotation.Us = (int)f;
-                }, new ToolTip("Rotate the entire Field before the fight starts.")));
+                }, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
             horizontal = CreateStandardHorizontalSegment();
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));

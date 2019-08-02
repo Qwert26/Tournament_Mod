@@ -23,12 +23,6 @@ namespace Tournament.UI
         {
             base.OnActivateGui();
             _focus.ResetCam();
-            GameEvents.UpdateEvent += _focus.UpdateBoardSectionPreview;
-        }
-        public override void OnDeactivateGui()
-        {
-            base.OnDeactivateGui();
-            GameEvents.UpdateEvent -= _focus.UpdateBoardSectionPreview;
         }
         public override void FixedUpdateWhenActive(ITimeStep t)
         {

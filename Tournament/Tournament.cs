@@ -288,7 +288,6 @@ namespace Tournament
                     }
                 }
             }
-            GameEvents.UpdateEvent -= UpdateBoardSectionPreview;
             GameEvents.PreLateUpdate += LateUpdate;
             GameEvents.Twice_Second += SlowUpdate;
             GameEvents.FixedUpdateEvent += FixedUpdate;
@@ -504,11 +503,6 @@ namespace Tournament
                 }
             }
             return target;
-        }
-
-        public void UpdateBoardSectionPreview(ITimeStep dt)
-        {
-            cam.transform.Rotate(0, (float)(15 * dt.PhysicalDeltaTime.Seconds), 0);//15° rotation per second
         }
 
         public void LateUpdate()

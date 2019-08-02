@@ -45,7 +45,6 @@ namespace Tournament
             GameEvents.OnGui -= _t.OnGUI;
             GameEvents.Twice_Second -= _t.SlowUpdate;
             GameEvents.PreLateUpdate -= _t.LateUpdate;
-            GameEvents.UpdateEvent -= _t.UpdateBoardSectionPreview;
             if (GAMESTATE.GetGameType() == enumGameType.worldeditor)
             {
                 Planet.i.Designers.RemoveInstance(@is);
