@@ -81,15 +81,13 @@ namespace Tournament
         public Tournament()
         {
             _me = this;
-            _GUI = new TournamentConsole(_me);
-
+            LoadSettings();
             timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.MiddleCenter,
                 richText = true,
                 fontSize = 12
             };
-
             extrainfoLeft = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperLeft,
@@ -98,7 +96,6 @@ namespace Tournament
                 wordWrap = false,
                 clipping = TextClipping.Clip
             };
-
             sidelist = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperLeft,
@@ -109,7 +106,6 @@ namespace Tournament
                 stretchHeight = false
             };
             sidelist.normal.textColor = Color.white;
-
             extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
             {
                 alignment = TextAnchor.UpperRight,
@@ -126,9 +122,8 @@ namespace Tournament
                 wordWrap = true,
                 clipping = TextClipping.Clip
             };
-            LoadSettings();
+            _GUI = new TournamentConsole(_me);
         }
-
         public void LoadCraft()
         {
             ClearArea();

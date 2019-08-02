@@ -31,8 +31,9 @@ namespace Tournament.UI
                     teamSize = _focus.entries[factionIndex].Count;
                 }
                 ready &= teamSize > 0 || i >= _focus.Parameters.ActiveFactions;
-                CreateHeader("Team " + (i + 1), new ToolTip("Current Entries for Team " + (i + 1))).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
-                ScreenSegmentStandard list = CreateStandardSegment();
+                CreateHeader("Team " + (i + 1), new ToolTip($"Current Entries for Team{i + 1}. The list goes from left to right and then top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
+                ScreenSegmentTable list = CreateTableSegment(5,10);
+                list.eTableOrder = ScreenSegmentTable.TableOrder.Rows;
                 list.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
                 for (int j = 0; j < teamSize; j++) {
                     int indexInFaction = j;
@@ -44,7 +45,6 @@ namespace Tournament.UI
                         text = text + "\n" + str;
                     }
                     list.AddInterpretter(StringDisplay.Quick(string.Format("{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~{4}\n~--------------------~", entry.Bpf.Name, entry.bp.CalculateResourceCost(false, true, false).Material, entry.Spawn_height, entry.Spawn_direction, text)));
-                    list.AddInterpretter(new Blank(5));
                 }
             }
             ScreenSegmentStandard posthead = CreateStandardSegment();

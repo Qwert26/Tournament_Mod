@@ -102,33 +102,33 @@ namespace Tournament.Serialisation
         }
         public void EnsureEnoughData() {
             //Debug.Log("ActiveFactions is " + ActiveFactions);
-            while (InfinteResourcesPerTeam.Count < ActiveFactions) {
+            while (InfinteResourcesPerTeam.Count < 6) {
                 InfinteResourcesPerTeam.Add(false);
             }
             //Debug.Log("InfinteResourcesPerTeam has " + InfinteResourcesPerTeam.Count + " entries");
-            while (ResourcesPerTeam.Count < ActiveFactions) {
+            while (ResourcesPerTeam.Count < 6) {
                 ResourcesPerTeam.Add(10000);
             }
             //Debug.Log("ResourcesPerTeam has " + ResourcesPerTeam.Count + " entries");
-            while (FormationIndexPerTeam.Count < ActiveFactions) {
+            while (FormationIndexPerTeam.Count < 6) {
                 FormationIndexPerTeam.Add(0);
             }
             //Debug.Log("FormationIndexPerTeam has " + FormationIndexPerTeam.Count + " entries");
-            while (MainColorsPerTeam.Count < ActiveFactions) {
+            while (MainColorsPerTeam.Count < 6) {
                 MainColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
             //Debug.Log("MainColorsPerTeam has " + MainColorsPerTeam.Count + " entries");
-            while (SecondaryColorsPerTeam.Count < ActiveFactions)
+            while (SecondaryColorsPerTeam.Count < 6)
             {
                 SecondaryColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
             //Debug.Log("SecondaryColorsPerTeam has " + SecondaryColorsPerTeam.Count + " entries");
-            while (TrimColorsPerTeam.Count < ActiveFactions)
+            while (TrimColorsPerTeam.Count < 6)
             {
                 TrimColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
             //Debug.Log("TrimColorsPerTeam has " + TrimColorsPerTeam.Count + " entries");
-            while (DetailColorsPerTeam.Count < ActiveFactions)
+            while (DetailColorsPerTeam.Count < 6)
             {
                 DetailColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
