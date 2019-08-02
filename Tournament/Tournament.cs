@@ -76,6 +76,8 @@ namespace Tournament
 
         public Dictionary<int, List<TournamentEntry>> entries = new Dictionary<int, List<TournamentEntry>>();
 
+        private List<int> materials;
+
         public Tournament()
         {
             _me = this;
@@ -131,25 +133,49 @@ namespace Tournament
         {
             ClearArea();
             HUDLog.Clear();
+            materials?.Clear();
+            materials = null;
             InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
             InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
             if (Parameters.LocalResources)
             {
-                for (int i = 0; i < Parameters.ActiveFactions; i++)
+                if (!Parameters.DistributeLocalResources)
                 {
-                    TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
-                }
-                foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
-                {
-                    for (int pos = 0; pos < team.Value.Count; pos++)
+                    for (int i = 0; i < Parameters.ActiveFactions; i++)
                     {
-                        team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
-                        MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
-                        mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, Parameters.ResourcesPerTeam[team.Key]));
+                        TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+                    }
+                    foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+                    {
+                        for (int pos = 0; pos < team.Value.Count; pos++)
+                        {
+                            team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
+                            mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, Parameters.ResourcesPerTeam[team.Key]));
+                        }
+                    }
+                }
+                else
+                {
+                    List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
+                    foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+                    {
+                        for (int pos = 0; pos < team.Value.Count; pos++)
+                        {
+                            team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
+                            mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, materials[team.Key]));
+                            materials[team.Key] -= (int)mc.RawResource.Material.Quantity;
+                        }
+                    }
+                    for (int i = 0; i < Parameters.ActiveFactions; i++)
+                    {
+                        TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Math.Max(0, materials[i]));
                     }
                 }
             }
             else {
+                materials = new List<int>(Parameters.ResourcesPerTeam.Us);
                 for (int i = 0; i < Parameters.ActiveFactions; i++) {
                     if (Parameters.InfinteResourcesPerTeam[i]) {
                         TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResourcesInfinite();
@@ -346,6 +372,7 @@ namespace Tournament
         public void LoadDefaults()
         {
             Parameters.ResetToDefault();
+            Parameters.EnsureEnoughData();
         }
         public void OnGUI()
         {
@@ -368,7 +395,7 @@ namespace Tournament
                         string name = member.Value.BlueprintName;
                         string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
                         string penaltyTime = $"{Math.Floor(member.Value.OoBTime / 60)}m{Math.Floor(member.Value.OoBTime) % 60}s";
-                        bool disqualified = member.Value.Disqual || member.Value.Scrapping;
+                        bool disqualified = member.Value.Disqual || member.Value.Scrapping || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
                         GUIContent memberContent;
                         if (disqualified) {
                             memberContent = new GUIContent($"{name} DQ");
@@ -694,17 +721,18 @@ namespace Tournament
         {
             if (!GameSpeedManager.Instance.IsPaused)
             {
-                if (Parameters.MaterialConversion == -1f)
+                if (Parameters.MaterialConversion == -1f && materials != null) //Verbietet Materialrückgewinnung durch Selbst- und Teambeschuss.
                 {
-                    //TODO: Folgendes Codefragment für alle Teams
-                    /*if (Parameters.ResourcesTeam1 < entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity)
-                    {
-                        entries_t1[0].Team_id.FactionInst().ResourceStore.SetResources(Parameters.ResourcesTeam1);
+                    for (int i = 0; i < Parameters.ActiveFactions; i++) {
+                        if (materials[i] < TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.Material.Quantity)
+                        {
+                            TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
+                        }
+                        else
+                        {
+                            materials[i] = (int)TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.Material.Quantity;
+                        }
                     }
-                    else
-                    {
-                        Parameters.ResourcesTeam1.Us = (int)entries_t1[0].Team_id.FactionInst().ResourceStore.Material.Quantity;
-                    }*/
                 }
                 MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
                 foreach (MainConstruct val in array)

@@ -64,6 +64,8 @@ namespace Tournament.Serialisation
         /// </summary>
         [Variable(24, "North-South-Section")]
         public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(0, 0, 30);
+        [Variable(25,"Distribute local Resources","When active, the materials get distributed along the entries of a team, any excess goes into faction storage.")]
+        public Var<bool> DistributeLocalResources { get; set; } = new VarBool(false);
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]
@@ -77,7 +79,7 @@ namespace Tournament.Serialisation
         [Variable(105, "Health calculation")]
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
         [Variable(106, "Minimum health(%)")]
-        public Var<int> MinimumHealth { get; set; } = new VarIntClamp(55, 0, 100);
+        public Var<int> MinimumHealth { get; set; } = new VarIntClamp(0, 0, 100);
         [Variable(107, "Active Factions")]
         public Var<int> ActiveFactions { get; set; } = new VarIntClamp(2, 2, 6);
         #endregion

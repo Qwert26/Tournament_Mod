@@ -38,6 +38,15 @@ namespace Tournament
             Trim = new Color(0.15f, 0.15f, 0.7f, 1f),
             Detail = new Color(0.35f, 0.35f, 1f, 1f)
         };
+        public readonly static TournamentFleetColor neoGreen = new TournamentFleetColor()
+        {
+            Name = "Neo Green",
+            Description = "A new green colorscheme by Qwert26, if there would have been a 4.Team, it would have used these.",
+            Main = new Color(0, 1, 0, 1),
+            Secondary = new Color(0, 0.55f, 0, 1),
+            Trim = new Color(0.15f, 0.7f, 0.15f, 1),
+            Detail = new Color(0.35f, 1, 0.35f, 1)
+        };
         public readonly static TournamentFleetColor medievalOldRoyal = new TournamentFleetColor()
         {
             Name = "Medieval Old Royal",
@@ -96,6 +105,7 @@ namespace Tournament
             classicYellow,
             classicRed,
             neoBlue,
+            neoGreen,
             medievalOldRoyal,
             medievalMiddleRoyal,
             medievalYoungRoyal,

@@ -23,16 +23,19 @@ namespace Tournament.UI
             }));
             prehead.AddInterpretter(SubjectiveButton<ParticipantManagementTab>.Quick(this, "Update List", new ToolTip("Updates the List down below"), (ParticipantManagementTab pmt) => pmt.TriggerScreenRebuild()));
             bool ready = true;
-            int i = 0;
-            for (i = 0; i < _focus.Parameters.ActiveFactions; i++) {
+            for (int i = 0; i < 6; i++) {
                 int factionIndex = i;
-                int teamSize = _focus.entries[factionIndex].Count;
-                ready &= teamSize > 0;
-                CreateHeader("Team " + (i + 1), new ToolTip("Current Entries for Team " + (i + 1)));
+                int teamSize=0;
+                if (_focus.entries.ContainsKey(i))
+                {
+                    teamSize = _focus.entries[factionIndex].Count;
+                }
+                ready &= teamSize > 0 || i >= _focus.Parameters.ActiveFactions;
+                CreateHeader("Team " + (i + 1), new ToolTip("Current Entries for Team " + (i + 1))).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
                 ScreenSegmentStandard list = CreateStandardSegment();
+                list.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
                 for (int j = 0; j < teamSize; j++) {
                     int indexInFaction = j;
-                    //Debug.Log($"There are {_focus.Parameters.ActiveFactions} active Teams, factionIndex({factionIndex}) because i({i}) with a teamsize of {teamSize}, indexInFaction({indexInFaction}) because j({j})");
                     TournamentEntry entry = _focus.entries[factionIndex][indexInFaction];
                     string text = "";
                     string[] labelCost = entry.LabelCost;
@@ -42,11 +45,6 @@ namespace Tournament.UI
                     }
                     list.AddInterpretter(StringDisplay.Quick(string.Format("{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~{4}\n~--------------------~", entry.Bpf.Name, entry.bp.CalculateResourceCost(false, true, false).Material, entry.Spawn_height, entry.Spawn_direction, text)));
                     list.AddInterpretter(new Blank(5));
-                }
-            }
-            for (; i < 6; i++) {
-                if (_focus.entries.ContainsKey(i)&&_focus.entries[i].Count>0) {
-                    CreateHeader("Team " + (i + 1), new ToolTip($"Team {i + 1} is currently not active, but contains entries."));
                 }
             }
             ScreenSegmentStandard posthead = CreateStandardSegment();

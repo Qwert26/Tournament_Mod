@@ -20,7 +20,7 @@ namespace Tournament.UI
             base.Build();
             CreateHeader("Basic Parameters", new ToolTip("Customize the most basic Parameters here."));
             ScreenSegmentStandard segment = CreateStandardSegment();
-            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 20000, 1, 2500,
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 20000, 1, 1250,
                 M.m((TournamentParameters tp)=>tp.StartingDistance), "Starting Distance", delegate (TournamentParameters tp, float f)
                 {
                     tp.StartingDistance.Us = (int)f;
@@ -99,6 +99,10 @@ namespace Tournament.UI
                {
                    tp.LocalResources.Us = b;
                }, (tp) => tp.LocalResources.Us));
+            segment3.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Distribute local Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (TournamentParameters tp, bool b)
+            {
+                tp.DistributeLocalResources.Us = b;
+            }, (TournamentParameters tp) => tp.DistributeLocalResources)).SetConditionalDisplayFunction(() => _focus.Parameters.LocalResources);
             segment3.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (TournamentParameters tp, bool b)
             {
                 tp.SameMaterials.Us = b;
@@ -143,28 +147,29 @@ namespace Tournament.UI
             #endregion
             sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
             sectionsEastWest = WorldSpecification.i.BoardLayout.EastWestBoardSectionCount - 1;
-            ScreenSegmentTable table1 = CreateTableSegment(3,2);
-            table1.eTableOrder = ScreenSegmentTable.TableOrder.Rows;
-            table1.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsEastWest, 1, sectionsEastWest / 2,
+            ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
+            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsEastWest, 1, sectionsEastWest / 2,
                 M.m((TournamentParameters tp) => tp.EastWestBoard), "East-West Board", delegate (TournamentParameters tp, float f)
                 {
                     tp.EastWestBoard.Us = (int)f;
                     _focus.MoveCam();
                 }, new ToolTip("Change the East-West Board index. In the Map it is the first number, 0 is at the left side.")));
-            table1.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsNorthSouth, 1, sectionsNorthSouth / 2,
+            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsNorthSouth, 1, sectionsNorthSouth / 2,
                 M.m((TournamentParameters tp) => tp.NorthSouthBoard), "North-South Board", delegate (TournamentParameters tp, float f)
                 {
                     tp.NorthSouthBoard.Us = (int)f;
                     _focus.MoveCam();
                 }, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
-            table1.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -180/_focus.Parameters.ActiveFactions, 180/_focus.Parameters.ActiveFactions, 1, 0,
+            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -180/_focus.Parameters.ActiveFactions, 180/_focus.Parameters.ActiveFactions, 1, 0,
                 M.m((TournamentParameters tp) => tp.Rotation), "Rotation", delegate (TournamentParameters tp, float f)
                 {
                     tp.Rotation.Us = (int)f;
                 }, new ToolTip("Rotate the entire Field before the fight starts.")));
-            table1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder"), (t) => t.SaveSettings()));
-            table1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
-            table1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (TournamentParameters tp, bool b)
+            horizontal = CreateStandardHorizontalSegment();
+            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
+            horizontal.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (TournamentParameters tp, bool b)
                {
                    tp.DefaultKeys.Us = b;
                }, (tp) => tp.DefaultKeys.Us));

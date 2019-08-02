@@ -31,7 +31,7 @@ namespace Tournament
 		{
 			Name="Columns",
 			Description="The fleet is in a rectangular formation, where the start of one column is at an 22° angle to the end of a neighboring column. " +
-			"The Columns are getting filled front to back and the maximum amount of ships gets determined by the ratio of the two gap values.",
+			"The Columns are getting filled front to back and the maximum amount of ships in a column gets determined by the ratio of the two gap values.",
 			DetermineLocalPosition=FormationCalculation.ParallelColumns
 		};
 		public static readonly TournamentFormation CommandedParallelColumns = new TournamentFormation()

@@ -22,11 +22,10 @@ namespace Tournament.UI
         {
             base.Build();
             _focus.Parameters.EnsureEnoughData();
-            for (int i = 0; i < _focus.Parameters.ActiveFactions; i++) {
+            for (int i = 0; i < 6; i++) {
                 int index = i;
-                CreateHeader("Team " + (1 + i), new ToolTip("Fleetcolors for Team " + (1 + i)));
-                ScreenSegmentTable table = CreateTableSegment(4,1);
-                table.SqueezeTable = false;
+                CreateHeader("Team " + (1 + i), new ToolTip("Fleetcolors for Team " + (1 + i))).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
+                ScreenSegmentStandardHorizontal table = CreateStandardHorizontalSegment();
                 table.SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
                 table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i+1} Main Color"),
                     M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i+1}")), M.m((TournamentParameters tp) => tp.MainColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
@@ -49,6 +48,10 @@ namespace Tournament.UI
                         tp.DetailColorsPerTeam.Us[index] = c;
                     }));
             }
+            ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
+            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
             CreateHeader("Prepared Fleet Color", new ToolTip("Here you can find prepared fleet colors from the old days."));
             CreateStandardSegment().AddInterpretter(SubjectiveFloatClampedWithBar<Tournament>.Quick(_focus, 0, _focus.Parameters.ActiveFactions - 1, 1, M.m((Tournament t) => currentTeam), "Current Team Index: {0}", delegate (Tournament t, float f)
             {

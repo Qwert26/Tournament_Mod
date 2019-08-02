@@ -50,7 +50,7 @@ namespace Tournament.UI
                 }
             }
             for (int i = 0; treeSelector.HasSelection && i < _focus.Parameters.ActiveFactions; i++) {
-                if (GUILayout.Button("Add to Team "+i)) {
+                if (GUILayout.Button("Add to Team "+(i+1))) {
                     _focus.entries[i].Add(new TournamentEntry() {
                         FactionIndex = i,
                         Spawn_direction = _focus.Parameters.Direction,
@@ -71,7 +71,7 @@ namespace Tournament.UI
                 }
             }
             for (int i = 0; i < _focus.Parameters.ActiveFactions; i++) {
-                if (GUILayout.Button("Invert Direction for Team " + i)) {
+                if (GUILayout.Button("Invert Direction for Team " + (i+1))) {
                     _focus.entries[i].ForEach((TournamentEntry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
                 }
             }
