@@ -58,7 +58,10 @@ namespace Tournament
 				else
 				{
 					count -= 3;
-					count += 6 - (count % 6);
+                    if (count % 6 != 0)
+                    {
+                        count += 6 - (count % 6);
+                    }
 					//Anzahl der Plätze zwischen Flagschiff und Kommandoschiff
 					int bufferSpaces = count / 3;
 					if (index == 1)
