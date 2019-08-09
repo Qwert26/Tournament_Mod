@@ -7,8 +7,6 @@ using BrilliantSkies.Modding;
 using System;
 using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
-using BrilliantSkies.Ui.Special.PopUps;
-using BrilliantSkies.Ftd.Planets.Factions;
 namespace Tournament
 {
     public class TournamentPlugin : GamePlugin
@@ -21,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version("2.4.7.16");
+        public Version version => new Version("2.4.8");
 
         internal static FactionManagement factionManagement;
         
@@ -92,7 +90,7 @@ namespace Tournament
             @is.Header.Type = InstanceType.None;
             @is.Header.CommonSettings.AvatarAvailability = AvatarAvailability.None;
             @is.Header.CommonSettings.AvatarDamage = AvatarDamage.Off;
-            @is.Header.CommonSettings.ConstructableCleanUp = ConstructableCleanUp.All;
+            @is.Header.CommonSettings.ConstructableCleanUpSettings.ConstructableCleanUp = ConstructableCleanUp.All;
             @is.Header.CommonSettings.HeartStoneRequirement = HeartStoneRequirement.None;
             @is.Header.CommonSettings.BuildModeRules = BuildModeRules.Disabled;
             @is.Header.CommonSettings.SavingOptions = SavingOptions.None;

@@ -194,7 +194,7 @@ namespace Tournament
             overtimeCounter = 0;
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
-            InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
+            InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
             if (!GameSpeedManager.Instance.IsPaused) {
                 GameSpeedManager.Instance.TogglePause();
             }
