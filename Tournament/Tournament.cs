@@ -48,6 +48,8 @@ namespace Tournament
 
         private MouseOrbit orbitcam;
 
+        //private DemoCamera demoCamera;
+
         private int orbittarget;
 
         private int orbitMothership;
@@ -194,7 +196,19 @@ namespace Tournament
             overtimeCounter = 0;
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
-            InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
+            ConstructableCleanUpSettings ccus = InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings;
+            ccus.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
+            ccus.BelowAndSinking = Parameters.CleanUpSinkingConstructs;
+            ccus.BelowAndSinkingAltitude = Parameters.SinkingAltitude;
+            ccus.BelowAndSinkingHealthFraction = Parameters.SinkingHealthFraction / 100f; ;
+            ccus.TooDamaged = Parameters.CleanUpTooDamagedConstructs;
+            ccus.TooDamagedHealthFraction = Parameters.TooDamagedHealthFraction / 100f; ;
+            ccus.TooFewBlocks = Parameters.CleanUpTooSmallConstructs;
+            ccus.TooFewBlocksCount = Parameters.TooSmallBlockCount;
+            ccus.DamagedInEnemyTerritory = false;
+            ccus.AIDead = Parameters.CleanUpNoAI;
+            ccus.SustainedByRepairs = Parameters.CleanUpDelayedByRepairs;
+            ccus.SustainedByRepairsTime = Parameters.RepairDelayTime;
             if (!GameSpeedManager.Instance.IsPaused) {
                 GameSpeedManager.Instance.TogglePause();
             }
@@ -318,8 +332,6 @@ namespace Tournament
             orbitcam.OperateRegardlessOfUiOptions = false;
             orbitcam.distance = 100f;
             orbitcam.enabled = false;
-            cBuild build = cam.AddComponent<cBuild>();
-            build.team = ObjectId.NoLinkage;
             //orbittarget = StaticConstructablesManager.constructables[0].UniqueId;
             orbittarget = 0;
             orbitindex = 0;
@@ -518,7 +530,7 @@ namespace Tournament
             {
                 case false:
                     pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-                    shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+                    shift = ftdKeyMap.IsKey(KeyInputsFtd.SpeedUpCamera, KeyInputEventType.Held, ModifierAllows.AllowUnnecessary);
                     strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
                     next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
                     previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
@@ -650,44 +662,44 @@ namespace Tournament
                 float x = 0;
                 float y = 0;
                 float z = 0;
-                if (Input.GetKey((KeyCode)32)) //space  = up
+                if (Input.GetKey(KeyCode.Space))
                 {
                     y += 1;
                 }
-                if (Input.GetKey((KeyCode)308) | Input.GetKey((KeyCode)307)) // alt = down
+                if (Input.GetKey(KeyCode.LeftAlt) | Input.GetKey(KeyCode.RightAlt))
                 {
                     y -= 1;
                 }
-                if (Input.GetKey((KeyCode)97)) // a = left
+                if (Input.GetKey(KeyCode.A))
                 {
                     x -= 1;
                 }
-                if (Input.GetKey((KeyCode)100)) // d= right
+                if (Input.GetKey(KeyCode.D))
                 {
                     x += 1;
                 }
-                if (Input.GetKey((KeyCode)119)) // w = forward
+                if (Input.GetKey(KeyCode.W))
                 {
                     z += 1;
                 }
-                if (Input.GetKey((KeyCode)115)) // s = back
+                if (Input.GetKey(KeyCode.S))
                 {
                     z -= 1;
                 }
                 Vector3 val = new Vector3(x, y, z);
                 if (shift)
                 {
-                    val *= 5; //increase vector with shift
+                    val *= 4; //increase vector with shift
                 }
                 else if (strg) {
-                    val /= 5; //decrease vector with strg
+                    val /= 4; //decrease vector with strg
                 }
                 flycam.transform.position = flycam.transform.position + flycam.transform.localRotation * val;
             }
             if (flycam.enabled && !Parameters.DefaultKeys)
             {
-                Vector3 movement = ftdKeyMap.GetMovemementDirection() * (shift ? 5 : 1);
-                movement /= strg ? 5 : 1;
+                Vector3 movement = ftdKeyMap.GetMovemementDirection() * (shift ? 4 : 1);
+                movement /= strg ? 4 : 1;
                 flycam.transform.position += flycam.transform.localRotation * movement;
             }
             else if (orbitcam.enabled)

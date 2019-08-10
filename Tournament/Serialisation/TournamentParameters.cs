@@ -78,10 +78,32 @@ namespace Tournament.Serialisation
         public Var<int> CleanUpMode { get; set; } = new VarIntClamp(2, 0, 3);
         [Variable(105, "Health calculation")]
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
-        [Variable(106, "Minimum health(%)")]
+        [Variable(106, "Minimum health(%)", "Any construct below this fraction will pickup penalty time.")]
         public Var<int> MinimumHealth { get; set; } = new VarIntClamp(0, 0, 100);
         [Variable(107, "Active Factions")]
         public Var<int> ActiveFactions { get; set; } = new VarIntClamp(2, 2, 6);
+        #region Cleanup Einstellungen
+        [Variable(108, "Cleanup sinking constructs", "Removes all Constructs, which are currently sinking.")]
+        public Var<bool> CleanUpSinkingConstructs { get; set; } = new VarBool(true);
+        [Variable(109, "Health fraction for sinking", "Any construct below this fraction might be considered as sinking.")]
+        public Var<int> SinkingHealthFraction { get; set; } = new VarIntClamp(80, 0, 100);
+        [Variable(110, "Altitude for sinking", "Any construct below this fraction might be considered as sinking.")]
+        public Var<int> SinkingAltitude { get; set; } = new VarIntClamp(-10, -500, 0);
+        [Variable(111, "Cleanup damaged constructs", "Removes all constructs, which sustained too much damage.")]
+        public Var<bool> CleanUpTooDamagedConstructs { get; set; } = new VarBool(true);
+        [Variable(112, "Health fraction for Damage", "Any construct below this fraction will be considered as too damaged.")]
+        public Var<int> TooDamagedHealthFraction { get; set; } = new VarIntClamp(55, 0, 100);
+        [Variable(113, "Cleanup small Constructs", "Removes all Constructs, which have not enough blocks alive.")]
+        public Var<bool> CleanUpTooSmallConstructs { get; set; } = new VarBool(true);
+        [Variable(114, "Minimum Block count", "Removes any construct, which is not a drone and has less than this many blocks alive.")]
+        public Var<int> TooSmallBlockCount { get; set; } = new VarIntClamp(10, 1, 100);
+        [Variable(115, "Cleanup brainless Constructs", "Removes any constructs, which don't have any AI-Mainframes.")]
+        public Var<bool> CleanUpNoAI { get; set; } = new VarBool(true);
+        [Variable(116, "Delay Cleanup by Repairs", "Delays the removal of any construct, which is repaired by other constructs.")]
+        public Var<bool> CleanUpDelayedByRepairs { get; set; } = new VarBool(true);
+        [Variable(117, "Maximum Delay Time", "If the repairs could not make a construct operational in this timeframe, it will still be removed.")]
+        public Var<int> RepairDelayTime { get; set; } = new VarIntClamp(100, 10, 600);
+        #endregion
         #endregion
         #region Augenschmaus
         [Variable(200,"Show Eyecandy")]

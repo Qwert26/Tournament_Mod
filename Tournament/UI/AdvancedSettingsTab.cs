@@ -87,6 +87,50 @@ namespace Tournament.UI
                 {
                     tp.CleanUpMode.Us = (int)f;
                 }, null, M.m((TournamentParameters tp) => new ToolTip(describeCleanupMode()))));
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Below and Sinking\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            {
+                tp.CleanUpSinkingConstructs.Us = b;
+            }, (tp) => tp.CleanUpSinkingConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 80,
+                M.m((TournamentParameters tp) => tp.SinkingHealthFraction), "\"Below and Sinking\"-Healthfraction: {0}%", delegate (TournamentParameters tp, float f)
+                {
+                    tp.SinkingHealthFraction.Us = (int)f;
+                }, new ToolTip("Any construct below a certain altitude and below this healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 0, 1, -10,
+                M.m((TournamentParameters tp) => tp.SinkingAltitude), "\"Below and Sinking\"-Altitude: {0}m", delegate (TournamentParameters tp, float f)
+                {
+                    tp.SinkingAltitude.Us = (int)f;
+                }, new ToolTip("Any construct below this altitude and below a certain healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b) {
+                tp.CleanUpTooDamagedConstructs.Us = b;
+            }, (tp) => tp.CleanUpTooDamagedConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
+                M.m((TournamentParameters tp) => tp.TooDamagedHealthFraction), "\"Too Damaged\"-Healthfraction: {0}%", delegate (TournamentParameters tp, float f)
+                {
+                    tp.TooDamagedHealthFraction.Us = (int)f;
+                }, new ToolTip("Any construct below this Healthfraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpTooDamagedConstructs);
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too few Blocks\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            {
+                tp.CleanUpTooSmallConstructs.Us = b;
+            }, (tp) => tp.CleanUpTooSmallConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 1, 100, 1, 10,
+                M.m((TournamentParameters tp) => tp.TooSmallBlockCount), "\"Too few Blocks\"-Block count: {0}", delegate (TournamentParameters tp, float f)
+                {
+                    tp.TooSmallBlockCount.Us = (int)f;
+                }, new ToolTip("Any construct, which is not a drone and has less blocks alive than this amount, will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpTooSmallConstructs);
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"AI Dead\"-Cleanup function", new ToolTip("Any construct without an AI-Mainframe will be scrapped after 10s"), delegate (TournamentParameters tp, bool b)
+            {
+                tp.CleanUpNoAI.Us = b;
+            }, (tp) => tp.CleanUpNoAI)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Sustained by Repairs\"-Delay function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            {
+                tp.CleanUpDelayedByRepairs.Us = b;
+            }, (tp) => tp.CleanUpDelayedByRepairs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 10, 600, 1, 100,
+                M.m((TournamentParameters tp) => tp.RepairDelayTime), "\"Sustained by Repairs\"-Delay time: {0}s", delegate (TournamentParameters tp, float f)
+                {
+                    tp.RepairDelayTime.Us = (int)f;
+                }, new ToolTip("Any construct, that was being repaired by another construct in the last 8 seconds, will have their scrapping delayed by this amount of time."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpDelayedByRepairs);
             string healthCalculationTip()
             {
                 switch (_focus.Parameters.HealthCalculation)
