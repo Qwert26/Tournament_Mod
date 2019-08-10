@@ -6,6 +6,9 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
+using BrilliantSkies.Ui.Special.PopUps;
+using Assets.Scripts.Gui;
+using Assets.Scripts.Persistence;
 using Tournament.Serialisation;
 namespace Tournament.UI
 {
@@ -161,14 +164,14 @@ namespace Tournament.UI
                     _focus.MoveCam();
                 }, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
             horizontal.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m((TournamentParameters tp) => -180f / tp.ActiveFactions), M.m((TournamentParameters tp) => 180f / tp.ActiveFactions),
-                M.m((TournamentParameters tp) => tp.Rotation), M.m<TournamentParameters>(1), M.m<TournamentParameters>(1),
+                M.m((TournamentParameters tp) => tp.Rotation), M.m<TournamentParameters>(1), M.m<TournamentParameters>(0),
                 _focus.Parameters, M.m<TournamentParameters>("Rotation"), delegate (TournamentParameters tp, float f)
                 {
                     tp.Rotation.Us = (int)f;
                 }, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
             horizontal = CreateStandardHorizontalSegment();
-            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
-            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+            horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
             horizontal.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (TournamentParameters tp, bool b)
                {
