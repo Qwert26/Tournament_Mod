@@ -10,6 +10,9 @@ using BrilliantSkies.Ui.Special.PopUps;
 using Assets.Scripts.Gui;
 using Assets.Scripts.Persistence;
 using Tournament.Serialisation;
+using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.FilesAndFolders;
+
 namespace Tournament.UI
 {
     public class BaseSettingsTab : SuperScreen<Tournament>
@@ -171,7 +174,28 @@ namespace Tournament.UI
                 }, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
             horizontal = CreateStandardHorizontalSegment();
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+            /*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
+            {
+                GuiPopUp.Instance.Add(new PopupTreeViewSave<TournamentParameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+                {
+                    if (b) {
+                        TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+                        tpf.Save(_focus.Parameters);
+                    }
+                }, _focus.Parameters));
+            }));*/
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            /*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
+                GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+                {
+                    if (b)
+                    {
+                        TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+                        _focus.Parameters = tpf.Load();
+                        TriggerRebuild();
+                    }
+                }));
+            }));*/
             horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
             horizontal.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (TournamentParameters tp, bool b)
                {

@@ -1,5 +1,4 @@
-﻿using Assets.Scripts.Persistence;
-using BrilliantSkies.Core.FilesAndFolders;
+﻿using BrilliantSkies.Core.FilesAndFolders;
 namespace Tournament.Serialisation
 {
     internal class TournamentParametersFolder : BaseFolder<TournamentParametersFile>

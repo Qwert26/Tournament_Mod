@@ -8,6 +8,11 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using UnityEngine;
 using Tournament.Serialisation;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective;
+using BrilliantSkies.Ui.Special.PopUps;
+using Assets.Scripts.Gui;
+using BrilliantSkies.Core.FilesAndFolders;
+using BrilliantSkies.Core.Constants;
+
 namespace Tournament.UI
 {
     public class EyecandyTab : SuperScreen<Tournament>
@@ -49,8 +54,30 @@ namespace Tournament.UI
                     }));
             }
             ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
-            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Save Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
-            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+            /*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
+            {
+                GuiPopUp.Instance.Add(new PopupTreeViewSave<TournamentParameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+                {
+                    if (b)
+                    {
+                        TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+                        tpf.Save(_focus.Parameters);
+                    }
+                }, _focus.Parameters));
+            */
+            saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+            /*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
+                GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+                {
+                    if (b)
+                    {
+                        TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+                        _focus.Parameters = tpf.Load();
+                        TriggerRebuild();
+                    }
+                }));
+            }));*/
             saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
             CreateHeader("Prepared Fleet Color", new ToolTip("Here you can find prepared fleet colors from the old days."));
             CreateStandardSegment().AddInterpretter(new SubjectiveFloatClampedWithBar<EyecandyTab>(M.m<EyecandyTab>(0), M.m((EyecandyTab et) => et._focus.Parameters.ActiveFactions - 1), M.m((EyecandyTab et) => et.currentTeam),
