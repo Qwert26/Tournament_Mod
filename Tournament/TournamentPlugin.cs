@@ -19,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version("2.4.8.8");
+        public Version version => new Version("2.4.8");
 
         internal static FactionManagement factionManagement;
         
@@ -90,6 +90,7 @@ namespace Tournament
             @is.Header.Type = InstanceType.None;
             @is.Header.CommonSettings.AvatarAvailability = AvatarAvailability.None;
             @is.Header.CommonSettings.AvatarDamage = AvatarDamage.Off;
+            @is.Header.CommonSettings.ConstructableCleanUpSettings.ConstructableCleanUp = ConstructableCleanUp.All;
             @is.Header.CommonSettings.HeartStoneRequirement = HeartStoneRequirement.None;
             @is.Header.CommonSettings.BuildModeRules = BuildModeRules.Disabled;
             @is.Header.CommonSettings.SavingOptions = SavingOptions.None;
