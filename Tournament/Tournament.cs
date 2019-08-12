@@ -197,7 +197,6 @@ namespace Tournament
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
             ConstructableCleanUpSettings ccus = InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings;
-            ccus.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
             ccus.BelowAndSinking = Parameters.CleanUpSinkingConstructs;
             ccus.BelowAndSinkingAltitude = Parameters.SinkingAltitude;
             ccus.BelowAndSinkingHealthFraction = Parameters.SinkingHealthFraction / 100f; ;
@@ -401,7 +400,7 @@ namespace Tournament
                         string name = member.Value.BlueprintName;
                         string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
                         string penaltyTime = $"{Math.Floor(member.Value.OoBTime / 60)}m{Math.Floor(member.Value.OoBTime) % 60}s";
-                        bool disqualified = member.Value.Disqual || member.Value.Scrapping || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
+                        bool disqualified = member.Value.Disqual || member.Value.Scrapping || (Parameters.CleanUpNoAI && member.Value.AICount == 0);
                         GUIContent memberContent;
                         if (disqualified) {
                             memberContent = new GUIContent($"{name} DQ");
@@ -416,7 +415,7 @@ namespace Tournament
                             GUILayout.Label(memberContent,sidelist);
                         }
                         else {
-                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), false, false, GUIStyle.none, GUIStyle.none, GUILayout.ExpandWidth(false));
+                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), false, false, GUIStyle.none, GUIStyle.none);
                             GUILayout.Label(memberContent,sidelist);
                             GUILayout.EndScrollView();
                         }

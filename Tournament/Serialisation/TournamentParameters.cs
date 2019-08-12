@@ -74,8 +74,6 @@ namespace Tournament.Serialisation
         public VarList<int> FormationIndexPerTeam { get; set; } = new IntList();
         [Variable(103,"Lifesteal(%)", "-1 is a special value: In this case, materials by friendly fire are not refunded.")]
         public Var<int> MaterialConversion { get; set; } = new VarIntClamp(0, -1, 100);
-        [Variable(104, "Constructable cleanup")]
-        public Var<int> CleanUpMode { get; set; } = new VarIntClamp(2, 0, 3);
         [Variable(105, "Health calculation")]
         public Var<int> HealthCalculation { get; set; } = new VarIntClamp(0, 0, 3);
         [Variable(106, "Minimum health(%)", "Any construct below this fraction will pickup penalty time.")]
