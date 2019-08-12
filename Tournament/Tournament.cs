@@ -416,7 +416,7 @@ namespace Tournament
                             GUILayout.Label(memberContent,sidelist);
                         }
                         else {
-                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), false, false, GUIStyle.none, GUIStyle.none, GUILayout.ExpandWidth(false));
+                            GUILayout.BeginScrollView(new Vector2(t % (size.x + 50), 0), false, false, GUIStyle.none, GUIStyle.none);
                             GUILayout.Label(memberContent,sidelist);
                             GUILayout.EndScrollView();
                         }
