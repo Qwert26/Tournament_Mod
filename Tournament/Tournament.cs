@@ -197,7 +197,7 @@ namespace Tournament
             timerTotal = 0f;
             timerTotal2 = Time.timeSinceLevelLoad;
             ConstructableCleanUpSettings ccus = InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings;
-            ccus.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
+            InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
             ccus.BelowAndSinking = Parameters.CleanUpSinkingConstructs;
             ccus.BelowAndSinkingAltitude = Parameters.SinkingAltitude;
             ccus.BelowAndSinkingHealthFraction = Parameters.SinkingHealthFraction / 100f; ;
