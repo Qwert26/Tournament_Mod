@@ -43,7 +43,7 @@ namespace Tournament
 			else
 			{
 				float x=0, z=0;
-				if (count <= 3)
+				if (count <= 3) //Sind es 3 oder weniger Schiffe?
 				{
                     z = distance + gapForwardBackward;
 					if (index == 1)
@@ -64,12 +64,12 @@ namespace Tournament
                     }
 					//Anzahl der Plätze zwischen Flagschiff und Kommandoschiff
 					int bufferSpaces = count / 3;
-					if (index == 1)
+					if (index == 1) //Ist es das linke Kommandoschiff?
 					{
 						x = (1 + bufferSpaces) * gapLeftRight;
                         z = distance + ((1 + bufferSpaces) * gapForwardBackward);
 					}
-					else if (index == 2)
+					else if (index == 2) //Ist es das rechte Kommandoschiff?
 					{
 						x = -(1 + bufferSpaces) * gapLeftRight;
                         z = distance + ((1 + bufferSpaces) * gapForwardBackward);
@@ -80,27 +80,27 @@ namespace Tournament
 						int groupLine = (index - 3) / 6;
 						switch (groupAndSide)
 						{
-							case 0:
+							case 0: //Links hinter dem Flagschiff
 								x = gapLeftRight;
                                 z = distance + (groupLine * gapForwardBackward);
 								break;
-							case 1:
+							case 1: //Rechts hinter dem Flagschiff
 								x = -gapLeftRight;
                                 z = distance + (groupLine * gapForwardBackward);
 								break;
-							case 2:
+							case 2: //Links hinter dem linken Kommandoschiff
 								x = (2 + bufferSpaces) * gapLeftRight;
                                 z = distance + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
-							case 3:
+							case 3: //Rechts hinter dem rechten Kommandoschiff
 								x = -(2 + bufferSpaces) * gapLeftRight;
                                 z = distance + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
-							case 4:
+							case 4: //Rechts hinter dem linken Kommandoschiff
 								x = bufferSpaces * gapLeftRight;
 								z = distance  + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
-							case 5:
+							case 5: //Links hinter dem rechten Kommandoschiff
 								x = -bufferSpaces * gapLeftRight;
 								z = distance + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
@@ -138,5 +138,43 @@ namespace Tournament
             }
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
 		}
+        public static Vector3 ManipelBaseFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+            return ManipelFormation(factionRotation, gapLeftRight, gapForwardBackward, count, index, distance, height, false);
+        }
+        public static Vector3 ManipelAttackFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+        {
+            return ManipelFormation(factionRotation, gapLeftRight, gapForwardBackward, count, index, distance, height, true);
+        }
+        private static Vector3 ManipelFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height, bool attack) {
+            int groups = Mathf.CeilToInt(count / 6f);
+            int line = index / groups;
+            int group = index % groups;
+            float x, z = distance + line * gapForwardBackward;
+            switch (line) {
+                case 0:
+                case 4:
+                case 5:
+                    x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
+                    break;
+                case 1:
+                    if (attack)
+                    {
+                        z = distance;
+                        x = (2 * groups - 1) * gapLeftRight / 2f - (2 * group + 1) * gapLeftRight;
+                    }
+                    else
+                    {
+                        x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
+                    }
+                    break;
+                case 2:
+                case 3:
+                    x = (2 * groups - 1) * gapLeftRight / 2f - (2 * group + 1) * gapLeftRight;
+                    break;
+                default:
+                    throw new Exception("Someone modified line with a debugger...");
+            }
+            return FactionRotation(factionRotation) * new Vector3(x, height, z);
+        }
 	}
 }
