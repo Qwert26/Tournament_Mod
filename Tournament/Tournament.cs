@@ -746,7 +746,11 @@ namespace Tournament
                     }
                     string key = "" + val.UniqueId + "," + id;
                     //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
-                    TournamentParticipant tournamentParticipant = HUDLog[val.GetTeam()][key];
+                    if (!HUDLog[val.GetTeam()].TryGetValue(key, out TournamentParticipant tournamentParticipant)) {
+                        Debug.Log("Missing Entry! Updating now...");
+                        UpdateConstructs();
+                        tournamentParticipant = HUDLog[val.GetTeam()][key];
+                    }
                     if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
                     {
                         tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
@@ -831,7 +835,60 @@ namespace Tournament
 
         public void SlowUpdate(ITimeStep dt)
         {
+            UpdateConstructs();
+            foreach (KeyValuePair<ObjectId, SortedDictionary<string, TournamentParticipant>> item in HUDLog)
+            {
+                foreach (KeyValuePair<string, TournamentParticipant> item2 in HUDLog[item.Key])
+                {
+                    bool match(MainConstruct c)
+                    {
+                        ObjectId team = c.GetTeam();
+                        if (team == item2.Value.TeamId)
+                        {
+                            int mothershipID = 0;
+                            if (c.Drones.LoadedMothershipC != null)
+                            {
+                                mothershipID = c.Drones.LoadedMothershipC.UniqueId;
+                            }
+                            string uniqueId3 = "" + c.UniqueId + "," + mothershipID;
+                            return uniqueId3 == item2.Key;
+                        }
+                        return false;
+                    }
+                    if (StaticConstructablesManager.constructables.FindIndex(match)!=-1)
+                    {
+                        if (!HUDLog[item.Key][item2.Key].Disqual)
+                        {
+                            continue;
+                        }
+                        else if (!HUDLog[item.Key][item2.Key].Scrapping)
+                        {
+                            HUDLog[item.Key][item2.Key].HPCUR = 0f;
+                            HUDLog[item.Key][item2.Key].Scrapping = true;
+                            Vector3 centreOfMass = StaticConstructablesManager.constructables.Find(match).CentreOfMass;
+                            UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
+                            StaticConstructablesManager.constructables.Find(match).DestroyCompletely(true);
+                        }
+                    }
+                }
+            }
+            if (overtimeCounter == 0 && timerTotal > Parameters.MaximumTime)
+            {
+                GameSpeedManager.Instance.TogglePause();
+                overtimeCounter = 1;
+            }
+            else if (Parameters.Overtime > 0)
+            {//Verlängerung ist eingeschaltet.
+                if (timerTotal > Parameters.MaximumTime + overtimeCounter * Parameters.Overtime)
+                {
+                    GameSpeedManager.Instance.TogglePause();
+                    overtimeCounter++;
+                }
+            }
+        }
 
+        private void UpdateConstructs()
+        {
             MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
             foreach (MainConstruct val in array)
             {
@@ -872,12 +929,14 @@ namespace Tournament
                                     for (int z = val.AllBasics.minz_; x <= val.AllBasics.maxz_; z++)
                                     {
                                         Block b = val.AllBasics[x, y, z];
-                                        if (b!=null) {
+                                        if (b != null)
+                                        {
                                             if (Parameters.HealthCalculation == 2)
                                             {
                                                 tournamentParticipant.HPMAX += b.item.SizeInfo.VolumeFactor;
                                             }
-                                            else {
+                                            else
+                                            {
                                                 tournamentParticipant.HPMAX += 1;
                                             }
                                         }
@@ -916,98 +975,8 @@ namespace Tournament
                     tournamentParticipant.HP = 0f;
                 }
             }
-            foreach (KeyValuePair<ObjectId, SortedDictionary<string, TournamentParticipant>> item in HUDLog)
-            {
-                foreach (KeyValuePair<string, TournamentParticipant> item2 in HUDLog[item.Key])
-                {
-                    List<MainConstruct> constructables = StaticConstructablesManager.constructables;
-                    List<MainConstruct> constructables2 = StaticConstructablesManager.constructables;
-                    bool match(MainConstruct c)
-                    {
-                        ObjectId team3 = c.GetTeam();
-                        KeyValuePair<string, TournamentParticipant> keyValuePair9 = item2;
-                        if (team3 == keyValuePair9.Value.TeamId)
-                        {
-                            int id3 = 0;
-                            if (c.Drones.LoadedMothershipC != null)
-                            {
-                                id3 = c.Drones.LoadedMothershipC.UniqueId;
-                            }
-                            string uniqueId3 = "" + c.UniqueId + "," + id3;
-                            KeyValuePair<string, TournamentParticipant> keyValuePair10 = item2;
-                            return uniqueId3 == keyValuePair10.Key;
-                        }
-                        return false;
-                    }
-                    if (constructables.Contains(constructables2.Find(match)))
-                    {
-                        SortedDictionary<string, TournamentParticipant> sortedDictionary = HUDLog[item.Key];
-                        KeyValuePair<string, TournamentParticipant> keyValuePair = item2;
-                        if (!sortedDictionary[keyValuePair.Key].Disqual)
-                        {
-                            continue;
-                        }
-                    }
-                    SortedDictionary<string, TournamentParticipant> sortedDictionary2 = HUDLog[item.Key];
-                    KeyValuePair<string, TournamentParticipant> keyValuePair2 = item2;
-                    if (!sortedDictionary2[keyValuePair2.Key].Scrapping)
-                    {
-                        SortedDictionary<string, TournamentParticipant> sortedDictionary3 = HUDLog[item.Key];
-                        KeyValuePair<string, TournamentParticipant> keyValuePair3 = item2;
-                        sortedDictionary3[keyValuePair3.Key].HPCUR = 0f;
-                        SortedDictionary<string, TournamentParticipant> sortedDictionary4 = HUDLog[item.Key];
-                        KeyValuePair<string, TournamentParticipant> keyValuePair4 = item2;
-                        sortedDictionary4[keyValuePair4.Key].Scrapping = true;
-                        Vector3 centreOfMass = StaticConstructablesManager.constructables.Find(delegate (MainConstruct c)
-                        {
-                            ObjectId team2 = c.GetTeam();
-                            KeyValuePair<string, TournamentParticipant> keyValuePair7 = item2;
-                            if (team2 == keyValuePair7.Value.TeamId)
-                            {
-                                int id2 = 0;
-                                if (c.Drones.LoadedMothershipC != null)
-                                {
-                                    id2 = c.Drones.LoadedMothershipC.UniqueId;
-                                }
-                                string uniqueId2 = "" + c.UniqueId + "," + id2;
-                                KeyValuePair<string, TournamentParticipant> keyValuePair8 = item2;
-                                return uniqueId2 == keyValuePair8.Key;
-                            }
-                            return false;
-                        }).CentreOfMass;
-                        UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
-                        StaticConstructablesManager.constructables.Find(delegate (MainConstruct c)
-                        {
-                            ObjectId team = c.GetTeam();
-                            KeyValuePair<string, TournamentParticipant> keyValuePair5 = item2;
-                            if (team == keyValuePair5.Value.TeamId)
-                            {
-                                int id1 = 0;
-                                if (c.Drones.LoadedMothershipC != null)
-                                {
-                                    id1 = c.Drones.LoadedMothershipC.UniqueId;
-                                }
-                                string uniqueId1 = "" + c.UniqueId + "," + id1;
-                                KeyValuePair<string, TournamentParticipant> keyValuePair6 = item2;
-                                return uniqueId1 == keyValuePair6.Key;
-                            }
-                            return false;
-                        }).DestroyCompletely(true);
-                    }
-                }
-            }
-            if (overtimeCounter == 0&& timerTotal > Parameters.MaximumTime)
-            {
-                GameSpeedManager.Instance.TogglePause();
-                overtimeCounter = 1;
-            }
-            else if (Parameters.Overtime > 0) {//Verlängerung ist eingeschaltet.
-                if (timerTotal > Parameters.MaximumTime + overtimeCounter * Parameters.Overtime) {
-                    GameSpeedManager.Instance.TogglePause();
-                    overtimeCounter++;
-                }
-            }
         }
+
         public Quaternion Rotation => Quaternion.Euler(0, Parameters.Rotation, 0);
         public float DistanceProjected(Vector3 a, Vector3 b) {
             a.y = 0;
