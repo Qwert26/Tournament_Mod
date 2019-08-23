@@ -384,7 +384,7 @@ namespace Tournament
         {
             GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
             GUI.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
-            GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal) % 60.0}s", timerStyle);
+            GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Math.Floor(timerTotal / 60f)}m {Math.Floor(timerTotal % 60f)}s", timerStyle);
             if (showLists)
             {
                 GUILayout.BeginArea(new Rect(0, 50, 200, 700),sidelist);
@@ -404,7 +404,7 @@ namespace Tournament
                         bool disqualified = member.Value.Disqual || member.Value.Scrapping || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
                         GUIContent memberContent;
                         if (disqualified) {
-                            memberContent = new GUIContent($"{name} DQ");
+                            memberContent = new GUIContent($"{name} DQ @{Math.Floor(member.Value.TimeOfDespawn / 60f)}m {Math.Floor(member.Value.TimeOfDespawn % 60f)}s");
                         }
                         else
                         {
@@ -868,6 +868,7 @@ namespace Tournament
                             Vector3 centreOfMass = StaticConstructablesManager.constructables.Find(match).CentreOfMass;
                             UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
                             StaticConstructablesManager.constructables.Find(match).DestroyCompletely(true);
+                            HUDLog[item.Key][item2.Key].TimeOfDespawn = timerTotal;
                         }
                     }
                 }
