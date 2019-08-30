@@ -110,7 +110,7 @@ namespace Tournament
             }
         }
 
-        public void Spawn(float dis, float gapLR, float gapFB, int count, int pos)
+        public MainConstruct Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
             FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
@@ -124,6 +124,7 @@ namespace Tournament
             };
             initialisation.Run(Team_id);
             (val.Owner as ConstructableOwner).SetFleetColors(Team_id);
+            return val;
         }
 
         public Vector3 VLoc(float gapLR, float gapFB, int count, int pos, float dis)

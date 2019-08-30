@@ -9,7 +9,6 @@ using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
 using BrilliantSkies.Effects.Cameras;
 using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
-using BrilliantSkies.Ftd.Avatar.Build;
 using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.Instances;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
@@ -144,30 +143,55 @@ namespace Tournament
                     }
                     foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
                     {
+                        if (team.Key >= Parameters.ActiveFactions)
+                        {
+                            break;
+                        }
                         for (int pos = 0; pos < team.Value.Count; pos++)
                         {
-                            team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
-                            MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
-                            mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, Parameters.ResourcesPerTeam[team.Key]));
+                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            mc.RawResource.Material.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
                         }
                     }
                 }
                 else
                 {
                     List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
+                    Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
+                    Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
                     foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
                     {
+                        if (team.Key >= Parameters.ActiveFactions) {
+                            break;
+                        }
+                        maxMaterials.Add(team.Key, 0);
+                        constructs.Add(team.Key, new List<MainConstruct>());
                         for (int pos = 0; pos < team.Value.Count; pos++)
                         {
-                            team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
-                            MainConstruct mc = StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1];
-                            mc.RawResource.Material.SetQuantity(Math.Min(mc.RawResource.Material.Maximum, materials[team.Key]));
-                            materials[team.Key] -= (int)mc.RawResource.Material.Quantity;
+                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            constructs[team.Key].Add(mc);
+                            maxMaterials[team.Key] += (int)mc.RawResource.Material.Maximum;
                         }
                     }
                     for (int i = 0; i < Parameters.ActiveFactions; i++)
                     {
-                        TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Math.Max(0, materials[i]));
+                        if (maxMaterials[i] <= materials[i])
+                        {
+                            foreach (MainConstruct mc in constructs[i])
+                            {
+                                mc.RawResource.Material.SetQuantity(materials[i]);
+                                materials[i] -= (int)mc.RawResource.Material.Maximum;
+                            }
+                            TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
+                        }
+                        else {
+                            double expectedFraction = ((double)materials[i]) / maxMaterials[i];
+                            foreach (MainConstruct mc in constructs[i])
+                            {
+                                mc.RawResource.Material.SetQuantity(mc.RawResource.Material.Maximum * expectedFraction);
+                            }
+                            TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+                        }
                     }
                 }
             }
