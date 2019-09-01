@@ -47,7 +47,7 @@ namespace Tournament
             get;
             set;
         }
-        public bool Scrapping {
+        public bool Scrapped {
             get;
             set;
         }

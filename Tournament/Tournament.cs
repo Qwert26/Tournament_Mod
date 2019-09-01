@@ -425,7 +425,7 @@ namespace Tournament
                         string name = member.Value.BlueprintName;
                         string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
                         string penaltyTime = $"{Math.Floor(member.Value.OoBTime / 60)}m{Math.Floor(member.Value.OoBTime) % 60}s";
-                        bool disqualified = member.Value.Disqual || member.Value.Scrapping || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
+                        bool disqualified = member.Value.Disqual || member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
                         GUIContent memberContent;
                         if (disqualified) {
                             memberContent = new GUIContent($"{name} DQ @{Math.Floor(member.Value.TimeOfDespawn / 60f)}m {Math.Floor(member.Value.TimeOfDespawn % 60f)}s");
@@ -775,7 +775,7 @@ namespace Tournament
                         UpdateConstructs();
                         tournamentParticipant = HUDLog[val.GetTeam()][key];
                     }
-                    if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
+                    if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
                     {
                         tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
                         if (tournamentParticipant.AICount == 0)
@@ -879,21 +879,27 @@ namespace Tournament
                         }
                         return false;
                     }
-                    if (StaticConstructablesManager.constructables.FindIndex(match)!=-1)
+                    if (StaticConstructablesManager.constructables.FindIndex(match) != -1)
                     {
                         if (!HUDLog[item.Key][item2.Key].Disqual)
                         {
                             continue;
                         }
-                        else if (!HUDLog[item.Key][item2.Key].Scrapping)
+                        else if (!HUDLog[item.Key][item2.Key].Scrapped)
                         {
                             HUDLog[item.Key][item2.Key].HPCUR = 0f;
-                            HUDLog[item.Key][item2.Key].Scrapping = true;
+                            HUDLog[item.Key][item2.Key].Scrapped = true;
                             Vector3 centreOfMass = StaticConstructablesManager.constructables.Find(match).CentreOfMass;
                             UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
                             StaticConstructablesManager.constructables.Find(match).DestroyCompletely(true);
                             HUDLog[item.Key][item2.Key].TimeOfDespawn = timerTotal;
                         }
+                    }
+                    else if (!(HUDLog[item.Key][item2.Key].Disqual && HUDLog[item.Key][item2.Key].Scrapped))
+                    {
+                        HUDLog[item.Key][item2.Key].Disqual = HUDLog[item.Key][item2.Key].Scrapped = true;
+                        HUDLog[item.Key][item2.Key].HPCUR = 0;
+                        HUDLog[item.Key][item2.Key].TimeOfDespawn = timerTotal;
                     }
                 }
             }
@@ -933,7 +939,7 @@ namespace Tournament
                         BlueprintName = val.GetBlueprintName(),
                         MothershipId = id,
                         Disqual = false,
-                        Scrapping = false,
+                        Scrapped = false,
                         UniqueId = val.UniqueId
                     };
                     switch (Parameters.HealthCalculation)
@@ -975,7 +981,7 @@ namespace Tournament
                     }
                     HUDLog[tournamentParticipant.TeamId][key] = tournamentParticipant;
                 }
-                if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapping)
+                if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
                 {
                     switch (Parameters.HealthCalculation)
                     {
