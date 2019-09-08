@@ -23,6 +23,7 @@ namespace Tournament.UI
         {
             base.OnActivateGui();
             _focus.ResetCam();
+            _focus.MoveCam();
         }
         public override void FixedUpdateWhenActive(ITimeStep t)
         {
