@@ -19,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version(2, 4, 9, 18);
+        public Version version => new Version(2, 4, 9, 23);
 
         internal static FactionManagement factionManagement;
         
