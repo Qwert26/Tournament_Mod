@@ -19,7 +19,7 @@ namespace Tournament
 
         public static string Name => "Tournament";
 
-        public Version version => new Version(2, 4, 9, 23);
+        public Version version => new Version(2, 4, 9, 31);
 
         internal static FactionManagement factionManagement;
         
@@ -58,7 +58,7 @@ namespace Tournament
         /// <summary>
         /// Creates the instance.
         /// </summary>
-        public static void OnPlanetChange()
+        public void OnPlanetChange()
         {
             @is = new InstanceSpecification();
             @is.GenerateBlankInstance();

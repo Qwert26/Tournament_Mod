@@ -25,7 +25,7 @@ namespace Tournament.UI
             ConsoleUiScreen screen = window.Screen;
             screen.CreateHeader("Add Entries", new ToolTip("Select and Add Entries into active Teams."));
             TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> treeSelector;
-            ScreenSegmentTreeViewPopUp treeView = screen.AddSegment(new ScreenSegmentTreeViewPopUp(screen, treeSelector = FtdGuiUtils.GetFileBrowserFor(GameFolders.GetCombinedBlueprintFolder())));
+            ScreenSegmentTreeViewPopUp treeView = screen.AddSegment(new ScreenSegmentTreeViewPopUp(screen, treeSelector = FtdGuiUtils.GetFileBrowserFor(GameFolders.GetCombinedBlueprintFolder(false))));
             treeView.SpaceAbove = 20;
             treeView.SpaceBelow = 20;
             ScreenSegmentStandardHorizontal horizontal = screen.CreateStandardHorizontalSegment();
