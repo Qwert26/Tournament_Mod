@@ -575,18 +575,6 @@ namespace Tournament
                     orbitcamOn = Input.GetMouseButtonDown(0); // default right click
                     break;
             }
-            if (shift)
-            {
-                orbitcam.xSpeed = 1000;
-                orbitcam.ySpeed = 480;
-            }
-            else if (strg) {
-                orbitcam.xSpeed = 63;
-                orbitcam.ySpeed = 30;
-            } else {
-                orbitcam.xSpeed = 250;
-                orbitcam.ySpeed = 120;
-            }
             if (changeExtraInfo)
             {
                 extraInfo = !extraInfo;
@@ -632,12 +620,10 @@ namespace Tournament
                     if (orbitindex + 1 >= StaticConstructablesManager.constructables.Count)
                     {
                         orbitindex = 0;
-                        //orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
                     }
                     else
                     {
                         orbitindex++;
-                        //orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
                     }
                 }
                 if (previous)
@@ -645,12 +631,10 @@ namespace Tournament
                     if (orbitindex == 0)
                     {
                         orbitindex = StaticConstructablesManager.constructables.Count - 1;
-                        //orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
                     }
                     else
                     {
                         orbitindex--;
-                        //orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
                     }
                 }
 
@@ -682,7 +666,6 @@ namespace Tournament
             }
             if (flycam.enabled && Parameters.DefaultKeys)
             {
-                //Vector3 val = new Vector3(Input.GetAxisRaw("Sidestep"), Input.GetKey((KeyCode)32) ? 1f : ((Input.GetKey((KeyCode)308) | Input.GetKey((KeyCode)307)) ? (-1f) : 0f), Input.GetAxisRaw("ForwardsBackwards"));
                 float x = 0;
                 float y = 0;
                 float z = 0;
@@ -715,7 +698,7 @@ namespace Tournament
                 {
                     val *= 4; //increase vector with shift
                 }
-                else if (strg) {
+                if (strg) {
                     val /= 4; //decrease vector with strg
                 }
                 flycam.transform.position = flycam.transform.position + flycam.transform.localRotation * val;
