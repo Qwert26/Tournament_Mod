@@ -279,6 +279,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Experimental\BreadBoards\CustomTagDriveModule.cs" />
+    <Compile Include="Experimental\BreadBoards\CustomTagInput.cs" />
     <Compile Include="Tournament\FactionManagement.cs" />
     <Compile Include="Tournament\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
