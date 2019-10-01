@@ -6,13 +6,7 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
-using BrilliantSkies.Ui.Special.PopUps;
-using Assets.Scripts.Gui;
-using Assets.Scripts.Persistence;
 using Tournament.Serialisation;
-using BrilliantSkies.Core.Constants;
-using BrilliantSkies.Core.FilesAndFolders;
-
 namespace Tournament.UI
 {
     public class BaseSettingsTab : SuperScreen<Tournament>

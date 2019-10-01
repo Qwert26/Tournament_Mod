@@ -1,0 +1,3 @@
+﻿Diese Dateien sind nicht Teil des Plugins und erwarten eine Verschiebung in andere Plugins!
+
+These Files are not Part of the Plugin and awaiting relocation in other Plugins!

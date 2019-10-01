@@ -15,14 +15,11 @@ namespace Experimental.BreadBoards
     [BoardComponent("Custom Tag Driver","Input can be assigned to any custom tagged axis.")]
     public class CustomTagDriveModule : BreadboardModule
     {
-        static CustomTagDriveModule() {
-            BoardTypes.FtdBreadboard.Add(new BoardTypes.ComponentType(typeof(CustomTagDriveModule)));
-        }
         private float _input = 0f;
         public override Guid ComponentTypeId => new Guid("05D225F7-9338-4965-9DC9-87357A1F96A7");
         [Variable(0u,"Custom Tag")]
         public Var<string> CustomTag { get; set; } = new VarString("", 24);
-        public override string Description => $"";
+        public override string Description => $"Sum of inputs is assigned to \"{CustomTag}\"-tagged axis.";
         public override string DescribeInput(int i)
         {
             return $"All inputs are added together and applied to the Tag {CustomTag}";

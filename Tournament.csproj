@@ -279,8 +279,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Experimental\BreadBoards\CustomTagDriveModule.cs" />
-    <Compile Include="Experimental\BreadBoards\CustomTagInput.cs" />
+    <None Include="Experimental\BreadBoards\CustomTagDriveModule.cs" />
+    <None Include="Experimental\BreadBoards\CustomTagInput.cs" />
     <Compile Include="Tournament\FactionManagement.cs" />
     <Compile Include="Tournament\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -307,6 +307,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Experimental\Info.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

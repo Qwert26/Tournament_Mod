@@ -10,7 +10,6 @@ namespace Tournament
         public Color[] Colors { get => new Color[4] { Main, Secondary, Trim, Detail }; }
         public string Name { get; set; }
         public string Description { get; set; }
-
         public readonly static TournamentFleetColor classicYellow = new TournamentFleetColor()
         {
             Name = "Classic Yellow",

@@ -9,11 +9,6 @@ using Tournament.Serialisation;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
-using BrilliantSkies.Ui.Special.PopUps;
-using Assets.Scripts.Gui;
-using BrilliantSkies.Core.FilesAndFolders;
-using BrilliantSkies.Core.Constants;
-
 namespace Tournament.UI
 {
     public class AdvancedSettingsTab : SuperScreen<Tournament>

@@ -9,7 +9,6 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Texts;
 using BrilliantSkies.Ui.Tips;
 using System;
-using System.Linq;
 namespace Experimental.BreadBoards
 {
     [BoardComponent("Custom Tag Input", "Outputs the total propulsion request of the previous frame")]
@@ -21,18 +20,19 @@ namespace Experimental.BreadBoards
         public override string Description => $"Outputs the last total prolusion request to with \"{CustomTag}\"-tagged axis.";
         public override string DescribeOutput(int i)
         {
-            return $"The \"{CustomTag}\"-tagged axis is output here";
+            return $"Outputs the last total propulsion request to \"{CustomTag}\"-tagged axis.";
         }
         public override string DescribeOutputLink(int index)
+        {
+            return $"\"{CustomTag}\"={Rounding.R2(GetInput())}";
+        }
+        public override string GetString()
         {
             return $"\"{CustomTag}\"={Rounding.R2(GetInput())}";
         }
         public CustomTagInput() {
             Width.Us = 150;
             CreateOutput();
-        }
-        static CustomTagInput() {
-            BoardTypes.FtdBreadboard.Add(new BoardTypes.ComponentType(typeof(CustomTagInput)));
         }
         private float GetInput() {
             if (!_construct.ControlsRestricted.Last.GetCustomTags().TryGetValue(CustomTag, out float ret)) {

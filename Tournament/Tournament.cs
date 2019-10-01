@@ -28,57 +28,35 @@ namespace Tournament
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
     {
         public static Tournament _me;
-
         public TournamentConsole _GUI;
-
+        #region GUI-Stil
         private readonly GUIStyle timerStyle;
-
         private readonly GUIStyle extrainfoLeft;
-
         private readonly GUIStyle sidelist;
-
         private readonly GUIStyle extrainfoRight;
-
         private readonly GUIStyle extrainfoName;
-
+        #endregion
+        #region Kamerakontrolle
         private GameObject cam;
-
         private MouseLook flycam;
-
         private MouseOrbit orbitcam;
-
         //private DemoCamera demoCamera;
-
         private int orbittarget;
-
         private int orbitMothership;
-
         private int orbitindex;
-
+        #endregion
         private bool extraInfo;
-
         private float timerTotal;
-
         private float timerTotal2;
-
         private byte overtimeCounter;
-
         private Vector2 scrollPos=Vector2.zero;
-        
         //Management
-
         private Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
-
         private bool showLists = true;
-
         public List<TournamentFormation> teamFormations = new List<TournamentFormation>();
-
         public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
-
         public Dictionary<int, List<TournamentEntry>> entries = new Dictionary<int, List<TournamentEntry>>();
-
         private List<int> materials;
-
         public Tournament()
         {
             _me = this;
@@ -214,7 +192,6 @@ namespace Tournament
                 }
             }
         }
-
         public void StartMatch()
         {
             overtimeCounter = 0;
@@ -238,7 +215,6 @@ namespace Tournament
             }
             orbitindex = 0;
             orbittarget = 0;
-
             flycam.transform.position = new Vector3(-500f, 50f, 0f);
             flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
             foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
@@ -249,12 +225,10 @@ namespace Tournament
                     id = constructable.Drones.LoadedMothershipC.UniqueId;
                 }
                 string key = "" + constructable.UniqueId + "," + id;
-
                 if (!HUDLog.ContainsKey(constructable.GetTeam()))
                 {
                     HUDLog.Add(constructable.GetTeam(), new SortedDictionary<string, TournamentParticipant>());
                 }
-
                 if (!HUDLog[constructable.GetTeam()].ContainsKey(key))
                 {
                     bool spawnStick = constructable.BlockTypeStorage.MainframeStore.Count == 0;
@@ -326,7 +300,6 @@ namespace Tournament
             GameEvents.FixedUpdateEvent += FixedUpdate;
             GameEvents.OnGui += OnGUI;
         }
-
         public void ClearArea()
         {
             ForceManager.Instance.forces.ForEach(delegate (Force t)
@@ -334,7 +307,6 @@ namespace Tournament
                 ForceManager.Instance.DeleteForce(t);
             });
         }
-
         public void ResetCam()
         {
             foreach (PlayerSetupBase @object in Objects.Instance.Players.Objects)
@@ -362,28 +334,23 @@ namespace Tournament
             orbitMothership = -1;
             extraInfo = false;
         }
-
         public void MoveCam()
         {
             cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0);
         }
-
         public Vector3 FramePositionOfBoardSection()
         {
             return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection());
         }
-
         public Vector3d UniversalPositionOfBoardSection()
         {
             return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
         }
-
         public void SaveSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
             settingsFile.SaveData(Parameters,Formatting.Indented);
         }
-
         public void LoadSettings() {
             string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
             FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"parameters.json"));
@@ -515,7 +482,6 @@ namespace Tournament
                 }
             }
         }
-
         public IMainConstructBlock GetTarget()
         {
             IMainConstructBlock target = null;
@@ -535,11 +501,9 @@ namespace Tournament
             }
             return target;
         }
-
         public void LateUpdate()
         {
             FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
-
             bool pause = false;
             bool next = false;
             bool previous = false;
@@ -549,7 +513,6 @@ namespace Tournament
             bool orbitcamOn = false;
             bool changeExtraInfo = false;
             bool changeShowLists = false;
-
             switch (Parameters.DefaultKeys.Us)
             {
                 case false:
@@ -724,7 +687,6 @@ namespace Tournament
                 }
             }
         }
-
         public void FixedUpdate(ITimeStep dt)
         {
             if (!GameSpeedManager.Instance.IsPaused)
@@ -839,7 +801,6 @@ namespace Tournament
                 timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
             }
         }
-
         public void SlowUpdate(ITimeStep dt)
         {
             UpdateConstructs();
@@ -900,7 +861,6 @@ namespace Tournament
                 }
             }
         }
-
         private void UpdateConstructs()
         {
             MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
@@ -990,7 +950,6 @@ namespace Tournament
                 }
             }
         }
-
         public Quaternion Rotation => Quaternion.Euler(0, Parameters.Rotation, 0);
         public float DistanceProjected(Vector3 a, Vector3 b) {
             a.y = 0;

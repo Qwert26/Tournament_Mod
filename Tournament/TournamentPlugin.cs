@@ -12,17 +12,11 @@ namespace Tournament
     public class TournamentPlugin : GamePlugin
     {
         private static Tournament _t;
-
         private static InstanceSpecification @is;
-
         public string name => "Tournament";
-
         public static string Name => "Tournament";
-
         public Version version => new Version(2, 4, 9, 31);
-
         internal static FactionManagement factionManagement;
-        
         public void OnLoad()
         {
             _t = new Tournament();
@@ -32,7 +26,6 @@ namespace Tournament
             GameEvents.UniverseChange += OnPlanetChange;
             GameEvents.UniverseChange += factionManagement.OnUniverseChange;
         }
-
         public void OnSave() { }
         /// <summary>
         /// Adds and removes the instance based on the gametype.

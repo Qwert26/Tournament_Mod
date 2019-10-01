@@ -6,7 +6,6 @@ namespace Tournament
 		public string Name { get; set; }
 		public string Description { get; set; }
 		public LocalPosition DetermineLocalPosition { get; set; }
-
 		public static readonly TournamentFormation Line = new TournamentFormation()
 		{
 			Name = "Line",

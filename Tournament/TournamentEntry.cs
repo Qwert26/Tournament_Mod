@@ -13,34 +13,27 @@ namespace Tournament
     public class TournamentEntry
     {
         private BlueprintFile _bpf;
-
         public Blueprint bp;
-
         public int FactionIndex {
             get;
             set;
         }
-
         public float Spawn_direction {
             get;
             set;
         }
-
         public int Spawn_height {
             get;
             set;
         }
-
         public ObjectId Team_id {
             get;
             set;
         }
-
         public float Res {
             get;
             set;
         }
-
         public BlueprintFile Bpf {
             get {
                 return _bpf;
@@ -50,7 +43,6 @@ namespace Tournament
                 bp = Bpf.Load(true);
             }
         }
-
         public string[] LabelCost {
             get {
                 if (bp != null)
@@ -78,7 +70,6 @@ namespace Tournament
                 return null;
             }
         }
-
         public string[] Label {
             get {
                 if (bp != null)
@@ -109,7 +100,6 @@ namespace Tournament
                 return null;
             }
         }
-
         public MainConstruct Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
             MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
@@ -126,13 +116,11 @@ namespace Tournament
             (val.Owner as ConstructableOwner).SetFleetColors(Team_id);
             return val;
         }
-
         public Vector3 VLoc(float gapLR, float gapFB, int count, int pos, float dis)
         {
 			Vector3 ret = Tournament._me.GetFormation(FactionIndex).DetermineLocalPosition(Tournament._me.Parameters.ComputeFactionRotation(FactionIndex), gapLR, gapFB, count, pos, dis, Spawn_height);
             return Tournament._me.Rotation * ret;
         }
-
         public Quaternion VDir()
         {
             return FormationCalculation.FactionRotation(Tournament._me.Parameters.ComputeFactionRotation(FactionIndex) + Spawn_direction + Tournament._me.Parameters.Rotation + 180);
