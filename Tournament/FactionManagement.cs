@@ -5,26 +5,7 @@ namespace Tournament
     internal class FactionManagement
     {
         public FactionManagement() {
-            factions=new List<FactionSpecificationFaction>(3){
-                new FactionSpecificationFaction
-                {
-                    Name = "Team 1",
-                    AbreviatedName = "T1",
-                    FleetColors = TournamentFleetColor.classicYellow.Colors,
-                },
-                new FactionSpecificationFaction
-                {
-                    Name = "Team 2",
-                    AbreviatedName = "T2",
-                    FleetColors = TournamentFleetColor.classicRed.Colors,
-                },
-                new FactionSpecificationFaction
-                {
-                    Name = "Team 3",
-                    AbreviatedName = "T3",
-                    FleetColors = TournamentFleetColor.neoBlue.Colors,
-                },
-            };
+            factions=new List<FactionSpecificationFaction>(3);
         }
         public readonly List<FactionSpecificationFaction> factions;
         private bool added = false;
@@ -44,7 +25,7 @@ namespace Tournament
                 }
                 added = true;
             }
-            FactionSpecifications.i.PostLoadInitiate();
+            //FactionSpecifications.i.PostLoadInitiate();
         }
         public void OnUniverseChange() {
             added = false;
@@ -56,7 +37,7 @@ namespace Tournament
             });
             if (added) {
                 FactionSpecifications.i.AddNew(factions[factions.Count-1]);
-                FactionSpecifications.i.PostLoadInitiate();
+                //FactionSpecifications.i.PostLoadInitiate();
             }
         }
         public void EnsureFactionCount(int activeFactions) {
