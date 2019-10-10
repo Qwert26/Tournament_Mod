@@ -15,7 +15,7 @@ namespace Tournament
         private static InstanceSpecification @is;
         public string name => "Tournament";
         public static string Name => "Tournament";
-        public Version version => new Version(2, 4, 9, 31);
+        public Version version => new Version(2, 5, 0, 7);
         internal static FactionManagement factionManagement;
         public void OnLoad()
         {
