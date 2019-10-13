@@ -40,9 +40,9 @@ namespace Tournament.UI
                     tp.SpawnHeight.Us = (int)f;
                 }, new ToolTip("The starting height of the entry")));
             horizontal = screen.CreateStandardHorizontalSegment();
-            horizontal.AddInterpretter(SubjectiveButton<BlueprintFile>.Quick(treeSelector.CurrentData, "Add to all Teams", new ToolTip("Adds the currently selected Blueprint to all active Teams."), delegate (BlueprintFile bpf)
+            horizontal.AddInterpretter(SubjectiveButton<TreeSelectorGuiElement<BlueprintFile,BlueprintFolder>>.Quick(treeSelector, "Add to all Teams", new ToolTip("Adds the currently selected Blueprint to all active Teams."), delegate (TreeSelectorGuiElement<BlueprintFile,BlueprintFolder> tree)
             {
-                if (treeSelector.HasSelection)
+                if (tree.HasSelection)
                 {
                     for (int i = 0; i < _focus.Parameters.ActiveFactions; i++)
                     {
@@ -51,7 +51,7 @@ namespace Tournament.UI
                             FactionIndex = i,
                             Spawn_direction = _focus.Parameters.Direction,
                             Spawn_height = _focus.Parameters.SpawnHeight,
-                            Bpf = treeSelector.CurrentData
+                            Bpf = tree.CurrentData
                         });
                     }
                     _parentTab.TriggerRebuild();
@@ -60,16 +60,16 @@ namespace Tournament.UI
             for (int i = 0; i < 6; i++)
             {
                 int factionIndex = i;
-                horizontal.AddInterpretter(SubjectiveButton<BlueprintFile>.Quick(treeSelector.CurrentData, $"Add to Team {i + 1}", new ToolTip($"Add the currently selected Blueprint only to Team {i + 1}."), delegate (BlueprintFile bpf)
+                horizontal.AddInterpretter(SubjectiveButton<TreeSelectorGuiElement<BlueprintFile,BlueprintFolder>>.Quick(treeSelector, $"Add to Team {i + 1}", new ToolTip($"Add the currently selected Blueprint only to Team {i + 1}."), delegate (TreeSelectorGuiElement<BlueprintFile,BlueprintFolder> tree)
                 {
-                    if (treeSelector.HasSelection)
+                    if (tree.HasSelection)
                     {
                         _focus.entries[factionIndex].Add(new TournamentEntry()
                         {
                             FactionIndex = factionIndex,
                             Spawn_direction = _focus.Parameters.Direction,
                             Spawn_height = _focus.Parameters.SpawnHeight,
-                            Bpf = treeSelector.CurrentData
+                            Bpf = tree.CurrentData
                         });
                         _parentTab.TriggerRebuild();
                     }

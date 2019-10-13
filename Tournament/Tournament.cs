@@ -960,6 +960,7 @@ namespace Tournament
             return TournamentFormation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
         }
         public void ApplyFactionColors() {
+            TournamentPlugin.factionManagement.EnsureFactionCount(Parameters.ActiveFactions);
             for (int i = 0; i < Parameters.ActiveFactions; i++) {
                 TournamentPlugin.factionManagement.factions[i].OverrideFleetColors(new Color[] { Parameters.MainColorsPerTeam[i], Parameters.SecondaryColorsPerTeam[i], Parameters.TrimColorsPerTeam[i], Parameters.DetailColorsPerTeam[i] });
             }

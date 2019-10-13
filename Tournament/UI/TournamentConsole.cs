@@ -14,7 +14,7 @@ namespace Tournament.UI
         }
         protected override ConsoleWindow BuildInterface(string suggestedName = "")
         {
-            ConsoleWindow window = NewWindow("Tournament Setup", new CentralRectangle(0.8f,0.8f));
+            ConsoleWindow window = NewWindow("Tournament Setup", WindowSizing.GetCentralHuge());
             window.DisplayTextPrompt = false;
             window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus), new ParticipantManagementTab(window, _focus));
             return window;

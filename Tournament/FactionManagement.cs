@@ -22,6 +22,7 @@ namespace Tournament
                 foreach (FactionSpecificationFaction fsf in factions)
                 {
                     FactionSpecifications.i.AddNew(fsf);
+                    fsf.PostLoadInitiate();
                 }
                 added = true;
             }
@@ -37,7 +38,7 @@ namespace Tournament
             });
             if (added) {
                 FactionSpecifications.i.AddNew(factions[factions.Count-1]);
-                //FactionSpecifications.i.PostLoadInitiate();
+                factions[factions.Count - 1].PostLoadInitiate();
             }
         }
         public void EnsureFactionCount(int activeFactions) {

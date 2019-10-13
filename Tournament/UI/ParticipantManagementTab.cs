@@ -105,7 +105,10 @@ namespace Tournament.UI
             posthead.AddInterpretter(StringDisplay.Quick("It seems at least one Team has no Entry. Reduce the number of Teams or give the Team(s) in question at least one Entry.")).SetConditionalDisplayFunction(() => !ready);
         }
         public override Action OnSelectTab => () => {
-            participantConsole.ActivateGui(GuiActivateType.Add);
+            if (!participantConsole.MenuActiveOrInStack)
+            {
+                participantConsole.ActivateGui(GuiActivateType.Add);
+            }
             GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
         };
         public override Action<OnDeselectTabSource> OnDeselectTab => (OnDeselectTabSource source) => {

@@ -74,7 +74,7 @@ namespace Tournament.UI
                 }));
             }));*/
             saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
-            CreateHeader("Prepared Fleet Color", new ToolTip("Here you can find prepared fleet colors from the old days."));
+            CreateHeader("Prepared Fleet Colors", new ToolTip("Here you can find prepared fleet colors back from the old days."));
             CreateStandardSegment().AddInterpretter(new SubjectiveFloatClampedWithBar<EyecandyTab>(M.m<EyecandyTab>(0), M.m((EyecandyTab et) => et._focus.Parameters.ActiveFactions - 1), M.m((EyecandyTab et) => et.currentTeam),
                 M.m<EyecandyTab>(1), this, M.m((EyecandyTab et) => $"Apply Fleetcolor-Prefeb to Team {et.currentTeam + 1}"), delegate (EyecandyTab et, float f)
                 {
@@ -92,10 +92,10 @@ namespace Tournament.UI
                 }));
                 ScreenSegmentTable table = CreateTableSegment(4, 1);
                 table.SqueezeTable = false;
-                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Main Color"), M.m<TournamentFleetColor>(new ToolTip("")), M.m((TournamentFleetColor tFC) => tFC.Main)));
-                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Secondary Color"), M.m<TournamentFleetColor>(new ToolTip("")), M.m((TournamentFleetColor tFC) => tFC.Secondary)));
-                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Trim Color"), M.m<TournamentFleetColor>(new ToolTip("")), M.m((TournamentFleetColor tFC) => tFC.Trim)));
-                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Detail Color"), M.m<TournamentFleetColor>(new ToolTip("")), M.m((TournamentFleetColor tFC) => tFC.Detail)));
+                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Main Color"), M.m<TournamentFleetColor>(new ToolTip($"The Main Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Main)));
+                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Secondary Color"), M.m<TournamentFleetColor>(new ToolTip($"The Secondary Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Secondary)));
+                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Trim Color"), M.m<TournamentFleetColor>(new ToolTip($"The Trim Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Trim)));
+                table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Detail Color"), M.m<TournamentFleetColor>(new ToolTip($"The Detail Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Detail)));
                 CreateSpace(15);
             }
         }
