@@ -109,7 +109,7 @@ namespace Tournament
 						}
 					}
 				}
-				return FactionRotation(factionRotation) * new Vector3(x,height, z);
+				return FactionRotation(factionRotation) * new Vector3(x, height, z);
 			}
 		}
 		public static Vector3 ParallelColumns(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
