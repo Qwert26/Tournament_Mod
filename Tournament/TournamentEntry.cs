@@ -102,7 +102,7 @@ namespace Tournament
         }
         public MainConstruct Spawn(float dis, float gapLR, float gapFB, int count, int pos)
         {
-            MainConstruct val = BlueprintConverter.Convert(bp, ConversionDamageMode.IgnoreDamage, true);
+            MainConstruct val = BlueprintConverter.Convert(bp, SpawnInstructions.IgnoreDamage);
             FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
             Team_id = faction.Id;
             BlueprintInitialisation initialisation = new BlueprintInitialisation(val)

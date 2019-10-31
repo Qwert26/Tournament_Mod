@@ -58,3 +58,4 @@ D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.VideoModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.VRModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.WebModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.WindModule.xml
+D:\GitHub\Tournament_Mod\bin\Debug\Localisation.dll
