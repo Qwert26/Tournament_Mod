@@ -131,7 +131,7 @@ namespace Tournament.UI
             ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
             segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
             for (int i = 0; i < _focus.Parameters.ActiveFactions; i++) {
-                int index = i;
+                int index = i + 1;
                 segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index}", new ToolTip($"Give Team {index} infinte Materials."), delegate (TournamentParameters tp, bool b)
                 {
                     tp.InfinteResourcesPerTeam.Us[index] = b;

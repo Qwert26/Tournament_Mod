@@ -288,6 +288,7 @@
     <Compile Include="Tournament\Serialisation\ColorList.cs" />
     <Compile Include="Tournament\Serialisation\TournamentParametersFolder.cs" />
     <Compile Include="Tournament\Serialisation\TournamentParametersFile.cs" />
+    <Compile Include="Tournament\Serialisation\TeamConfiguration.cs" />
     <Compile Include="Tournament\Tournament.cs" />
     <Compile Include="Tournament\UI\BaseSettingsTab.cs" />
     <Compile Include="Tournament\UI\EyecandyTab.cs" />

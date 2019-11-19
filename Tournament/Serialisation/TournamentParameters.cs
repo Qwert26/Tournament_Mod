@@ -15,8 +15,11 @@ namespace Tournament.Serialisation
         public Var<int> SpawngapLR { get; set; } = new VarIntClamp(100, -1000, 1000);
         [Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
         public Var<int> SpawngapFB { get; set; } = new VarIntClamp(0, -1000, 1000);
+        /// <summary>
+        /// Laut dem Planeten-Editor sind -1000 und 100000 absolute Grenzen.
+        /// </summary>
         [Variable(3, "Altitude Limits(m)","x is minimum altitude and y is maximum altitude.")]
-        public VarVector2PairClamp AltitudeLimits { get; set; } = new VarVector2PairClamp(new Vector2(-50, 500), 0, -500, 3000);
+        public VarVector2PairClamp AltitudeLimits { get; set; } = new VarVector2PairClamp(new Vector2(-50, 500), 0, -1000, 100000);
         [Variable(4, "Distance Limit(m)", "Maximum permitted distance towards the nearest enemy.")]
         public Var<int> DistanceLimit { get; set; } = new VarIntClamp(1500, 0, 10000);
         [Variable(5, "Projected distance", "Use a top-down projected 2D-distance instead of the true 3D-distance. Good for Tournaments with a lot of vertical freedom.")]
@@ -50,8 +53,14 @@ namespace Tournament.Serialisation
         public Var<int> Rotation { get; set; } = new VarIntClamp(0, -90, 90);
         [Variable(20,"Default Keymapping","When true the Tournament-Mod uses a static keymap, otherwise it uses your currently configured Keymap.")]
         public VarBool DefaultKeys { get; set; } = new VarBool(false);
+        /// <summary>
+        /// Zu letzt genutzte Spawnhöhe.
+        /// </summary>
         [Variable(21,"Location")]
-        public Var<int> SpawnHeight { get; set; } = new VarIntClamp(0, -500, 3000);
+        public Var<int> SpawnHeight { get; set; } = new VarIntClamp(0, -1000, 100000);
+        /// <summary>
+        /// Zu letzt genutzte Spawnrichtung.
+        /// </summary>
         [Variable(22, "Direction")]
         public VarFloatAngle Direction { get; set; } = new VarFloatAngle(0, VarFloatAngle.LimitType.Z180To180);
         /// <summary>
@@ -88,12 +97,12 @@ namespace Tournament.Serialisation
         [Variable(109, "Health fraction for sinking", "Any construct below this fraction might be considered as sinking.")]
         public Var<int> SinkingHealthFraction { get; set; } = new VarIntClamp(80, 0, 100);
         [Variable(110, "Altitude for sinking", "Any construct below this fraction might be considered as sinking.")]
-        public Var<int> SinkingAltitude { get; set; } = new VarIntClamp(-10, -500, 0);
+        public Var<int> SinkingAltitude { get; set; } = new VarIntClamp(-10, -1000, 0);
         [Variable(111, "Cleanup damaged constructs", "Removes all constructs, which sustained too much damage.")]
         public Var<bool> CleanUpTooDamagedConstructs { get; set; } = new VarBool(true);
         [Variable(112, "Health fraction for Damage", "Any construct below this fraction will be considered as too damaged.")]
         public Var<int> TooDamagedHealthFraction { get; set; } = new VarIntClamp(55, 0, 100);
-        [Variable(113, "Cleanup small Constructs", "Removes all Constructs, which have not enough blocks alive.")]
+        [Variable(113, "Cleanup small Constructs", "Removes all Constructs, which have not enough alive blocks.")]
         public Var<bool> CleanUpTooSmallConstructs { get; set; } = new VarBool(true);
         [Variable(114, "Minimum Block count", "Removes any construct, which is not a drone and has less than this many blocks alive.")]
         public Var<int> TooSmallBlockCount { get; set; } = new VarIntClamp(10, 1, 100);
