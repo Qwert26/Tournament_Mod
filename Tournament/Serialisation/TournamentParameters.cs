@@ -12,31 +12,31 @@ namespace Tournament.Serialisation
         [Variable(0,"Starting Distance(m)","The Initial starting distance from the center to the teams.")]
         public Var<int> StartingDistance { get; set; } = new VarIntClamp(1000, 0, 20000);
         [Variable(1, "Spawn gap Left-Right(m)", "Spawn distance between team members left to right.")]
-        public Var<int> SpawngapLR { get; set; } = new VarIntClamp(100, -1000, 1000);
+        public VarList<int> SpawngapLR { get; set; } = new IntList();
         [Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
-        public Var<int> SpawngapFB { get; set; } = new VarIntClamp(0, -1000, 1000);
+        public VarList<int> SpawngapFB { get; set; } = new IntList();
         /// <summary>
         /// Laut dem Planeten-Editor sind -1000 und 100000 absolute Grenzen.
         /// </summary>
-        [Variable(3, "Altitude Limits(m)","x is minimum altitude and y is maximum altitude.")]
-        public VarVector2PairClamp AltitudeLimits { get; set; } = new VarVector2PairClamp(new Vector2(-50, 500), 0, -1000, 100000);
+        [Variable(3, "Altitude Limits(m)", "x is minimum altitude and y is maximum altitude.")]
+        public VarList<Vector2> AltitudeLimits { get; set; } = new Vector2List();
         [Variable(4, "Distance Limit(m)", "Maximum permitted distance towards the nearest enemy.")]
-        public Var<int> DistanceLimit { get; set; } = new VarIntClamp(1500, 0, 10000);
+        public VarList<int> DistanceLimit { get; set; } = new IntList();
         [Variable(5, "Projected distance", "Use a top-down projected 2D-distance instead of the true 3D-distance. Good for Tournaments with a lot of vertical freedom.")]
-        public VarBool ProjectedDistance { get; set; } = new VarBool(false);
+        public VarList<bool> ProjectedDistance { get; set; } = new BoolList();
         [Variable(6, "Maximum penalty time(s)", "Any entries, which exceed this time will be removed from the field.")]
-        public Var<int> MaximumPenaltyTime { get; set; } = new VarIntClamp(120, 0, 3600);
+        public VarList<int> MaximumPenaltyTime { get; set; } = new IntList();
         [Variable(7, "Soft limits", "With soft limits, entries will not pick up penalty time if they are moving towards the limits. " +
             "With hard limits, entries will pick up penalty time for as long as they are outside those limits")]
-        public VarBool SoftLimits { get; set; } = new VarBool(true);
+        public VarList<bool> SoftLimits { get; set; } = new BoolList();
         [Variable(8, "Maximum buffer time(s)", "For vehicles outside the limits, this buffer must deplete first, before penalty time is added.")]
-        public Var<int> MaximumBufferTime { get; set; } = new VarIntClamp(3, 0, 360);
+        public VarList<int> MaximumBufferTime { get; set; } = new IntList();
         [Variable(9, "Distance reversal(m/s)", "A positive value means that this speed is the maximum fleeing speed, " +
             "while a negative value means that this speed is the minimum for reengagments.")]
-        public Var<int> DistanceReverse { get; set; } = new VarIntClamp(3, -500, 500);
+        public VarList<int> DistanceReverse { get; set; } = new IntList();
         [Variable(10, "Altitude reversal(m/s)", "A positive value means that this speed is the maximum speed for going away from the altutude limits, " +
             "while a negative value means that this is the minimum speed for going back into the altitude limits.")]
-        public Var<int> AltitudeReverse { get; set; } = new VarIntClamp(3, -500, 500);
+        public VarList<int> AltitudeReverse { get; set; } = new IntList();
         [Variable(11, "Maximum time(s)")]
         public Var<int> MaximumTime { get; set; } = new VarIntClamp(900, 0, 3600);
         [Variable(12,"Overtime(s)")]
@@ -75,6 +75,8 @@ namespace Tournament.Serialisation
         public Var<int> NorthSouthBoard { get; set; } = new VarIntClamp(0, 0, 30);
         [Variable(25,"Distribute local Resources","When active, the materials get distributed along the entries of a team, any excess goes into faction storage.")]
         public Var<bool> DistributeLocalResources { get; set; } = new VarBool(false);
+        [Variable(26, "Uniform Rules", "When active, all teams will have the same Ruleset.")]
+        public Var<bool> UniformRules { get; set; } = new VarBool(true);
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]
@@ -114,9 +116,6 @@ namespace Tournament.Serialisation
         public Var<int> RepairDelayTime { get; set; } = new VarIntClamp(100, 10, 600);
         #endregion
         #endregion
-        #region Augenschmaus
-        [Variable(200,"Show Eyecandy")]
-        public VarBool ShowEyecandy { get; set; } = new VarBool(false);
         #region Teams
         [Variable(201,"Main Color of a given Team-index")]
         public VarList<Color> MainColorsPerTeam { get; set; } = new ColorList();
@@ -127,43 +126,80 @@ namespace Tournament.Serialisation
         [Variable(204, "Main Color of a given Team-index")]
         public VarList<Color> DetailColorsPerTeam { get; set; } = new ColorList();
         #endregion
-        #endregion
         public float ComputeFactionRotation(int factionindex) {
             return 360f * factionindex / ActiveFactions;
         }
         public void EnsureEnoughData() {
-            //Debug.Log("ActiveFactions is " + ActiveFactions);
             while (InfinteResourcesPerTeam.Count < 6) {
                 InfinteResourcesPerTeam.Add(false);
             }
-            //Debug.Log("InfinteResourcesPerTeam has " + InfinteResourcesPerTeam.Count + " entries");
             while (ResourcesPerTeam.Count < 6) {
                 ResourcesPerTeam.Add(10000);
             }
-            //Debug.Log("ResourcesPerTeam has " + ResourcesPerTeam.Count + " entries");
             while (FormationIndexPerTeam.Count < 6) {
                 FormationIndexPerTeam.Add(0);
             }
-            //Debug.Log("FormationIndexPerTeam has " + FormationIndexPerTeam.Count + " entries");
             while (MainColorsPerTeam.Count < 6) {
                 MainColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
-            //Debug.Log("MainColorsPerTeam has " + MainColorsPerTeam.Count + " entries");
             while (SecondaryColorsPerTeam.Count < 6)
             {
                 SecondaryColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
-            //Debug.Log("SecondaryColorsPerTeam has " + SecondaryColorsPerTeam.Count + " entries");
             while (TrimColorsPerTeam.Count < 6)
             {
                 TrimColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
-            //Debug.Log("TrimColorsPerTeam has " + TrimColorsPerTeam.Count + " entries");
             while (DetailColorsPerTeam.Count < 6)
             {
                 DetailColorsPerTeam.Add(new Color(0, 0, 0, 0));
             }
-            //Debug.Log("DetailColorsPerTeam has " + DetailColorsPerTeam.Count + " entries");
+            while (AltitudeLimits.Count < 6) {
+                AltitudeLimits.Add(new Vector2(-50, 500));
+            }
+            while (DistanceLimit.Count < 6) {
+                DistanceLimit.Add(1500);
+            }
+            while (SpawngapFB.Count < 6) {
+                SpawngapFB.Add(0);
+            }
+            while (SpawngapLR.Count < 6) {
+                SpawngapLR.Add(100);
+            }
+            while (ProjectedDistance.Count < 6) {
+                ProjectedDistance.Add(false);
+            }
+            while (MaximumPenaltyTime.Count < 6) {
+                MaximumPenaltyTime.Add(90);
+            }
+            while (MaximumBufferTime.Count < 6) {
+                MaximumBufferTime.Add(0);
+            }
+            while (SoftLimits.Count < 6) {
+                SoftLimits.Add(true);
+            }
+            while (DistanceReverse.Count < 6) {
+                DistanceReverse.Add(3);
+            }
+            while (AltitudeReverse.Count < 6) {
+                AltitudeReverse.Add(-3);
+            }
+        }
+        public void MakeUniform() {
+            for (int i = 1; i < 6; i++) {
+                InfinteResourcesPerTeam.Us[i] = InfinteResourcesPerTeam[0];
+                ResourcesPerTeam.Us[i] = ResourcesPerTeam[0];
+                AltitudeLimits.Us[i] = AltitudeLimits[0];
+                DistanceLimit.Us[i] = DistanceLimit[0];
+                SpawngapFB.Us[i] = SpawngapFB[0];
+                SpawngapLR.Us[i] = SpawngapLR[0];
+                ProjectedDistance.Us[i] = ProjectedDistance[0];
+                MaximumBufferTime.Us[i] = MaximumBufferTime[0];
+                MaximumPenaltyTime.Us[i] = MaximumPenaltyTime[0];
+                SoftLimits.Us[i] = SoftLimits[0];
+                DistanceReverse.Us[i] = DistanceReverse[0];
+                AltitudeReverse.Us[i] = AltitudeReverse[0];
+            }
         }
     }
 }

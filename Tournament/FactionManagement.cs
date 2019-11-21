@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using BrilliantSkies.Core.Id;
 using BrilliantSkies.Ftd.Planets.Factions;
 namespace Tournament
 {
     internal class FactionManagement
     {
         public FactionManagement() {
-            factions=new List<FactionSpecificationFaction>(3);
+            factions=new List<FactionSpecificationFaction>(6);
         }
         public readonly List<FactionSpecificationFaction> factions;
         private bool added = false;
@@ -26,7 +27,6 @@ namespace Tournament
                 }
                 added = true;
             }
-            //FactionSpecifications.i.PostLoadInitiate();
         }
         public void OnUniverseChange() {
             added = false;
@@ -45,6 +45,9 @@ namespace Tournament
             while (factions.Count < activeFactions) {
                 CreateFaction();
             }
+        }
+        public int TeamIndexFromObjectID(ObjectId factionID) {
+            return factions.FindIndex((fsf) => fsf.Id == factionID);
         }
     }
 }

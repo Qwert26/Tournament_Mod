@@ -23,6 +23,8 @@ using System.Linq;
 using UnityEngine;
 using Tournament.UI;
 using Tournament.Serialisation;
+using BrilliantSkies.Ui.Special.PopUps;
+
 namespace Tournament
 {
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
@@ -127,7 +129,7 @@ namespace Tournament
                         }
                         for (int pos = 0; pos < team.Value.Count; pos++)
                         {
-                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
                             mc.RawResource.Material.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
                         }
                     }
@@ -146,7 +148,7 @@ namespace Tournament
                         constructs.Add(team.Key, new List<MainConstruct>());
                         for (int pos = 0; pos < team.Value.Count; pos++)
                         {
-                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                            MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
                             constructs[team.Key].Add(mc);
                             maxMaterials[team.Key] += (int)mc.RawResource.Material.Maximum;
                         }
@@ -186,7 +188,7 @@ namespace Tournament
                 }
                 foreach (KeyValuePair<int, List<TournamentEntry>> team in entries) {
                     for (int pos=0;pos< team.Value.Count;pos++) {
-                        team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR, Parameters.SpawngapFB, team.Value.Count, pos);
+                        team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
                         StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].RawResource.Material.SetQuantity(0);
                     }
                 }
@@ -356,12 +358,21 @@ namespace Tournament
             FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder,"parameters.json"));
             if (settingsFile.Exists)
             {
-                Parameters = settingsFile.LoadData<TournamentParameters>();
+                try
+                {
+                    Parameters = settingsFile.LoadData<TournamentParameters>();
+                    Parameters.EnsureEnoughData();
+                }
+                catch (Exception) {
+                    LoadDefaults();
+                    SaveSettings();
+                    GuiPopUp.Instance.Add(new PopupError("Could not load Settings","Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
+                        "or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
+                }
             }
             else {
                 LoadDefaults();
             }
-            Parameters.EnsureEnoughData();
             for (int i = 0; i < Parameters.ActiveFactions; i++) {
                 entries.Add(i, new List<TournamentEntry>());
             }
@@ -720,28 +731,31 @@ namespace Tournament
                         UpdateConstructs();
                         tournamentParticipant = HUDLog[val.GetTeam()][key];
                     }
+                    //The participant is still in the game:
                     if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
                     {
+                        int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(val.GetTeam());
                         tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
+                        //Is it braindead?
                         if (tournamentParticipant.AICount == 0)
                         {
                             tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                         }
-                        else if (val.CentreOfMass.y < Parameters.AltitudeLimits.Lower || val.CentreOfMass.y > Parameters.AltitudeLimits.Upper)
+                        else if (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y)
                         {
-                            if (Parameters.SoftLimits) {
-                                if (val.CentreOfMass.y < Parameters.AltitudeLimits.Lower && -val.Velocity.y > Parameters.AltitudeReverse) //Below minimum altitude and still sinking.
+                            if (Parameters.SoftLimits[teamIndex]) {
+                                if (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x && -val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Below minimum altitude and still sinking.
                                 {
                                     tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime)
+                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
                                     {
                                         tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                     }
                                 }
-                                else if (val.CentreOfMass.y > Parameters.AltitudeLimits.Upper && val.Velocity.y > Parameters.AltitudeReverse) //Above maximum altitude and still rising.
+                                else if (val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y && val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Above maximum altitude and still rising.
                                 {
                                     tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime)
+                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
                                     {
                                         tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                     }
@@ -765,29 +779,29 @@ namespace Tournament
                             {
                                 if (val != val2 && val.GetTeam() != val2.GetTeam())
                                 {
-                                    float num3 = Parameters.ProjectedDistance ? DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
+                                    float num3 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
                                     if (num < 0f)
                                     {
                                         num = num3;
-                                        num2 = Parameters.ProjectedDistance ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+                                        num2 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
 
                                     }
                                     else if (num3 < num)
                                     {
                                         num = num3;
-                                        num2 = Parameters.ProjectedDistance ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+                                        num2 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
                                     }
                                 }
                             }
-                            if (Parameters.SoftLimits && num > Parameters.DistanceLimit && num < num2 - Parameters.DistanceReverse) //out of bounds and moving away faster than oobReverse m/s
+                            if (Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex] && num < num2 - Parameters.DistanceReverse[teamIndex]) //out of bounds and moving away faster than oobReverse m/s
                             {
                                 tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime)
+                                if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
                                 {
                                     tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                                 }
                             }
-                            else if (!Parameters.SoftLimits && num > Parameters.DistanceLimit) { //out of bounds
+                            else if (!Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex]) { //out of bounds
                                 tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
                             }
                             else
@@ -795,7 +809,7 @@ namespace Tournament
                                 tournamentParticipant.OoBTimeBuffer = 0;
                             }
                         }
-                        tournamentParticipant.Disqual = tournamentParticipant.OoBTime > Parameters.MaximumPenaltyTime;
+                        tournamentParticipant.Disqual = tournamentParticipant.OoBTime > Parameters.MaximumPenaltyTime[teamIndex];
                     }
                 }
                 timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;

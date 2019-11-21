@@ -16,7 +16,7 @@ namespace Tournament.UI
         {
             ConsoleWindow window = NewWindow("Tournament Setup", WindowSizing.GetCentralHuge());
             window.DisplayTextPrompt = false;
-            window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus), new ParticipantManagementTab(window, _focus));
+            window.SetMultipleTabs(new BaseSettingsTab(window, _focus), new TeamSplittedRules(window, _focus), new AdvancedSettingsTab(window, _focus), new EyecandyTab(window, _focus), new ParticipantManagementTab(window, _focus));
             return window;
         }
         public override void OnActivateGui()
