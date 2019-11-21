@@ -20,7 +20,7 @@ namespace Tournament.UI
             CreateHeader("Uniform Rules are active", new ToolTip("Team-based Spawn- and Penalty-Rules are not currently active.")).SetConditionalDisplay(() => _focus.Parameters.UniformRules);
             ScreenSegmentStandard segment = CreateStandardSegment();
             segment.SetConditionalDisplay(() => _focus.Parameters.UniformRules);
-            segment.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Use Team-based Spawn- and Penalty-Rules", new ToolTip("Activate the usage of Team-based DQ-Rules."),
+            segment.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Use Team-based Spawn- and Penalty-Rules", new ToolTip("Activate the usage of Team-based Spawn- and Penalty-Rules."),
                 delegate (TournamentParameters tp)
                 {
                     tp.UniformRules.Us = false;
@@ -51,7 +51,7 @@ namespace Tournament.UI
                             v.y = v.x;
                         }
                         tp.AltitudeLimits.Us[index] = v;
-                    }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum depths that entries on this team are allowed to go to?"))));
+                    }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum depth that entries on this team are allowed to go to?"))));
                 segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
                     M.m((TournamentParameters tp) => tp.AltitudeLimits[index].y), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[index].x),
                     _focus.Parameters, M.m<TournamentParameters>("Upper Altitude Limit"), delegate (TournamentParameters tp, float f)
@@ -63,7 +63,7 @@ namespace Tournament.UI
                             v.x = v.y;
                         }
                         tp.AltitudeLimits.Us[index] = v;
-                    }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum depths that entries on this team are allowed to go to?"))));
+                    }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum height that entries on this team are allowed to go to?"))));
                 segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 10000, 1, 1500,
                     M.m((TournamentParameters tp) => tp.DistanceLimit[index]), "Distance Limit", delegate (TournamentParameters tp, float f)
                     {

@@ -70,7 +70,7 @@ namespace Tournament
                 }, new HeaderAndParagraph() {
                     Header="You go there and we fight here",
                     Paragraph="Each Vehicle can be spawned in any orientation and at any altitude. If you don't like the spawn order, you can also change it." +
-                    "Use the Location sliders to select the perfect Map-Sector for the fight. The background-camera will spin around in that sector to give you an overview. " +
+                    "Use the Location sliders to select the perfect Map-Sector for the fight. The background-camera can be rotated around by either holding 'e' or pressing the middle mousebutton. " +
                     "And finally rotate the teams around the center point of it."
                 }, new HeaderAndParagraph() {
                     Header="I want a Rematch!",

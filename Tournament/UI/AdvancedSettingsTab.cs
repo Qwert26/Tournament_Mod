@@ -63,7 +63,7 @@ namespace Tournament.UI
             for (int i = 0; i < 6; i++) {
                 int index = i;
                 segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(TournamentFormation.tournamentFormations.Length - 1),
-                    M.m((TournamentParameters tp) => tp.FormationIndexPerTeam[index]), M.m<TournamentParameters>(1), _focus.Parameters, M.m((TournamentParameters tp) => $"Team {index} Formation: {TournamentFormation.tournamentFormations[tp.FormationIndexPerTeam[index]].Name}"), delegate (TournamentParameters tp, float f)
+                    M.m((TournamentParameters tp) => tp.FormationIndexPerTeam[index]), M.m<TournamentParameters>(1), _focus.Parameters, M.m((TournamentParameters tp) => $"Team {index+1} Formation: {TournamentFormation.tournamentFormations[tp.FormationIndexPerTeam[index]].Name}"), delegate (TournamentParameters tp, float f)
                       {
                           tp.FormationIndexPerTeam.Us[index] = (int)f;
                       }, null, M.m((TournamentParameters tp) => new ToolTip(TournamentFormation.tournamentFormations[tp.FormationIndexPerTeam[index]].Description)))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
