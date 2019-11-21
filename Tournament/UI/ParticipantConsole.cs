@@ -34,7 +34,7 @@ namespace Tournament.UI
                 {
                     tp.Direction.Us = f;
                 }, new ToolTip("0° is the old forward, 90° is the old right and -90° is the old left.")));
-            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 3000, 1, 0,
+            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 100000, 10, 0,
                 M.m((TournamentParameters tp) => tp.SpawnHeight), "Starting Height: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     tp.SpawnHeight.Us = (int)f;

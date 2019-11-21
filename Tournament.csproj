@@ -279,8 +279,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Experimental\BreadBoards\CustomTagDriveModule.cs" />
-    <None Include="Experimental\BreadBoards\CustomTagInput.cs" />
     <Compile Include="Tournament\FactionManagement.cs" />
     <Compile Include="Tournament\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -308,9 +306,6 @@
     <None Include="Tournament\plugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Experimental\Info.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

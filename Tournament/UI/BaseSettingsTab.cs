@@ -26,8 +26,8 @@ namespace Tournament.UI
                 {
                     tp.StartingDistance.Us = (int)f;
                 }, new ToolTip("The distance from the center towards the \"Flagship(s)\" of a team.")));
-            segment.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Team-based Rules are currently in effect. Press here to enable a global Ruleset for all Teams.",
-                new ToolTip(""), delegate (TournamentParameters tp)
+            segment.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Team-based Rules are currently in effect.",
+                new ToolTip("Press here to enable a global Ruleset for all Teams."), delegate (TournamentParameters tp)
                 {
                     tp.UniformRules.Us = true;
                     tp.MakeUniform();
@@ -49,7 +49,7 @@ namespace Tournament.UI
                     }
                 }, new ToolTip("How many meters should entries on the same team be apart in the forward-backward direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y),
+                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y),
                 _focus.Parameters, M.m<TournamentParameters>("Lower Altitude Limit"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
@@ -60,7 +60,7 @@ namespace Tournament.UI
                     }
                 }, null, M.m<TournamentParameters>(new ToolTip("What is the minimum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x),
+                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x),
                 _focus.Parameters, M.m<TournamentParameters>("Upper Altitude Limit"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
@@ -103,7 +103,7 @@ namespace Tournament.UI
             #region Puffer-Einstellungen
             ScreenSegmentStandard segment2 = CreateStandardSegment();
             segment2.SetConditionalDisplay(() => _focus.Parameters.UniformRules&&_focus.Parameters.SoftLimits[0]);
-            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
+            segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
                 M.m((TournamentParameters tp) => tp.MaximumBufferTime[0]), "Maximum Buffer Time", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
@@ -126,8 +126,7 @@ namespace Tournament.UI
                     {
                         tp.AltitudeReverse.Us[i] = (int)f;
                     }
-                }, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. " +
-                "Recommended is a negative value.")));
+                }, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. Recommended is a negative value.")));
             #endregion
             ScreenSegmentStandard segment3 = CreateStandardSegment();
             segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 900,

@@ -33,31 +33,31 @@ namespace Tournament.UI
                         }
                     }
                 }, new ToolTip("The amount of active Teams.")));
-            segment1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters,"Activate Advanced Options",new ToolTip(""),delegate (TournamentParameters tp,bool b)
-            {
-                tp.ShowAdvancedOptions.Us = b;
-                if (!b)
-                {
-                    for (int i = 0; i < _focus.Parameters.ActiveFactions; i++)
-                    {
-                        _focus.Parameters.FormationIndexPerTeam.Us[i] = 0;
-                    }
-                    _focus.Parameters.MaterialConversion.Reset();
-                    _focus.Parameters.CleanUpMode.Reset();
-                    _focus.Parameters.HealthCalculation.Reset();
-                    _focus.Parameters.MinimumHealth.Reset();
-                    _focus.Parameters.CleanUpDelayedByRepairs.Reset();
-                    _focus.Parameters.RepairDelayTime.Reset();
-                    _focus.Parameters.CleanUpNoAI.Reset();
-                    _focus.Parameters.CleanUpSinkingConstructs.Reset();
-                    _focus.Parameters.SinkingAltitude.Reset();
-                    _focus.Parameters.SinkingHealthFraction.Reset();
-                    _focus.Parameters.CleanUpTooDamagedConstructs.Reset();
-                    _focus.Parameters.TooDamagedHealthFraction.Reset();
-                    _focus.Parameters.CleanUpTooSmallConstructs.Reset();
-                    _focus.Parameters.TooSmallBlockCount.Reset();
-                }
-            },(tp)=>tp.ShowAdvancedOptions.Us));
+            segment1.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Activate Advanced Options", new ToolTip("Shows the advanced options. Unless you know exactly what you want in here, i suggest leaving it closed."), delegate (TournamentParameters tp, bool b)
+               {
+                   tp.ShowAdvancedOptions.Us = b;
+                   if (!b)
+                   {
+                       for (int i = 0; i < _focus.Parameters.ActiveFactions; i++)
+                       {
+                           _focus.Parameters.FormationIndexPerTeam.Us[i] = 0;
+                       }
+                       _focus.Parameters.MaterialConversion.Reset();
+                       _focus.Parameters.CleanUpMode.Reset();
+                       _focus.Parameters.HealthCalculation.Reset();
+                       _focus.Parameters.MinimumHealth.Reset();
+                       _focus.Parameters.CleanUpDelayedByRepairs.Reset();
+                       _focus.Parameters.RepairDelayTime.Reset();
+                       _focus.Parameters.CleanUpNoAI.Reset();
+                       _focus.Parameters.CleanUpSinkingConstructs.Reset();
+                       _focus.Parameters.SinkingAltitude.Reset();
+                       _focus.Parameters.SinkingHealthFraction.Reset();
+                       _focus.Parameters.CleanUpTooDamagedConstructs.Reset();
+                       _focus.Parameters.TooDamagedHealthFraction.Reset();
+                       _focus.Parameters.CleanUpTooSmallConstructs.Reset();
+                       _focus.Parameters.TooSmallBlockCount.Reset();
+                   }
+               }, (tp) => tp.ShowAdvancedOptions.Us));
             ScreenSegmentStandard segment2 = CreateStandardSegment();
             segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
             for (int i = 0; i < 6; i++) {
