@@ -76,7 +76,7 @@ namespace Tournament
         public readonly static TournamentFleetColor terranRepublic = new TournamentFleetColor()
         {
             Name = "Terran Republic, Planetside",
-            Description = "TBD",
+            Description = "Propsed colors of the TR by Lucaya, the order was assumed to be main, secondary, trim.",
             Main = new Color(1f, 0f, 0f, 1f), //Red
             Secondary = new Color(0f, 0f, 0f, 1f), //Black
             Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
@@ -85,7 +85,7 @@ namespace Tournament
         public readonly static TournamentFleetColor newConglomerate = new TournamentFleetColor()
         {
             Name = "New Conglomerate, Planetside",
-            Description = "TBD",
+            Description = "Propsed colors of the NC by Lucaya, the order was assumed to be main, secondary, trim.",
             Main = new Color(0f, 0f, 1f, 1f), //Blue
             Secondary = new Color(1f, 1f, 0f, 1f), //Yellow
             Trim = new Color(0.96f, 0.96f, 0.86f, 1f), //Beige
@@ -94,7 +94,7 @@ namespace Tournament
         public readonly static TournamentFleetColor vanuSovereignty = new TournamentFleetColor()
         {
             Name = "Vanu Sovereignty, Planetside",
-            Description = "TBD",
+            Description = "Propsed colors of the VS by Lucaya, the order was assumed to be main, secondary, trim.",
             Main = new Color(0.5f, 0f, 0.5f, 1f), //Purple
             Secondary = new Color(0f, 1f, 1f, 1f), //Aqua
             Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey

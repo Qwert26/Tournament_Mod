@@ -13,6 +13,8 @@ namespace Tournament.UI
     public class BaseSettingsTab : SuperScreen<Tournament>
     {
         private int sectionsNorthSouth, sectionsEastWest;
+        private int heightmapRange;
+        private float fullGravityHeight;
         public BaseSettingsTab(ConsoleWindow window, Tournament focus) : base(window, focus) {
             Name = new Content("Base Settings", "Setup the basic Parameters of the Fight.");
         }
@@ -48,8 +50,10 @@ namespace Tournament.UI
                         tp.SpawngapFB.Us[i] = (int)f;
                     }
                 }, new ToolTip("How many meters should entries on the same team be apart in the forward-backward direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
-            segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y),
+            heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
+            fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
+            segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
+                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y),
                 _focus.Parameters, M.m<TournamentParameters>("Lower Altitude Limit"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
@@ -59,8 +63,8 @@ namespace Tournament.UI
                         tp.AltitudeLimits.Us[i] = v;
                     }
                 }, null, M.m<TournamentParameters>(new ToolTip("What is the minimum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
-            segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x),
+            segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
+                M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x),
                 _focus.Parameters, M.m<TournamentParameters>("Upper Altitude Limit"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)

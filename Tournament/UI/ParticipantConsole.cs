@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Gui;
 using Assets.Scripts.Persistence;
+using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
@@ -15,6 +16,8 @@ namespace Tournament.UI
     {
         private ConsoleUiScreen _parentTab;
         private TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> treeSelector;
+        private int heightmapRange;
+        private float fullGravityHeight;
         public ParticipantConsole(Tournament focus, ConsoleUiScreen parentTab) : base(focus) {
             _parentTab = parentTab;
             treeSelector = FtdGuiUtils.GetFileBrowserFor(GameFolders.GetCombinedBlueprintFolder(false));
@@ -34,7 +37,9 @@ namespace Tournament.UI
                 {
                     tp.Direction.Us = f;
                 }, new ToolTip("0° is the old forward, 90° is the old right and -90° is the old left.")));
-            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 100000, 10, 0,
+            heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
+            fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
+            horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -heightmapRange, fullGravityHeight, 1, 0,
                 M.m((TournamentParameters tp) => tp.SpawnHeight), "Starting Height: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     tp.SpawnHeight.Us = (int)f;

@@ -72,7 +72,7 @@ namespace Tournament.UI
                 M.m((TournamentParameters tp)=>tp.MaterialConversion), "Material-Conversion", delegate (TournamentParameters tp, float f)
                 {
                     tp.MaterialConversion.Us = (int)f;
-                }, new ToolTip("Set the Material-Conversion-Factor, also known as Lifesteal. The maximum in campaigns is 10% but here you can go up to 100%! The value -1% is a special case:" +
+                }, new ToolTip("Set the Material-Conversion-Factor, also known as Lifesteal. The maximum in campaigns is 10% but here you can go up to 100%! The value -1% is special: " +
                 "In the case of friendly fire, a team will not get any materials back!")));
             string describeCleanupMode()
             {

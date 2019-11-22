@@ -7,11 +7,13 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using Tournament.Serialisation;
 using BrilliantSkies.Ui.Consoles.Getters;
 using UnityEngine;
-
+using BrilliantSkies.Ftd.Planets.World;
 namespace Tournament.UI
 {
     public class TeamSplittedRules : SuperScreen<Tournament>
     {
+        private int heightmapRange;
+        private float fullGravityHeight;
         public TeamSplittedRules(ConsoleWindow window, Tournament focus) : base(window, focus) {
             Name = new Content("Team-splitted Rules", "You can set team-specific rules for spawning and penaltytime-pickup here.");
         }
@@ -25,6 +27,8 @@ namespace Tournament.UI
                 {
                     tp.UniformRules.Us = false;
                 }));
+            heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
+            fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
             for (int i = 0; i < 6; i++) {
                 int index = i;
                 CreateHeader($"Rules for Team {index + 1}", new ToolTip($"These are the DQ-Rules specific to Members of Team {index + 1}.")).SetConditionalDisplay(() => !_focus.Parameters.UniformRules && index < _focus.Parameters.ActiveFactions);
@@ -40,8 +44,8 @@ namespace Tournament.UI
                     {
                         tp.SpawngapLR.Us[index] = (int)f;
                     }, new ToolTip("How many meters should the entries on this team be apart on the x-axis?")));
-                segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                    M.m((TournamentParameters tp) => tp.AltitudeLimits[index].x), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[index].y),
+                segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
+                    M.m((TournamentParameters tp) => tp.AltitudeLimits[index].x), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[index].y),
                     _focus.Parameters, M.m<TournamentParameters>("Lower Altitude Limit"), delegate (TournamentParameters tp, float f)
                     {
                         Vector2 v = tp.AltitudeLimits[index];
@@ -52,8 +56,8 @@ namespace Tournament.UI
                         }
                         tp.AltitudeLimits.Us[index] = v;
                     }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum depth that entries on this team are allowed to go to?"))));
-                segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-1000), M.m<TournamentParameters>(100000),
-                    M.m((TournamentParameters tp) => tp.AltitudeLimits[index].y), M.m<TournamentParameters>(10), M.m((TournamentParameters tp) => tp.AltitudeLimits[index].x),
+                segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
+                    M.m((TournamentParameters tp) => tp.AltitudeLimits[index].y), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[index].x),
                     _focus.Parameters, M.m<TournamentParameters>("Upper Altitude Limit"), delegate (TournamentParameters tp, float f)
                     {
                         Vector2 v = tp.AltitudeLimits[index];
