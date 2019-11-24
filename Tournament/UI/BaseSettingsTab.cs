@@ -97,6 +97,14 @@ namespace Tournament.UI
                         tp.MaximumPenaltyTime.Us[i] = (int)f;
                     }
                 }, new ToolTip("How much penalty time can a participant have, before it self-destructs?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
+            segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
+                M.m((TournamentParameters tp) => tp.MaximumSpeed[0]), "Maximum Speed", delegate (TournamentParameters tp, float f)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        tp.MaximumSpeed.Us[i] = (int)f;
+                    }
+                }, new ToolTip("Going over the maximum Speed will add penalty time. If soft limits are active, it will deplete the buffer first."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use soft Limits", new ToolTip("When turned on, entries are given the chance to be considered in bounds under certain conditions. Turned off, entries will pickup penalty time as long as they are outside the bounds."), delegate (TournamentParameters tp, bool b)
             {
                 for (int i = 0; i < 6; i++)

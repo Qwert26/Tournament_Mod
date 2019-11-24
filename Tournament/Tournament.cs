@@ -24,7 +24,6 @@ using UnityEngine;
 using Tournament.UI;
 using Tournament.Serialisation;
 using BrilliantSkies.Ui.Special.PopUps;
-
 namespace Tournament
 {
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
@@ -768,7 +767,11 @@ namespace Tournament
                         }
                         else if (tournamentParticipant.HP < Parameters.MinimumHealth)
                         {
-                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            AddPenalty(tournamentParticipant, teamIndex);
+                        }
+                        else if (val.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
+                        {
+                            AddPenalty(tournamentParticipant, teamIndex);
                         }
                         else
                         {
@@ -813,6 +816,21 @@ namespace Tournament
                     }
                 }
                 timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+            }
+        }
+        private void AddPenalty(TournamentParticipant tournamentParticipant, int teamIndex)
+        {
+            if (Parameters.SoftLimits[teamIndex])
+            {
+                tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
+                {
+                    tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                }
+            }
+            else
+            {
+                tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
             }
         }
         public void SlowUpdate(ITimeStep dt)

@@ -16,7 +16,7 @@ namespace Tournament.Serialisation
         [Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
         public VarList<int> SpawngapFB { get; set; } = new IntList();
         /// <summary>
-        /// Laut dem Planeten-Editor sind -1000 und 100000 absolute Grenzen.
+        /// Laut dem Planeten-Editor sind -1000 und 100000 absolute Grenzen. Die eigentlichen Grenzen hängen vom Terrain und von der Weltraum-Grenze ab.
         /// </summary>
         [Variable(3, "Altitude Limits(m)", "x is minimum altitude and y is maximum altitude.")]
         public VarList<Vector2> AltitudeLimits { get; set; } = new Vector2List();
@@ -77,6 +77,8 @@ namespace Tournament.Serialisation
         public Var<bool> DistributeLocalResources { get; set; } = new VarBool(false);
         [Variable(26, "Uniform Rules", "When active, all teams will have the same Ruleset.")]
         public Var<bool> UniformRules { get; set; } = new VarBool(true);
+        [Variable(27,"Maximum Speed(m/s)","The maximum speed a construct is allowed to have.")]
+        public VarList<int> MaximumSpeed { get; set; } = new IntList();
         #endregion
         #region Fortgeschrittene Optionen
         [Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]
@@ -184,6 +186,9 @@ namespace Tournament.Serialisation
             while (AltitudeReverse.Count < 6) {
                 AltitudeReverse.Add(-3);
             }
+            while (MaximumSpeed.Count < 6) {
+                MaximumSpeed.Add(10000);
+            }
         }
         public void MakeUniform() {
             for (int i = 1; i < 6; i++) {
@@ -199,6 +204,7 @@ namespace Tournament.Serialisation
                 SoftLimits.Us[i] = SoftLimits[0];
                 DistanceReverse.Us[i] = DistanceReverse[0];
                 AltitudeReverse.Us[i] = AltitudeReverse[0];
+                MaximumSpeed.Us[i] = MaximumSpeed[0];
             }
         }
     }

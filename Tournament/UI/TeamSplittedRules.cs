@@ -82,6 +82,11 @@ namespace Tournament.UI
                     {
                         tp.MaximumPenaltyTime.Us[index] = (int)f;
                     }, new ToolTip("How many seconds of penaltytime is an entry permitted to collect, before it gets removed from the fight?")));
+                segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
+                    M.m((TournamentParameters tp) => tp.MaximumSpeed[index]), "Maximum Speed", delegate (TournamentParameters tp, float f)
+                    {
+                        tp.MaximumSpeed.Us[index] = (int)f;
+                    }, new ToolTip("The maximum speed for entries on this team. Going over it will add penalty time. If soft limits are active, it will deplete the time buffer first.")));
                 segment.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Use soft Limits", new ToolTip("With soft Limits, entries outside the boundaries are given the chance to get back into them. Without soft Limits, entries will pickup penalty time as long as they are outside the boundaries."), delegate (TournamentParameters tp, bool b)
                 {
                     tp.SoftLimits.Us[index] = b;
