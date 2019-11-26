@@ -24,29 +24,29 @@ namespace Tournament.UI
             _focus.Parameters.EnsureEnoughData();
             for (int i = 0; i < 6; i++) {
                 int index = i;
-                CreateHeader("Team " + (1 + i), new ToolTip("Fleetcolors for Team " + (1 + i))).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
+                CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
                 ScreenSegmentStandardHorizontal table = CreateStandardHorizontalSegment();
                 table.SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
-                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i+1} Main Color"),
-                    M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i+1}")), M.m((TournamentParameters tp) => tp.MainColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
-                    {
-                        tp.MainColorsPerTeam.Us[index] = c;
-                    }));
-                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i+1} Secondary Color"),
-                    M.m<TournamentParameters>(new ToolTip($"Set the Secondary Color for Team {i+1}")), M.m((TournamentParameters tp) => tp.SecondaryColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
-                    {
-                        tp.SecondaryColorsPerTeam.Us[index] = c;
-                    }));
-                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i+1} Trim Color"),
-                    M.m<TournamentParameters>(new ToolTip($"Set the Trim Color for Team {i+1}")), M.m((TournamentParameters tp) => tp.TrimColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
-                    {
-                        tp.TrimColorsPerTeam.Us[index] = c;
-                    }));
-                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i+1} Detail Color"),
-                    M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i+1}")), M.m((TournamentParameters tp) => tp.DetailColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
-                    {
-                        tp.DetailColorsPerTeam.Us[index] = c;
-                    }));
+                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Main Color"),
+                    M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.MainColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+                      {
+                          tp.MainColorsPerTeam.Us[index] = c;
+                      }));
+                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Secondary Color"),
+                    M.m<TournamentParameters>(new ToolTip($"Set the Secondary Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.SecondaryColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+                      {
+                          tp.SecondaryColorsPerTeam.Us[index] = c;
+                      }));
+                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Trim Color"),
+                    M.m<TournamentParameters>(new ToolTip($"Set the Trim Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.TrimColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+                      {
+                          tp.TrimColorsPerTeam.Us[index] = c;
+                      }));
+                table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Detail Color"),
+                    M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.DetailColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+                      {
+                          tp.DetailColorsPerTeam.Us[index] = c;
+                      }));
             }
             ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
             saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));

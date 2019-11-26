@@ -38,7 +38,7 @@ namespace Tournament.UI
             for (int i = 0; i < 6; i++)
             {
                 int factionIndex = i;
-                horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction for Team {i + 1}", new ToolTip($"Inverts the direction for Team {i + 1}, by turning each entry 180°."), delegate (Tournament t)
+                horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {i + 1}", new ToolTip($"Inverts the direction for Team {i + 1}, by turning each entry 180°."), delegate (Tournament t)
                 {
                     t.entries[factionIndex].ForEach((TournamentEntry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
                     TriggerRebuild();

@@ -24,7 +24,7 @@ namespace Tournament.UI
             CreateHeader("Basic Parameters", new ToolTip("Customize the most basic Parameters here."));
             ScreenSegmentStandard segment = CreateStandardSegment();
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 20000, 1, 1250,
-                M.m((TournamentParameters tp)=>tp.StartingDistance), "Starting Distance", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp)=>tp.StartingDistance), "Starting Distance from center: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     tp.StartingDistance.Us = (int)f;
                 }, new ToolTip("The distance from the center towards the \"Flagship(s)\" of a team.")));
@@ -35,7 +35,7 @@ namespace Tournament.UI
                     tp.MakeUniform();
                 })).SetConditionalDisplayFunction(() => !_focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
-                M.m((TournamentParameters tp) => tp.SpawngapLR[0]), "Spawngaps Left-Right", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.SpawngapLR[0]), "Spawngaps Left-Right: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -43,7 +43,7 @@ namespace Tournament.UI
                     }
                 }, new ToolTip("How many meters should entries on the same team be apart in the left-right direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
-                M.m((TournamentParameters tp) => tp.SpawngapFB[0]), "Spawngaps Forward-Backward", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.SpawngapFB[0]), "Spawngaps Forward-Backward: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -54,7 +54,7 @@ namespace Tournament.UI
             fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
             segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
                 M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y),
-                _focus.Parameters, M.m<TournamentParameters>("Lower Altitude Limit"), delegate (TournamentParameters tp, float f)
+                _focus.Parameters, M.m((TournamentParameters tp)=>$"Lower Altitude Limit: {tp.AltitudeLimits[0].x}m"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -65,7 +65,7 @@ namespace Tournament.UI
                 }, null, M.m<TournamentParameters>(new ToolTip("What is the minimum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m<TournamentParameters>(-heightmapRange), M.m<TournamentParameters>(fullGravityHeight),
                 M.m((TournamentParameters tp) => tp.AltitudeLimits[0].y), M.m<TournamentParameters>(1), M.m((TournamentParameters tp) => tp.AltitudeLimits[0].x),
-                _focus.Parameters, M.m<TournamentParameters>("Upper Altitude Limit"), delegate (TournamentParameters tp, float f)
+                _focus.Parameters, M.m((TournamentParameters tp)=>$"Upper Altitude Limit: {tp.AltitudeLimits[0].y}m"), delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -75,7 +75,7 @@ namespace Tournament.UI
                     }
                 }, null, M.m<TournamentParameters>(new ToolTip("What is the maximum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 10000, 1, 1500,
-                M.m((TournamentParameters tp) => tp.DistanceLimit[0]), "Distance Limit", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.DistanceLimit[0]), "Distance Limit: {0}m", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -90,7 +90,7 @@ namespace Tournament.UI
                 }
             }, (tp) => tp.ProjectedDistance[0])).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
-                M.m((TournamentParameters tp) => tp.MaximumPenaltyTime[0]), "Maximum Penalty Time", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.MaximumPenaltyTime[0]), "Maximum Penalty Time: {0}s", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -98,7 +98,7 @@ namespace Tournament.UI
                     }
                 }, new ToolTip("How much penalty time can a participant have, before it self-destructs?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
             segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
-                M.m((TournamentParameters tp) => tp.MaximumSpeed[0]), "Maximum Speed", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.MaximumSpeed[0]), "Maximum Speed: {0}m/s", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -116,7 +116,7 @@ namespace Tournament.UI
             ScreenSegmentStandard segment2 = CreateStandardSegment();
             segment2.SetConditionalDisplay(() => _focus.Parameters.UniformRules&&_focus.Parameters.SoftLimits[0]);
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
-                M.m((TournamentParameters tp) => tp.MaximumBufferTime[0]), "Maximum Buffer Time", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.MaximumBufferTime[0]), "Maximum Buffer Time: {0}s", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -124,7 +124,7 @@ namespace Tournament.UI
                     }
                 }, new ToolTip("How much buffer time can a participant have, before it gains penalty time? This Buffer will reset, once a participant is considered to be back in bounds.")));
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
-                M.m((TournamentParameters tp) => tp.DistanceReverse[0]), "Distance Reversal", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.DistanceReverse[0]), "Distance Reversal: {0}m/s", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -132,7 +132,7 @@ namespace Tournament.UI
                     }
                 }, new ToolTip("A positive value permits a certain fleeing speed, while a negative value requires a certain closing speed. It assumes, that the nearest enemy is stationary.")));
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
-                M.m((TournamentParameters tp) => tp.AltitudeReverse[0]), "Altitude Reversal", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.AltitudeReverse[0]), "Altitude Reversal: {0}m/s", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < 6; i++)
                     {
@@ -142,12 +142,12 @@ namespace Tournament.UI
             #endregion
             ScreenSegmentStandard segment3 = CreateStandardSegment();
             segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 900,
-                M.m((TournamentParameters tp) => tp.MaximumTime), "Maximum Time", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.MaximumTime), "Maximum Time: {0}s", delegate (TournamentParameters tp, float f)
                 {
                     tp.MaximumTime.Us = (int)f;
                 }, new ToolTip("What is the maximum battle time? Once reached, the game will be paused. Unpausing it will activate \"Overtime\".")));
             segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 60,
-                M.m((TournamentParameters tp) => tp.Overtime), "Overtime", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.Overtime), "Overtime: {0}s", delegate (TournamentParameters tp, float f)
                 {
                     tp.Overtime.Us = (int)f;
                 }, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
@@ -177,7 +177,7 @@ namespace Tournament.UI
                 return tp.InfinteResourcesPerTeam[0];
                 }));
             segmentIdenticalMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
-                M.m((TournamentParameters tp) => tp.ResourcesPerTeam[0]), "Materials for all Teams", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.ResourcesPerTeam[0]), "{0} Materials for all Teams", delegate (TournamentParameters tp, float f)
                 {
                     for (int i = 0; i < tp.ActiveFactions; i++)
                     {
@@ -195,7 +195,7 @@ namespace Tournament.UI
                     return tp.InfinteResourcesPerTeam[index];
                     }));
                 segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
-                    M.m((TournamentParameters tp) => tp.ResourcesPerTeam[index]), $"Materials for Team {index}", delegate (TournamentParameters tp, float f)
+                    M.m((TournamentParameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index}", delegate (TournamentParameters tp, float f)
                     {
                         tp.ResourcesPerTeam.Us[index] = (int)f;
                     }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => !_focus.Parameters.InfinteResourcesPerTeam[index]);
@@ -205,20 +205,20 @@ namespace Tournament.UI
             sectionsEastWest = WorldSpecification.i.BoardLayout.EastWestBoardSectionCount - 1;
             ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
             horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsEastWest, 1, sectionsEastWest / 2,
-                M.m((TournamentParameters tp) => tp.EastWestBoard), "East-West Board", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.EastWestBoard), "East-West Board {0}", delegate (TournamentParameters tp, float f)
                 {
                     tp.EastWestBoard.Us = (int)f;
                     _focus.MoveCam();
                 }, new ToolTip("Change the East-West Board index. In the Map it is the first number, 0 is at the left side.")));
             horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, sectionsNorthSouth, 1, sectionsNorthSouth / 2,
-                M.m((TournamentParameters tp) => tp.NorthSouthBoard), "North-South Board", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.NorthSouthBoard), "North-South Board {0}", delegate (TournamentParameters tp, float f)
                 {
                     tp.NorthSouthBoard.Us = (int)f;
                     _focus.MoveCam();
                 }, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
             horizontal.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>(M.m((TournamentParameters tp) => -180f / tp.ActiveFactions), M.m((TournamentParameters tp) => 180f / tp.ActiveFactions),
                 M.m((TournamentParameters tp) => tp.Rotation), M.m<TournamentParameters>(1), M.m<TournamentParameters>(0),
-                _focus.Parameters, M.m<TournamentParameters>("Rotation"), delegate (TournamentParameters tp, float f)
+                _focus.Parameters, M.m<TournamentParameters>("Rotation: {0:F0}°"), delegate (TournamentParameters tp, float f)
                 {
                     tp.Rotation.Us = (int)f;
                 }, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));

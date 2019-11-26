@@ -22,7 +22,7 @@ namespace Tournament.UI
             CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
             ScreenSegmentStandard segment1 = CreateStandardSegment();
             segment1.AddInterpretter(SubjectiveFloatClampedWithBar<TournamentParameters>.Quick(_focus.Parameters, 2, 6, 1,
-                M.m((TournamentParameters tp) => tp.ActiveFactions), "Active Teams", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp) => tp.ActiveFactions), "Active Teams: {0}", delegate (TournamentParameters tp, float f)
                 {
                     tp.ActiveFactions.Us = (int)f;
                     TournamentPlugin.factionManagement.EnsureFactionCount((int)f);
@@ -69,7 +69,7 @@ namespace Tournament.UI
                       }, null, M.m((TournamentParameters tp) => new ToolTip(TournamentFormation.tournamentFormations[tp.FormationIndexPerTeam[index]].Description)))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
             }
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
-                M.m((TournamentParameters tp)=>tp.MaterialConversion), "Material-Conversion", delegate (TournamentParameters tp, float f)
+                M.m((TournamentParameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (TournamentParameters tp, float f)
                 {
                     tp.MaterialConversion.Us = (int)f;
                 }, new ToolTip("Set the Material-Conversion-Factor, also known as Lifesteal. The maximum in campaigns is 10% but here you can go up to 100%! The value -1% is special: " +
@@ -96,7 +96,7 @@ namespace Tournament.UI
                 {
                     tp.CleanUpMode.Us = (int)f;
                 }, null, M.m((TournamentParameters tp) => new ToolTip(describeCleanupMode()))));
-            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Below and Sinking\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Below and Sinking\"-Cleanup function", new ToolTip("Disable this function to allow submarines to last longer underwater."), delegate (TournamentParameters tp, bool b)
             {
                 tp.CleanUpSinkingConstructs.Us = b;
             }, (tp) => tp.CleanUpSinkingConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
@@ -110,7 +110,7 @@ namespace Tournament.UI
                 {
                     tp.SinkingAltitude.Us = (int)f;
                 }, new ToolTip("Any construct below this altitude and below a certain healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
-            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b) {
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip("Disable this function to allow entries to fight until they are considered \"dead\"."), delegate (TournamentParameters tp, bool b) {
                 tp.CleanUpTooDamagedConstructs.Us = b;
             }, (tp) => tp.CleanUpTooDamagedConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
@@ -118,7 +118,7 @@ namespace Tournament.UI
                 {
                     tp.TooDamagedHealthFraction.Us = (int)f;
                 }, new ToolTip("Any construct below this Healthfraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpTooDamagedConstructs);
-            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too few Blocks\"-Cleanup function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Too few Blocks\"-Cleanup function", new ToolTip("Disable this function to allow entries below a certain number of blocks to exist, if they meet all other criteria."), delegate (TournamentParameters tp, bool b)
             {
                 tp.CleanUpTooSmallConstructs.Us = b;
             }, (tp) => tp.CleanUpTooSmallConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
@@ -131,7 +131,7 @@ namespace Tournament.UI
             {
                 tp.CleanUpNoAI.Us = b;
             }, (tp) => tp.CleanUpNoAI)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
-            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Sustained by Repairs\"-Delay function", new ToolTip(""), delegate (TournamentParameters tp, bool b)
+            segment2.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Enable \"Sustained by Repairs\"-Delay function", new ToolTip("Repairs by other constructs delay the scrapping. This is important for freshly spawned in drones."), delegate (TournamentParameters tp, bool b)
             {
                 tp.CleanUpDelayedByRepairs.Us = b;
             }, (tp) => tp.CleanUpDelayedByRepairs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
@@ -174,12 +174,12 @@ namespace Tournament.UI
             }
             segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<TournamentParameters>(M.m<TournamentParameters>(0), M.m<TournamentParameters>(3),
                M.m((TournamentParameters tp) => tp.HealthCalculation), M.m<TournamentParameters>(1), _focus.Parameters,
-               M.m((TournamentParameters tp) => "Healthcalculation: " + describeHealthCalculation()), delegate (TournamentParameters tp, float f)
+               M.m((TournamentParameters tp) => $"Healthcalculation: {describeHealthCalculation()}"), delegate (TournamentParameters tp, float f)
                {
                    tp.HealthCalculation.Us = (int)f;
                }, null, M.m((TournamentParameters tp) => new ToolTip(healthCalculationTip()))));
             segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
-                M.m((TournamentParameters tp)=>tp.MinimumHealth), "Minimum Health", delegate (TournamentParameters tp, float f) {
+                M.m((TournamentParameters tp)=>tp.MinimumHealth), "Minimum Health: {0}%", delegate (TournamentParameters tp, float f) {
                     tp.MinimumHealth.Us = (int)f;
                 }, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
             ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
