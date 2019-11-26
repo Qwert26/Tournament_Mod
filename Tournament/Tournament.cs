@@ -52,7 +52,7 @@ namespace Tournament
         private byte overtimeCounter;
         private Vector2 scrollPos=Vector2.zero;
         //Management
-        private Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
+        private readonly Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, SortedDictionary<string, TournamentParticipant>>();
         private bool showLists = true;
         public List<TournamentFormation> teamFormations = new List<TournamentFormation>();
         public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
@@ -715,18 +715,19 @@ namespace Tournament
                     }
                 }
                 MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
+                if (array.Count() == 0) {
+                    GameSpeedManager.Instance.TogglePause();
+                    //Everyone died...
+                }
                 foreach (MainConstruct val in array)
                 {
-                    //Debug.Log("FixedUpdate ID: " + val.UniqueId);
                     int id = 0;
                     if (val.Drones.LoadedMothershipC != null)
                     {
                         id = val.Drones.LoadedMothershipC.UniqueId;
                     }
                     string key = "" + val.UniqueId + "," + id;
-                    //Debug.Log("FixedUpdate mothership ID: " + val.Drone.loadedMothershipC.UniqueId);
                     if (!HUDLog[val.GetTeam()].TryGetValue(key, out TournamentParticipant tournamentParticipant)) {
-                        Debug.Log("Missing Entry! Updating now...");
                         UpdateConstructs();
                         tournamentParticipant = HUDLog[val.GetTeam()][key];
                     }
@@ -735,45 +736,42 @@ namespace Tournament
                     {
                         int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(val.GetTeam());
                         tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
+                        bool violatingRules = false;
                         //Is it braindead?
                         if (tournamentParticipant.AICount == 0)
                         {
-                            tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                            violatingRules = true;
                         }
-                        else if (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y)
+                        //Is it outside its altitude limits?
+                        if (!violatingRules && (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y))
                         {
                             if (Parameters.SoftLimits[teamIndex]) {
                                 if (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x && -val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Below minimum altitude and still sinking.
                                 {
-                                    tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
-                                    {
-                                        tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    }
+                                    violatingRules = true;
                                 }
                                 else if (val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y && val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Above maximum altitude and still rising.
                                 {
-                                    tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
-                                    {
-                                        tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                    }
+                                    violatingRules = true;
                                 }
                             }
                             else
                             {
-                                tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                violatingRules = true;
                             }
                         }
-                        else if (tournamentParticipant.HP < Parameters.MinimumHealth)
+                        //Does it have too little HP?
+                        if (!violatingRules && tournamentParticipant.HP < Parameters.MinimumHealth)
                         {
-                            AddPenalty(tournamentParticipant, teamIndex);
+                            violatingRules = true;
                         }
-                        else if (val.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
+                        //Is it too fast?
+                        if (!violatingRules && val.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
                         {
-                            AddPenalty(tournamentParticipant, teamIndex);
+                            violatingRules = true;
                         }
-                        else
+                        //Is it too far away from enemies?
+                        if(!violatingRules)
                         {
                             float num = -1f;
                             float num2 = -1f;
@@ -796,18 +794,30 @@ namespace Tournament
                                     }
                                 }
                             }
-                            if (Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex] && num < num2 - Parameters.DistanceReverse[teamIndex]) //out of bounds and moving away faster than oobReverse m/s
+                            //Are there no more enemies?
+                            if (num < 0) {
+                                GameSpeedManager.Instance.TogglePause();
+                                break;
+                                //Checking additional construct does no longer changes the outcome, we still need to update the timer though.
+                            }
+                            //out of bounds and moving away faster than DistanceReverse allows?
+                            if (Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex] && num < num2 - Parameters.DistanceReverse[teamIndex])
                             {
-                                tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
-                                {
-                                    tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-                                }
+                                violatingRules = true;
                             }
                             else if (!Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex]) { //out of bounds
-                                tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+                                violatingRules = true;
                             }
-                            else
+                        }
+                        //Has any rule been violated?
+                        if (violatingRules)
+                        {
+                            AddPenalty(tournamentParticipant, teamIndex);
+                        }
+                        else
+                        {
+                            //Recover the timebuffer if soft limits are active.
+                            if (Parameters.SoftLimits[teamIndex])
                             {
                                 tournamentParticipant.OoBTimeBuffer = 0;
                             }
