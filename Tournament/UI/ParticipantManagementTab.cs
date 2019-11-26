@@ -135,7 +135,7 @@ namespace Tournament.UI
 				}
 			}
 			ScreenSegmentStandard posthead = CreateStandardSegment();
-			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Y'." +
+			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Y'. " +
 				"With the Key for the EnemySpawn-GUI you can hide and show the Sidelist. Its default Key is 'X'."));
 			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fighting!"), delegate (Tournament t)
 			{
