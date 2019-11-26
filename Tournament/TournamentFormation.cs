@@ -39,25 +39,25 @@ namespace Tournament
 			Description="Similar to the Columns-Formation, but each pair of Columns also has an Commandship diagonally in front of it.",
 			DetermineLocalPosition=FormationCalculation.CommandedParallelColumns
 		};
-        public static readonly TournamentFormation RomanManipelBase = new TournamentFormation()
-        {
-            Name = "Roman Legion, Manipel Base",
-            Description = "The Baseformation of the Manipel after Marcus Furius Camillus. Each Group consists of only six Entries, put together in vertical pairs.",
-            DetermineLocalPosition = FormationCalculation.ManipelBaseFormation
-        };
-        public static readonly TournamentFormation RomanManipelAttack = new TournamentFormation()
-        {
-            Name = "Roman Legion, Manipel Attack",
-            Description = "Similar to the Baseformation, but the second line of the Baseformation moved into the gaps of the first line, forming a solid line.",
-            DetermineLocalPosition = FormationCalculation.ManipelAttackFormation
-        };
-        public static readonly TournamentFormation[] tournamentFormations = {
-            Line,
-            Wedge,
-            DividedWedge,
-            ParallelColumns,
-            CommandedParallelColumns,
-            RomanManipelBase,
-            RomanManipelAttack };
+		public static readonly TournamentFormation RomanManipelBase = new TournamentFormation()
+		{
+			Name = "Roman Legion, Manipel Base",
+			Description = "The Baseformation of the Manipel after Marcus Furius Camillus. Each Group consists of only six Entries, put together in vertical pairs.",
+			DetermineLocalPosition = FormationCalculation.ManipelBaseFormation
+		};
+		public static readonly TournamentFormation RomanManipelAttack = new TournamentFormation()
+		{
+			Name = "Roman Legion, Manipel Attack",
+			Description = "Similar to the Baseformation, but the second line of the Baseformation moved into the gaps of the first line, forming a solid line.",
+			DetermineLocalPosition = FormationCalculation.ManipelAttackFormation
+		};
+		public static readonly TournamentFormation[] tournamentFormations = {
+			Line,
+			Wedge,
+			DividedWedge,
+			ParallelColumns,
+			CommandedParallelColumns,
+			RomanManipelBase,
+			RomanManipelAttack };
 	}
 }
