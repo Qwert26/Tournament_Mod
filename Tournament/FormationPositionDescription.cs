@@ -23,9 +23,9 @@ namespace Tournament
 						return "Flagship B";
 				default:
 					if (index == 0)
-						return $"{(signLR == 1 ? "Right" : signLR == -1 ? "Left" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
+						return $"{(signLR == 1 ? "Right " : signLR == -1 ? "Left " : "")}{(signFB == 1 ? "Back " : signFB == -1 ? "Front " : "")}Scout";
 					else if (index == count - 1)
-						return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} {(signFB == 1 ? "Front" : signFB == -1 ? "Back" : "")} Scout".Trim();
+						return $"{(signLR == 1 ? "Left " : signLR == -1 ? "Right " : "")}{(signFB == 1 ? "Front " : signFB == -1 ? "Back " : "")}Scout";
 					else if (count % 2 == 0)
 					{
 						if (index == count / 2 - 1)
@@ -52,18 +52,18 @@ namespace Tournament
 			else if (count % 2 == 1)
 			{
 				if (index == count - 2)//index ungerade
-					return $"{(signLR == 1 ? "Right" : signLR == -1 ? "Left" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
+					return $"{(signLR == 1 ? "Right " : signLR == -1 ? "Left " : "")}{(signFB == 1 ? "Back " : signFB == -1 ? "Front " : "")}Scout";
 				else if (index == count - 1)//index gerade
-					return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
+					return $"{(signLR == 1 ? "Left " : signLR == -1 ? "Right " : "")}{(signFB == 1 ? "Back " : signFB == -1 ? "Front " : "")}Scout";
 				else
 					return "None";
 			}
 			else
 			{
 				if (index == count - 1)//index ungerade
-					return $"{(signLR == 1 ? "Right" : signLR == -1 ? "Left" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
+					return $"{(signLR == 1 ? "Right " : signLR == -1 ? "Left " : "")}{(signFB == 1 ? "Back " : signFB == -1 ? "Front " : "")}Scout";
 				else if (index == count - 2)//index gerade
-					return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
+					return $"{(signLR == 1 ? "Left " : signLR == -1 ? "Right " : "")}{(signFB == 1 ? "Back " : signFB == -1 ? "Front " : "")}Scout";
 				else
 					return "None";
 			}
@@ -77,9 +77,9 @@ namespace Tournament
 			else if (count >= 4)
 			{
 				if (index == 1)
-					return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} Commandship".Trim();
+					return $"{(signLR == 1 ? "Left " : signLR == -1 ? "Right " : "")}Commandship";
 				else if (index == 2)
-					return $"{(signLR == 1 ? "Right" : signLR == -1 ? "Left" : "")} Commandship".Trim();
+					return $"{(signLR == 1 ? "Right " : signLR == -1 ? "Left " : "")}Commandship";
 				else
 					return "None";
 			}

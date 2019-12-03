@@ -8,7 +8,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters;
 using System;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
-
 namespace Tournament.UI
 {
 	public class ParticipantManagementTab : SuperScreen<Tournament>
@@ -157,6 +156,14 @@ namespace Tournament.UI
 			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fighting!"), delegate (Tournament t)
 			{
 				((ConsoleUi<Tournament>)Window._governingUi).DeactivateGui();
+				t.ApplyFactionColors();
+				t.LoadCraft();
+				t.StartMatch();
+			})).SetConditionalDisplayFunction(() => ready);
+			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START & Quicksave Settings", new ToolTip("Saves your current Settings and then starts the fight."), delegate (Tournament t)
+			{
+				((ConsoleUi<Tournament>) Window._governingUi).DeactivateGui();
+				t.SaveSettings();
 				t.ApplyFactionColors();
 				t.LoadCraft();
 				t.StartMatch();
