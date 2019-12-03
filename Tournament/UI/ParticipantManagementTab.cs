@@ -124,7 +124,7 @@ namespace Tournament.UI
 						_focus.GetFormation(factionIndex).DeterminePositionDescription(_focus.Parameters.SpawngapLR[factionIndex],
 						_focus.Parameters.SpawngapFB[factionIndex],
 						_focus.entries[factionIndex].Count,
-						indexInFaction))), M.m<ToolTip>(new ToolTip(""))), 0, 0);
+						indexInFaction))), M.m<ToolTip>(new ToolTip("Here you can see every important information about the Blueprint."))), 0, 0);
 					entryControl.AddInterpretter(new Empty(), 1, 0);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Remove", new ToolTip("Removes this entry."), delegate (Tournament t)
 					{

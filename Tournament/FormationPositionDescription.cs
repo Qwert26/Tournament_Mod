@@ -4,16 +4,16 @@ namespace Tournament
 {
 	internal static class FormationPositionDescription
 	{
-		public static string UnknownFormation(float gapLeftRight, float gapForwardBackward, int count, int index) {
-			return "";
+		public static string UnknownFormation(float gapLeftRight=0, float gapForwardBackward=0, int count=0, int index=0) {
+			return "None";
 		}
 		public static string LineFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
-			sbyte signLR = (sbyte)Mathf.Sign(gapLeftRight);
-			sbyte signFB = (sbyte)Mathf.Sign(gapForwardBackward);
+			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
+			int signFB = Math.Sign(Mathf.RoundToInt(gapForwardBackward));
 			switch (count) {
 				case 0:
-					return "";
+					return "None";
 				case 1:
 					return "Flagship";
 				case 2:
@@ -38,13 +38,13 @@ namespace Tournament
 						if (index == count / 2)
 							return "Flagship";
 					}
-					return "";
+					return "None";
 			}
 		}
 		public static string WedgeFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
-			sbyte signLR = (sbyte) Mathf.Sign(gapLeftRight);
-			sbyte signFB = (sbyte) Mathf.Sign(gapForwardBackward);
+			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
+			int signFB = Math.Sign(Mathf.RoundToInt(gapForwardBackward));
 			if (index == 0)
 				return "Flagship";
 			else if (count == 2)
@@ -56,7 +56,7 @@ namespace Tournament
 				else if (index == count - 1)//index gerade
 					return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
 				else
-					return "";
+					return "None";
 			}
 			else
 			{
@@ -65,13 +65,13 @@ namespace Tournament
 				else if (index == count - 2)//index gerade
 					return $"{(signLR == 1 ? "Left" : signLR == -1 ? "Right" : "")} {(signFB == 1 ? "Back" : signFB == -1 ? "Front" : "")} Scout".Trim();
 				else
-					return "";
+					return "None";
 			}
 		}
 		public static string DividedWedgeFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
-			sbyte signLR = (sbyte) Mathf.Sign(gapLeftRight);
-			sbyte signFB = (sbyte) Mathf.Sign(gapForwardBackward);
+			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
+			//int signFB = Math.Sign(Mathf.RoundToInt(gapForwardBackward));
 			if (index == 0)
 				return "Flagship";
 			else if (count >= 4)
@@ -81,10 +81,10 @@ namespace Tournament
 				else if (index == 2)
 					return $"{(signLR == 1 ? "Right" : signLR == -1 ? "Left" : "")} Commandship".Trim();
 				else
-					return "";
+					return "None";
 			}
 			else
-				return "";
+				return "None";
 		}
 		public static string CommandedParallelColumns(float gapLeftRight, float gapForwardBackward, int count, int index) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
@@ -92,10 +92,10 @@ namespace Tournament
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
 			if (index < groups)
 			{
-				return $"Commandship {(index + 1)}";
+				return $"Commandship {index + 1}";
 			}
 			else
-				return "";
+				return "None";
 		}
 	}
 }
