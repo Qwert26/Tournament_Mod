@@ -282,6 +282,7 @@
     <Compile Include="Tournament\FactionManagement.cs" />
     <Compile Include="Tournament\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tournament\FormationPositionDescription.cs" />
     <Compile Include="Tournament\Serialisation\BoolList.cs" />
     <Compile Include="Tournament\Serialisation\ColorList.cs" />
     <Compile Include="Tournament\Serialisation\TournamentParametersFolder.cs" />

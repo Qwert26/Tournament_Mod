@@ -100,6 +100,15 @@ namespace Tournament
 			Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
 			Detail = new Color(0f, 0f, 0f, 0f) //Transparent
 		};
+		public readonly static TournamentFleetColor naniteSystemsOps = new TournamentFleetColor()
+		{
+			Name = "Nanite Systems Operative, Planetside",
+			Description = "Proposed colors of the NSO by Lucaya, the order was assumed to be main, secondary, trim, detail.",
+			Main = new Color(0.67f, 0.67f, 0.67f, 1f), //Light grey
+			Secondary = new Color(0.33f, 0.33f, 0.33f, 1f), //Dark grey
+			Trim = new Color(0.96f, 0.96f, 0.86f, 1f), //Beige
+			Detail = new Color(1f, 1f, 1f, 1f) //White
+		};
 		public readonly static TournamentFleetColor[] colorSchemes = {
 			classicYellow,
 			classicRed,
@@ -110,7 +119,8 @@ namespace Tournament
 			medievalYoungRoyal,
 			terranRepublic,
 			newConglomerate,
-			vanuSovereignty
+			vanuSovereignty,
+			naniteSystemsOps
 		};
 	}
 }

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters;
 using System;
 using BrilliantSkies.Ui.Displayer;
+using BrilliantSkies.Ui.Consoles.Getters;
+
 namespace Tournament.UI
 {
 	public class ParticipantManagementTab : SuperScreen<Tournament>
@@ -107,7 +109,22 @@ namespace Tournament.UI
 					entryControl.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
 					entryControl.SqueezeTable = false;
 					entryControl.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
-					entryControl.AddInterpretter(StringDisplay.Quick(string.Format("{3}°@{2}m\n{0} {1}\n~-------SPAWNS-------~{4}\n~--------------------~", entry.Bpf.Name, entry.bp.CalculateResourceCost(false, true, false).Material, entry.Spawn_height, entry.Spawn_direction, text)), 0, 0);
+					entryControl.AddInterpretter(new StringDisplay(M.m<string>(string.Format(
+						"{3}°@{2}m\n" +
+						"{0} {1}\n" +
+						"~-------SPAWNS-------~{4}\n" +
+						"~--------------------~\n" +
+						"~---FORMATION-ROLE---~\n" +
+						"{5}",
+						entry.Bpf.Name,
+						entry.bp.CalculateResourceCost(false, true, false).Material,
+						entry.Spawn_height,
+						entry.Spawn_direction,
+						text,
+						_focus.GetFormation(factionIndex).DeterminePositionDescription(_focus.Parameters.SpawngapLR[factionIndex],
+						_focus.Parameters.SpawngapFB[factionIndex],
+						_focus.entries[factionIndex].Count,
+						indexInFaction))), M.m<ToolTip>(new ToolTip(""))), 0, 0);
 					entryControl.AddInterpretter(new Empty(), 1, 0);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Remove", new ToolTip("Removes this entry."), delegate (Tournament t)
 					{

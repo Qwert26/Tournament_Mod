@@ -3,13 +3,13 @@ using System;
 namespace Tournament
 {
 	internal static class FormationCalculation {
-		static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad*68);
+		public static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad*68);
 		public static Quaternion FactionRotation(float angle) {
 			return Quaternion.Euler(0, angle, 0);
 		}
 		public static Vector3 LineFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
-			float x = (count - 1f) * gapLeftRight / 2f - index * gapLeftRight;
-			float z = distance + (index * gapForwardBackward);
+			float x = (count - 1) * gapLeftRight / 2f - index * gapLeftRight;
+			float z = distance + (count - 1) * gapForwardBackward / 2f - index * gapForwardBackward;
 			return FactionRotation(factionRotation)*new Vector3(x, height, z);
 		}
 		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
@@ -159,12 +159,12 @@ namespace Tournament
 					x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
 					break;
 				case 1:
-					if (attack)
+					if (attack) //Fülle die Lücken der ersten Reihe auf.
 					{
 						z = distance;
 						x = (2 * groups - 1) * gapLeftRight / 2f - (2 * group + 1) * gapLeftRight;
 					}
-					else
+					else //Marschiere hinter der ersten Reihe.
 					{
 						x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
 					}
