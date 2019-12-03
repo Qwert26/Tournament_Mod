@@ -176,7 +176,7 @@ namespace Tournament
 					}
 				}
 			}
-			else
+			else //Global Store
 			{
 				materials = new List<int>(Parameters.ResourcesPerTeam.Us);
 				for (int i = 0; i < Parameters.ActiveFactions; i++)
@@ -707,7 +707,7 @@ namespace Tournament
 		{
 			if (!GameSpeedManager.Instance.IsPaused)
 			{
-				if (Parameters.MaterialConversion == -1f && materials != null) //Verbietet Materialrückgewinnung durch Selbst- und Teambeschuss.
+				if (Parameters.MaterialConversion == -1 && materials != null) //Verbietet Materialrückgewinnung durch Selbst- und Teambeschuss.
 				{
 					for (int i = 0; i < Parameters.ActiveFactions; i++)
 					{

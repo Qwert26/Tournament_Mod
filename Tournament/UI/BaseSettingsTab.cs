@@ -194,20 +194,21 @@ namespace Tournament.UI
 				}, new ToolTip("For local Resources, this determines with how much Materials a participant can spawn at maximum, for global resources, it determines the amount of Materials in storage."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.InfinteResourcesPerTeam[0]);
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
-			for (int i = 0; i < 6; i++) {
-				int index = i + 1;
-				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index}", new ToolTip($"Give Team {index} infinte Materials."), delegate (TournamentParameters tp, bool b)
-				{
-					tp.InfinteResourcesPerTeam.Us[index] = b;
-				}, (tp) =>
-				{
-					return tp.InfinteResourcesPerTeam[index];
-				})).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
-				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
-					M.m((TournamentParameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index}", delegate (TournamentParameters tp, float f)
+			for (int i = 0; i < 6; i++)
+			{
+				int index = i;
+				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index + 1}", new ToolTip($"Give Team {index + 1} infinte Materials."), delegate (TournamentParameters tp, bool b)
 					{
-						tp.ResourcesPerTeam.Us[index] = (int) f;
-					}, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
+						tp.InfinteResourcesPerTeam.Us[index] = b;
+					}, (tp) =>
+					{
+						return tp.InfinteResourcesPerTeam[index];
+					})).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
+				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
+					M.m((TournamentParameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (TournamentParameters tp, float f)
+					  {
+						  tp.ResourcesPerTeam.Us[index] = (int) f;
+					  }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
 			}
 			#endregion
 			sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
