@@ -496,7 +496,6 @@ namespace Tournament
 		public IMainConstructBlock GetTarget()
 		{
 			IMainConstructBlock target = null;
-
 			Transform myTransform = flycam.enabled ? flycam.transform : orbitcam.transform;
 			GridCastReturn gridCastReturn = GridCasting.GridCastAllConstructables(new GridCastReturn(myTransform.position, myTransform.forward, 1000, 1, true));
 			if (gridCastReturn.HitSomething)
@@ -524,30 +523,29 @@ namespace Tournament
 			bool orbitcamOn = false;
 			bool changeExtraInfo = false;
 			bool changeShowList = false;
-			switch (Parameters.DefaultKeys.Us)
+			if (Parameters.DefaultKeys.Us)
 			{
-				case false:
-					pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-					shift = ftdKeyMap.IsKey(KeyInputsFtd.SpeedUpCamera, KeyInputEventType.Held, ModifierAllows.AllowUnnecessary);
-					strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-					next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-					previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-					changeExtraInfo = ftdKeyMap.IsKey(KeyInputsFtd.CharacterSheetUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-					changeShowList = ftdKeyMap.IsKey(KeyInputsFtd.EnemySpawnUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-					freecamOn = Input.GetMouseButtonDown(1); // technically same as default atm
-					orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
-					break;
-				case true:
-					pause = Input.GetKeyDown(KeyCode.F11); // default f11
-					shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-					strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
-					next = Input.GetKeyDown(KeyCode.E); // default e
-					previous = Input.GetKeyDown(KeyCode.Q); // default q
-					changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
-					changeShowList = Input.GetKeyDown(KeyCode.X); // default x
-					freecamOn = Input.GetMouseButtonDown(1); // default left click
-					orbitcamOn = Input.GetMouseButtonDown(0); // default right click
-					break;
+				pause = Input.GetKeyDown(KeyCode.F11); // default f11
+				shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+				strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+				next = Input.GetKeyDown(KeyCode.E); // default e
+				previous = Input.GetKeyDown(KeyCode.Q); // default q
+				changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
+				changeShowList = Input.GetKeyDown(KeyCode.X); // default x
+				freecamOn = Input.GetMouseButtonDown(1); // default left click
+				orbitcamOn = Input.GetMouseButtonDown(0); // default right click
+			}
+			else
+			{
+				pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+				shift = ftdKeyMap.IsKey(KeyInputsFtd.SpeedUpCamera, KeyInputEventType.Held, ModifierAllows.AllowUnnecessary);
+				strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+				next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+				previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+				changeExtraInfo = ftdKeyMap.IsKey(KeyInputsFtd.CharacterSheetUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+				changeShowList = ftdKeyMap.IsKey(KeyInputsFtd.EnemySpawnUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
+				freecamOn = Input.GetMouseButtonDown(1); // technically same as default atm
+				orbitcamOn = Input.GetMouseButtonDown(0); // technically same as default atm
 			}
 			if (changeExtraInfo)
 			{
@@ -615,7 +613,6 @@ namespace Tournament
 						orbitindex--;
 					}
 				}
-
 				if (orbittarget != StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId ||
 					(StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null &&
 					 orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID))
@@ -727,18 +724,18 @@ namespace Tournament
 					GameSpeedManager.Instance.TogglePause();
 					//Everyone died...
 				}
-				foreach (MainConstruct val in array)
+				foreach (MainConstruct currentConstruct in array)
 				{
-					if (!HUDLog[val.GetTeam()].TryGetValue(val, out TournamentParticipant tournamentParticipant))
+					if (!HUDLog[currentConstruct.GetTeam()].TryGetValue(currentConstruct, out TournamentParticipant tournamentParticipant))
 					{
 						UpdateConstructs();
-						tournamentParticipant = HUDLog[val.GetTeam()][val];
+						tournamentParticipant = HUDLog[currentConstruct.GetTeam()][currentConstruct];
 					}
 					//The participant is still in the game:
 					if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
 					{
-						int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(val.GetTeam());
-						tournamentParticipant.AICount = val.BlockTypeStorage.MainframeStore.Blocks.Count;
+						int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(currentConstruct.GetTeam());
+						tournamentParticipant.AICount = currentConstruct.BlockTypeStorage.MainframeStore.Blocks.Count;
 						bool violatingRules = false;
 						//Is it braindead?
 						if (tournamentParticipant.AICount == 0)
@@ -746,15 +743,15 @@ namespace Tournament
 							violatingRules = true;
 						}
 						//Is it outside its altitude limits?
-						if (!violatingRules && (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y))
+						if (!violatingRules && (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y))
 						{
 							if (Parameters.SoftLimits[teamIndex])
 							{
-								if (val.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x && -val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Below minimum altitude and still sinking.
+								if (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x && -currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Below minimum altitude and still sinking.
 								{
 									violatingRules = true;
 								}
-								else if (val.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y && val.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Above maximum altitude and still rising.
+								else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y && currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Above maximum altitude and still rising.
 								{
 									violatingRules = true;
 								}
@@ -770,49 +767,55 @@ namespace Tournament
 							violatingRules = true;
 						}
 						//Is it too fast?
-						if (!violatingRules && val.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
+						if (!violatingRules && currentConstruct.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
 						{
 							violatingRules = true;
 						}
 						//Is it too far away from enemies?
 						if (!violatingRules)
 						{
-							float num = -1f;
-							float num2 = -1f;
+							float currentDistance = -1f;
+							float futureDistance = -1f;
 							MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
-							foreach (MainConstruct val2 in array2)
+							foreach (MainConstruct potentialEnemy in array2)
 							{
-								if (val != val2 && val.GetTeam() != val2.GetTeam())
+								if (currentConstruct != potentialEnemy && currentConstruct.GetTeam() != potentialEnemy.GetTeam())
 								{
-									float num3 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass, val2.CentreOfMass);
-									if (num < 0f)
+									float distance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass, potentialEnemy.CentreOfMass);
+									if (currentDistance < 0) //This is the first enemy encountered.
 									{
-										num = num3;
-										num2 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
-
+										currentDistance = distance;
+										futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass);
 									}
-									else if (num3 < num)
+									else if (distance < currentDistance) //We already encountered an enemy, but the current one is closer.
 									{
-										num = num3;
-										num2 = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(val.CentreOfMass + val.Velocity, val2.CentreOfMass) : Vector3.Distance(val.CentreOfMass + val.Velocity, val2.CentreOfMass);
+										currentDistance = distance;
+										futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass);
 									}
 								}
 							}
 							//Are there no more enemies?
-							if (num < 0)
+							if (currentDistance < 0)
 							{
 								GameSpeedManager.Instance.TogglePause();
 								break;
-								//Checking additional construct does no longer changes the outcome, we still need to update the timer though.
+								//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
 							}
-							//out of bounds and moving away faster than DistanceReverse allows?
-							if (Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex] && num < num2 - Parameters.DistanceReverse[teamIndex])
+							//Too far away?
+							if (Parameters.DistanceLimit[teamIndex] < currentDistance)
 							{
-								violatingRules = true;
-							}
-							else if (!Parameters.SoftLimits[teamIndex] && num > Parameters.DistanceLimit[teamIndex])
-							{ //out of bounds
-								violatingRules = true;
+								if (Parameters.SoftLimits[teamIndex])
+								{
+									//Moving away faster than DistanceReverse allows?
+									if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
+									{
+										violatingRules = true;
+									}
+								}
+								else
+								{
+									violatingRules = true;
+								}
 							}
 						}
 						//Has any rule been violated?

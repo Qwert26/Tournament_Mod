@@ -1,7 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-
 [assembly: AssemblyProduct("Tournament")]
 [assembly: AssemblyTrademark("Qwert26")]
 [assembly: AssemblyCompany("")]
@@ -12,5 +11,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Tournament")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("Debug")]
-[assembly: AssemblyVersion("2.5.2.7")]
-[assembly: AssemblyFileVersion("2.5.2.7")]
+[assembly: AssemblyVersion("2.5.2.8")]
+[assembly: AssemblyFileVersion("2.5.2.8")]

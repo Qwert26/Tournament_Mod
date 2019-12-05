@@ -203,12 +203,12 @@ namespace Tournament.UI
 					}, (tp) =>
 					{
 						return tp.InfinteResourcesPerTeam[index];
-					})).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
+					})).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
 				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 					M.m((TournamentParameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (TournamentParameters tp, float f)
 					  {
 						  tp.ResourcesPerTeam.Us[index] = (int) f;
-					  }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index - 1 < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
+					  }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
 			}
 			#endregion
 			sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
