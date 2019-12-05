@@ -35,9 +35,9 @@ namespace Tournament
 		{
 			Name="Columns",
 			Description="The fleet is in a rectangular formation, where the start of one column is at an 22° angle to the end of a neighboring column. " +
-			"The Columns are getting filled front to back and the maximum amount of ships in a column gets determined by the ratio of the two gap values.",
+			"The Columns are getting evenly filled front to back and the maximum amount of ships in a column gets determined by the ratio of the two gap values.",
 			DetermineLocalPosition=FormationCalculation.ParallelColumns,
-			DeterminePositionDescription = FormationPositionDescription.UnknownFormation
+			DeterminePositionDescription = FormationPositionDescription.ParallelColumns
 		};
 		public static readonly TournamentFormation CommandedParallelColumns = new TournamentFormation()
 		{
@@ -51,14 +51,14 @@ namespace Tournament
 			Name = "Roman Legion, Manipel Base",
 			Description = "The Baseformation of the Manipel after Marcus Furius Camillus. Each Group consists of only six Entries, put together in vertical pairs.",
 			DetermineLocalPosition = FormationCalculation.ManipelBaseFormation,
-			DeterminePositionDescription = FormationPositionDescription.UnknownFormation
+			DeterminePositionDescription = FormationPositionDescription.ManipelBaseFormation
 		};
 		public static readonly TournamentFormation RomanManipelAttack = new TournamentFormation()
 		{
 			Name = "Roman Legion, Manipel Attack",
 			Description = "Similar to the Baseformation, but the second line of the Baseformation moved into the gaps of the first line, forming a solid line.",
 			DetermineLocalPosition = FormationCalculation.ManipelAttackFormation,
-			DeterminePositionDescription = FormationPositionDescription.UnknownFormation
+			DeterminePositionDescription = FormationPositionDescription.ManipelAttackFormation
 		};
 		public static readonly TournamentFormation[] tournamentFormations = {
 			Line,

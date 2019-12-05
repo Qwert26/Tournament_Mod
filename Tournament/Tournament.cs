@@ -774,48 +774,13 @@ namespace Tournament
 						//Is it too far away from enemies?
 						if (!violatingRules)
 						{
-							float currentDistance = -1f;
-							float futureDistance = -1f;
-							MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
-							foreach (MainConstruct potentialEnemy in array2)
-							{
-								if (currentConstruct != potentialEnemy && currentConstruct.GetTeam() != potentialEnemy.GetTeam())
-								{
-									float distance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass, potentialEnemy.CentreOfMass);
-									if (currentDistance < 0) //This is the first enemy encountered.
-									{
-										currentDistance = distance;
-										futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass);
-									}
-									else if (distance < currentDistance) //We already encountered an enemy, but the current one is closer.
-									{
-										currentDistance = distance;
-										futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(currentConstruct.CentreOfMass + currentConstruct.Velocity, potentialEnemy.CentreOfMass);
-									}
-								}
-							}
+							violatingRules = CheckDistanceClosest(currentConstruct, teamIndex, out bool noEnemies);
 							//Are there no more enemies?
-							if (currentDistance < 0)
+							if (noEnemies)
 							{
 								GameSpeedManager.Instance.TogglePause();
 								break;
 								//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
-							}
-							//Too far away?
-							if (Parameters.DistanceLimit[teamIndex] < currentDistance)
-							{
-								if (Parameters.SoftLimits[teamIndex])
-								{
-									//Moving away faster than DistanceReverse allows?
-									if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
-									{
-										violatingRules = true;
-									}
-								}
-								else
-								{
-									violatingRules = true;
-								}
 							}
 						}
 						//Has any rule been violated?
@@ -836,6 +801,97 @@ namespace Tournament
 				}
 				timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 			}
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="current"></param>
+		/// <param name="teamIndex"></param>
+		/// <param name="noEnemiesFound"></param>
+		/// <returns></returns>
+		private bool CheckDistanceClosest(MainConstruct current, int teamIndex, out bool noEnemiesFound) {
+			float currentDistance = -1;
+			float futureDistance = -1;
+			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
+			foreach (MainConstruct potentialEnemy in array2)
+			{
+				if (current != potentialEnemy && current.GetTeam() != potentialEnemy.GetTeam())
+				{
+					float distance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, potentialEnemy.CentreOfMass);
+					if (currentDistance < 0) //This is the first enemy encountered.
+					{
+						currentDistance = distance;
+						futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass);
+					}
+					else if (distance < currentDistance) //We already encountered an enemy, but the current one is closer.
+					{
+						currentDistance = distance;
+						futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass);
+					}
+				}
+			}
+			noEnemiesFound = currentDistance < 0;
+			//Too far away?
+			if (currentDistance > Parameters.DistanceLimit[teamIndex])
+			{
+				if (Parameters.SoftLimits[teamIndex])
+				{
+					//Moving away faster than DistanceReverse allows?
+					if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="current"></param>
+		/// <param name="teamIndex"></param>
+		/// <param name="percentage">Zu wie vielen Feinden, relativ gesehen, müssen wir hinfahren, damit wir keine Strafzeit erhalten?</param>
+		/// <param name="noEnemiesFound"></param>
+		/// <returns></returns>
+		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
+		{
+			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
+			List<MainConstruct> enemies = new List<MainConstruct>(array2.Length);
+			foreach (MainConstruct potentialEnemy in array2)
+			{
+				if (current != potentialEnemy && current.GetTeam() != potentialEnemy.GetTeam())
+				{
+					enemies.Add(potentialEnemy);
+				}
+			}
+			if (enemies.Count == 0)
+			{
+				noEnemiesFound = true;
+				return false;
+			}
+			noEnemiesFound = false;
+			int rulebreaks = 0;
+			foreach (MainConstruct enemy in enemies)
+			{
+				float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
+				float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
+				//Too far away?
+				if(currentDistance>Parameters.DistanceLimit[teamIndex]){
+					if (Parameters.SoftLimits[teamIndex])
+					{
+						//Going away faster than DistanceReverse allows?
+						if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
+						{ rulebreaks++; }
+					}
+					else
+					{ rulebreaks++; }
+				}
+			}
+			return Mathf.Max(1, Mathf.RoundToInt((1 - percentage) * enemies.Count)) <= rulebreaks;
 		}
 		private void AddPenalty(TournamentParticipant tournamentParticipant, int teamIndex)
 		{

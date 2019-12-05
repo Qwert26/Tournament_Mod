@@ -12,7 +12,7 @@ namespace Tournament.UI
 {
 	public class ParticipantManagementTab : SuperScreen<Tournament>
 	{
-		private ParticipantConsole participantConsole;
+		internal ParticipantConsole participantConsole;
 		public ParticipantManagementTab(ConsoleWindow window, Tournament focus) : base(window, focus) {
 			Name = new Content("Participants", "View and edit Participants.");
 			participantConsole = new ParticipantConsole(focus, this);
@@ -170,7 +170,7 @@ namespace Tournament.UI
 			})).SetConditionalDisplayFunction(() => ready);
 			posthead.AddInterpretter(StringDisplay.Quick("It seems at least one Team has no Entry. Reduce the number of Teams or give the Team(s) in question at least one Entry.")).SetConditionalDisplayFunction(() => !ready);
 		}
-		public override Action OnSelectTab => () => {
+		public override Action OnSelectTab => delegate() {
 			if (!participantConsole.MenuActiveOrInStack)
 			{
 				participantConsole.ActivateGui(GuiActivateType.Add);

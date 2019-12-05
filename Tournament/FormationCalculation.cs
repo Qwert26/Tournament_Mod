@@ -3,7 +3,7 @@ using System;
 namespace Tournament
 {
 	internal static class FormationCalculation {
-		public static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad*68);
+		public static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad * 68);
 		public static Quaternion FactionRotation(float angle) {
 			return Quaternion.Euler(0, angle, 0);
 		}
@@ -116,10 +116,10 @@ namespace Tournament
 		}
 		public static Vector3 ParallelColumns(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
-			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRatio));
-			int lines = (int)Math.Ceiling((double)count / shipsPerLine);
-			float x = (lines - 1) * gapLeftRight / 2f - index % lines * gapLeftRight;
-			float z = distance + (index / lines * gapForwardBackward);
+			int shipsPerColumn = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRatio));
+			int columns = (int)Math.Ceiling((double)count / shipsPerColumn);
+			float x = (columns - 1) * gapLeftRight / 2 - index % columns * gapLeftRight;
+			float z = distance - (shipsPerColumn - 1) * gapForwardBackward / 2 + (index / columns * gapForwardBackward);
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
 		}
 		public static Vector3 CommandedParallelColumns(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {

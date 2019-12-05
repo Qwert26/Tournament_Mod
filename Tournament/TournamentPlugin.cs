@@ -45,7 +45,7 @@ namespace Tournament
 			}
 			if (@is.Header.Name == InstanceSpecification.i.Header.Name) {
 				GAMESTATE.MyTeam = ObjectId.NoLinkage;
-				_t._GUI.ActivateGui(_t);
+				_t._GUI.ActivateGui(_t, BrilliantSkies.Ui.Displayer.GuiActivateType.Standard);
 			}
 		}
 		/// <summary>

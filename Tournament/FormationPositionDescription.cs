@@ -4,6 +4,14 @@ namespace Tournament
 {
 	internal static class FormationPositionDescription
 	{
+		/// <summary>
+		/// Für neue Formationen, die noch keine eigene Positions-Beschreibungen haben.
+		/// </summary>
+		/// <param name="gapLeftRight"></param>
+		/// <param name="gapForwardBackward"></param>
+		/// <param name="count"></param>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		public static string UnknownFormation(float gapLeftRight=0, float gapForwardBackward=0, int count=0, int index=0) {
 			return "None";
 		}
@@ -96,6 +104,48 @@ namespace Tournament
 			}
 			else
 				return "None";
+		}
+		public static string ParallelColumns(float gapLeftRight, float gapForwardBackward, int count, int index)
+		{
+			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
+			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * FormationCalculation.factorFor1To1GapRatio));
+			int lines = (int) Math.Ceiling((double) count / shipsPerLine);
+			return $"Column {(index % lines) + 1}, Row {(index / lines) + 1}";
+		}
+		public static string ManipelBaseFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
+		{
+			return ManipelFormation(gapLeftRight, gapForwardBackward, count, index, false);
+		}
+		public static string ManipelAttackFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
+		{
+			return ManipelFormation(gapLeftRight, gapForwardBackward, count, index, true);
+		}
+		private static string ManipelFormation(float gapLeftRight, float gapForwardBackward, int count, int index,bool attack)
+		{
+			int groups = Mathf.CeilToInt(count / 6f);
+			int line = index / groups;
+			int group = index % groups;
+			switch (line)
+			{
+				case 0:
+				case 4:
+				case 5:
+					return $"Group {group}, Line {line+1}, left side of group";
+				case 1:
+					if (attack)
+					{
+						return $"Group {group}, Line {line}, right side of group";
+					}
+					else
+					{
+						return $"Group {group}, Line {line + 1}, left side of group";
+					}
+				case 2:
+				case 3:
+					return $"Group {group}, Line {line + 1}, right side of group";
+				default:
+					throw new Exception("Someone modified line with a debugger...");
+			}
 		}
 	}
 }

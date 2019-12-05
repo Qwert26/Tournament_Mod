@@ -12,18 +12,23 @@ using BrilliantSkies.Ui.TreeSelection;
 using Tournament.Serialisation;
 namespace Tournament.UI
 {
-	public class ParticipantConsole:ConsoleUi<Tournament>
+	public class ParticipantConsole : ConsoleUi<Tournament>
 	{
-		private ConsoleUiScreen _parentTab;
+		private ParticipantManagementTab _parentTab;
 		private TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> treeSelector;
 		private int heightmapRange;
 		private float fullGravityHeight;
-		public ParticipantConsole(Tournament focus, ConsoleUiScreen parentTab) : base(focus) {
+		public ParticipantConsole(Tournament focus, ParticipantManagementTab parentTab) : base(focus) {
 			_parentTab = parentTab;
 			treeSelector = FtdGuiUtils.GetFileBrowserFor(GameFolders.GetCombinedBlueprintFolder(false));
 		}
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
+			if (_parentTab.participantConsole != this)
+			{
+				_parentTab.participantConsole.DeactivateGui(BrilliantSkies.Ui.Displayer.GuiDeactivateType.Standard);
+			}
+			_parentTab.participantConsole = this;
 			ConsoleWindow window = NewWindow("Add Participants", WindowSizing.GetRhs());
 			window.DisplayTextPrompt = false;
 			ConsoleUiScreen screen = window.Screen;
