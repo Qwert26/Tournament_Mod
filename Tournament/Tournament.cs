@@ -104,6 +104,9 @@ namespace Tournament
 			};
 			_GUI = new TournamentConsole(_me);
 		}
+		/// <summary>
+		/// Loads in all selected crafts and sets their materialstorage or the storage of their team, depending if local resources are enabled.
+		/// </summary>
 		public void LoadCraft()
 		{
 			ClearArea();
@@ -200,6 +203,9 @@ namespace Tournament
 				}
 			}
 		}
+		/// <summary>
+		/// Sets Cleanup-Functions, adds all Mainconstruct into the HUDLog and registers its methods.
+		/// </summary>
 		public void StartMatch()
 		{
 			overtimeCounter = 0;
@@ -299,6 +305,9 @@ namespace Tournament
 			GameEvents.FixedUpdateEvent += FixedUpdate;
 			GameEvents.OnGui += OnGUI;
 		}
+		/// <summary>
+		/// Deletes every Force which there currently is.
+		/// </summary>
 		public void ClearArea()
 		{
 			ForceManager.Instance.forces.ForEach(delegate (Force t)
@@ -306,6 +315,9 @@ namespace Tournament
 				ForceManager.Instance.DeleteForce(t);
 			});
 		}
+		/// <summary>
+		/// Destroys and recreates the camera object.
+		/// </summary>
 		public void ResetCam()
 		{
 			foreach (PlayerSetupBase @object in Objects.Instance.Players.Objects)
@@ -334,6 +346,9 @@ namespace Tournament
 			orbitMothership = -1;
 			extraInfo = false;
 		}
+		/// <summary>
+		/// Moves the camera into the center of the map-tile, 50m above sea level.
+		/// </summary>
 		public void MoveCam()
 		{
 			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0);
@@ -346,12 +361,18 @@ namespace Tournament
 		{
 			return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
 		}
+		/// <summary>
+		/// Saves the current Parameters.
+		/// </summary>
 		public void SaveSettings()
 		{
 			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
 			settingsFile.SaveData(Parameters, Formatting.Indented);
 		}
+		/// <summary>
+		/// Loads the Parameters-File.
+		/// </summary>
 		public void LoadSettings()
 		{
 			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
@@ -380,11 +401,17 @@ namespace Tournament
 				entries.Add(i, new List<TournamentEntry>());
 			}
 		}
+		/// <summary>
+		/// Resets the Parameters and makes sure that there is enough data for the GUI.
+		/// </summary>
 		public void LoadDefaults()
 		{
 			Parameters.ResetToDefault();
 			Parameters.EnsureEnoughData();
 		}
+		/// <summary>
+		/// Displays the Sidelist and when required the Extra-Info-Panel.
+		/// </summary>
 		public void OnGUI()
 		{
 			GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
@@ -493,7 +520,11 @@ namespace Tournament
 				}
 			}
 		}
-		public IMainConstructBlock GetTarget()
+		/// <summary>
+		/// Performes a GridCast against all Constructables starting a the camera position and into the direction its facing. The maximum distance is 1000m.
+		/// </summary>
+		/// <returns>The Mainconstruct if any was hit, otherwise null.</returns>
+		private IMainConstructBlock GetTarget()
 		{
 			IMainConstructBlock target = null;
 			Transform myTransform = flycam.enabled ? flycam.transform : orbitcam.transform;
@@ -511,6 +542,9 @@ namespace Tournament
 			}
 			return target;
 		}
+		/// <summary>
+		/// Handles input and moves, rotates and places the camera.
+		/// </summary>
 		public void LateUpdate()
 		{
 			FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
@@ -700,6 +734,10 @@ namespace Tournament
 				}
 			}
 		}
+		/// <summary>
+		/// Gets called once every physics update. Negates material-gain by self-shooting if Lifesteal is -1%. Also determines if a Particiant is currently violating any rules and gives out a penalty.
+		/// </summary>
+		/// <param name="dt"></param>
 		public void FixedUpdate(ITimeStep dt)
 		{
 			if (!GameSpeedManager.Instance.IsPaused)
@@ -774,7 +812,7 @@ namespace Tournament
 						//Is it too far away from enemies?
 						if (!violatingRules)
 						{
-							violatingRules = CheckDistanceClosest(currentConstruct, teamIndex, out bool noEnemies);
+							violatingRules = CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex]/100f, out bool noEnemies);
 							//Are there no more enemies?
 							if (noEnemies)
 							{
@@ -854,7 +892,7 @@ namespace Tournament
 		/// </summary>
 		/// <param name="current"></param>
 		/// <param name="teamIndex"></param>
-		/// <param name="percentage">Zu wie vielen Feinden, relativ gesehen, müssen wir hinfahren, damit wir keine Strafzeit erhalten?</param>
+		/// <param name="percentage"></param>
 		/// <param name="noEnemiesFound"></param>
 		/// <returns></returns>
 		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
@@ -893,14 +931,22 @@ namespace Tournament
 			}
 			return Mathf.Max(1, Mathf.RoundToInt((1 - percentage) * enemies.Count)) <= rulebreaks;
 		}
+		/// <summary>
+		/// Increases the Penalty-Time of a single Participant or uses up the Time-Buffer if Soft-Limits are active for the given Team.
+		/// </summary>
+		/// <param name="tournamentParticipant">The offending Participant</param>
+		/// <param name="teamIndex">The index of its corresponding Team</param>
 		private void AddPenalty(TournamentParticipant tournamentParticipant, int teamIndex)
 		{
 			if (Parameters.SoftLimits[teamIndex])
 			{
-				tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 				if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
 				{
 					tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+				}
+				else
+				{
+					tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 				}
 			}
 			else
@@ -908,6 +954,10 @@ namespace Tournament
 				tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 			}
 		}
+		/// <summary>
+		/// Gets called twice a second. Despawns Mainconstructs which have accumulated too much Penalty-time and pauses the Game once the time limit or the end of an overtime-section is reached.
+		/// </summary>
+		/// <param name="dt"></param>
 		public void SlowUpdate(ITimeStep dt)
 		{
 			UpdateConstructs();
@@ -953,6 +1003,9 @@ namespace Tournament
 				}
 			}
 		}
+		/// <summary>
+		/// Includes any new Mainconstruct into the HUDLog and updates current health-values.
+		/// </summary>
 		private void UpdateConstructs()
 		{
 			MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
@@ -1036,16 +1089,30 @@ namespace Tournament
 			}
 		}
 		public Quaternion Rotation => Quaternion.Euler(0, Parameters.Rotation, 0);
-		public float DistanceProjected(Vector3 a, Vector3 b)
+		/// <summary>
+		/// Calculates the distance between two points, if they were on the XZ-Plane.
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		private float DistanceProjected(Vector3 a, Vector3 b)
 		{
 			a.y = 0;
 			b.y = 0;
 			return Vector3.Distance(a, b);
 		}
+		/// <summary>
+		/// Retrieves the Formation-struct of a given Team.
+		/// </summary>
+		/// <param name="index">The index of the Team</param>
+		/// <returns></returns>
 		public TournamentFormation GetFormation(int index)
 		{
 			return TournamentFormation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
 		}
+		/// <summary>
+		/// Overrides the default team colors with the ones set in the Parameters.
+		/// </summary>
 		public void ApplyFactionColors()
 		{
 			TournamentPlugin.factionManagement.EnsureFactionCount(Parameters.ActiveFactions);

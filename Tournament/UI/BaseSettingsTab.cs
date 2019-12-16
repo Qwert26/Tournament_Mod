@@ -112,6 +112,14 @@ namespace Tournament.UI
 					tp.SoftLimits.Us[i] = b;
 				}
 			}, (tp) => tp.SoftLimits[0])).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
+			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 50,
+			M.m((TournamentParameters tp) => tp.EnemyAttackPercentage[0]), "Enemy Attack Percentage: {0}%", delegate (TournamentParameters tp, float f)
+				{
+					for (int i = 0; i < 6; i++)
+					{
+						tp.EnemyAttackPercentage.Us[i] = (int) f;
+					}
+				}, new ToolTip("When determining if an entry is violating the distance limit, this percentage must be reached or it is considered fleeing from too many enemies."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			#region Puffer-Einstellungen
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
 			segment2.SetConditionalDisplay(() => _focus.Parameters.UniformRules&&_focus.Parameters.SoftLimits[0]);

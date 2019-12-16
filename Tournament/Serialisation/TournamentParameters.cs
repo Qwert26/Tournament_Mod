@@ -79,6 +79,8 @@ namespace Tournament.Serialisation
 		public Var<bool> UniformRules { get; set; } = new VarBool(true);
 		[Variable(27,"Maximum Speed(m/s)","The maximum speed a construct is allowed to have.")]
 		public VarList<int> MaximumSpeed { get; set; } = new IntList();
+		[Variable(28,"")]
+		public VarList<int> EnemyAttackPercentage { get; set; } = new IntList();
 		#endregion
 		#region Fortgeschrittene Optionen
 		[Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]
@@ -189,6 +191,10 @@ namespace Tournament.Serialisation
 			while (MaximumSpeed.Count < 6) {
 				MaximumSpeed.Add(10000);
 			}
+			while (EnemyAttackPercentage.Count < 6)
+			{
+				EnemyAttackPercentage.Add(50);
+			}
 		}
 		public void MakeUniform() {
 			for (int i = 1; i < 6; i++) {
@@ -205,6 +211,7 @@ namespace Tournament.Serialisation
 				DistanceReverse.Us[i] = DistanceReverse[0];
 				AltitudeReverse.Us[i] = AltitudeReverse[0];
 				MaximumSpeed.Us[i] = MaximumSpeed[0];
+				EnemyAttackPercentage.Us[i] = EnemyAttackPercentage[0];
 			}
 		}
 	}

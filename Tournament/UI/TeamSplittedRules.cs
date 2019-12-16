@@ -91,6 +91,11 @@ namespace Tournament.UI
 				{
 					tp.SoftLimits.Us[index] = b;
 				}, (TournamentParameters tp) => tp.SoftLimits[index]));
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 100, 1, 50,
+				M.m((TournamentParameters tp) => tp.EnemyAttackPercentage[index]), "Enemy Attack Percentage: {0}%", delegate (TournamentParameters tp, float f)
+					{
+						tp.EnemyAttackPercentage.Us[index] = (int) f;
+					}, new ToolTip("When determining if an entry is violating the distance limit, this percentage must be reached or it is considered fleeing from too many enemies.")));
 				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
 					M.m((TournamentParameters tp) => tp.MaximumBufferTime[index]), "Maximum Buffertime: {0}s", delegate (TournamentParameters tp, float f)
 					{
