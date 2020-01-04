@@ -76,7 +76,7 @@ namespace Tournament.UI
 			for (int i = 0; i < 6; i++)
 			{
 				int factionIndex = i;
-				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Clear Team {i + 1}", new ToolTip($"Removes all entries for Team {i + 1}."), delegate (Tournament t)
+				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Update Team {i + 1}", new ToolTip($"Updates all entries for Team {i + 1}."), delegate (Tournament t)
 				{
 					foreach (var member in t.entries[factionIndex]) {
 						member.Spawn_direction = t.Parameters.Direction;
@@ -151,7 +151,7 @@ namespace Tournament.UI
 				}
 			}
 			ScreenSegmentStandard posthead = CreateStandardSegment();
-			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Y'. " +
+			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Z'. " +
 				"With the Key for the EnemySpawn-GUI you can hide and show the Sidelist. Its default Key is 'X'."));
 			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fighting!"), delegate (Tournament t)
 			{
