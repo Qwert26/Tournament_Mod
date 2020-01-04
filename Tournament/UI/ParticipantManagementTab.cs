@@ -110,7 +110,7 @@ namespace Tournament.UI
 					entryControl.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
 					entryControl.AddInterpretter(new StringDisplay(M.m<string>(string.Format(
 						"{3}°@{2}m\n" +
-						"{0} {1}\n" +
+						"{0} <color=cyan>{1}</color>\n" +
 						"~-------SPAWNS-------~{4}\n" +
 						"~--------------------~\n" +
 						"~---FORMATION-ROLE---~\n" +
@@ -153,7 +153,7 @@ namespace Tournament.UI
 			ScreenSegmentStandard posthead = CreateStandardSegment();
 			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Z'. " +
 				"With the Key for the EnemySpawn-GUI you can hide and show the Sidelist. Its default Key is 'X'."));
-			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fighting!"), delegate (Tournament t)
+			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fight."), delegate (Tournament t)
 			{
 				((ConsoleUi<Tournament>)Window._governingUi).DeactivateGui();
 				t.ApplyFactionColors();
@@ -181,5 +181,10 @@ namespace Tournament.UI
 			participantConsole.DeactivateGui(GuiDeactivateType.Standard);
 			Window.SetSizeAndPosition(WindowSizing.GetCentralHuge());
 		};
+		public override void OnDeactivateGui()
+		{
+			base.OnDeactivateGui();
+			participantConsole.DeactivateGui(GuiDeactivateType.Standard);
+		}
 	}
 }

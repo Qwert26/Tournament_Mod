@@ -36,6 +36,7 @@ namespace Tournament
 		private readonly GUIStyle sidelist;
 		private readonly GUIStyle extrainfoRight;
 		private readonly GUIStyle extrainfoName;
+		private static readonly Gradient penaltyTimeColor;
 		#endregion
 		#region Kamerakontrolle
 		private GameObject cam;
@@ -58,6 +59,24 @@ namespace Tournament
 		public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
 		public Dictionary<int, List<TournamentEntry>> entries = new Dictionary<int, List<TournamentEntry>>();
 		private List<int> materials;
+		static Tournament() {
+			penaltyTimeColor = new Gradient
+			{
+				colorKeys = new GradientColorKey[] {
+				new GradientColorKey(Color.white, 0f),
+				new GradientColorKey(Color.blue, 0.25f),
+				new GradientColorKey(Color.green, 0.5f),
+				new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),
+				new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),
+				new GradientColorKey(Color.red, 1f)
+			},
+				alphaKeys = new GradientAlphaKey[] {
+				new GradientAlphaKey(1f, 0f),
+				new GradientAlphaKey(1f, 1f)
+			},
+				mode = GradientMode.Blend
+			};
+		}
 		public Tournament()
 		{
 			_me = this;
@@ -430,11 +449,14 @@ namespace Tournament
 					teamCurHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPCUR);
 					string teamHP = $"{Mathf.RoundToInt(100 * teamCurHP / teamMaxHP)}%";
 					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>", sidelist);
+					int maxTimeForTeam = Parameters.MaximumPenaltyTime[TournamentPlugin.factionManagement.TeamIndexFromObjectID(team.Key)];
 					foreach (KeyValuePair<MainConstruct, TournamentParticipant> member in team.Value)
 					{
 						string name = member.Value.BlueprintName;
 						string percentHP = $"{Mathf.RoundToInt(member.Value.HP)}%";
-						string penaltyTime = $"{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s";
+						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
+						Color32 timeColor = penaltyTimeColor.Evaluate(penaltyFraction);
+						string penaltyTime = $"<color=#{string.Format("{0:X2}{1:X2}{2:X2}", timeColor.r, timeColor.g, timeColor.b)}>{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s</color>";
 						bool disqualified = member.Value.Disqual || member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)
