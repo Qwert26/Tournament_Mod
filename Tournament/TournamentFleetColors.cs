@@ -76,38 +76,38 @@ namespace Tournament
 		public readonly static TournamentFleetColor terranRepublic = new TournamentFleetColor()
 		{
 			Name = "Terran Republic, Planetside",
-			Description = "Propsed colors of the TR by Lucaya, the order was assumed to be main, secondary, trim.",
-			Main = new Color(1f, 0f, 0f, 1f), //Red
-			Secondary = new Color(0f, 0f, 0f, 1f), //Black
-			Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
-			Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+			Description = "Taken from the offical color palette of the TR.",
+			Main = new Color(0.37f, 0.35f, 0.34f, 1f), //Dark Grey
+			Secondary = new Color(0.59f, 0.07f, 0f, 1f), //Dark Red
+			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
+			Detail = new Color(0f, 0f, 0f, 1f) //Black
 		};
 		public readonly static TournamentFleetColor newConglomerate = new TournamentFleetColor()
 		{
 			Name = "New Conglomerate, Planetside",
-			Description = "Propsed colors of the NC by Lucaya, the order was assumed to be main, secondary, trim.",
-			Main = new Color(0f, 0f, 1f, 1f), //Blue
-			Secondary = new Color(1f, 1f, 0f, 1f), //Yellow
-			Trim = new Color(0.96f, 0.96f, 0.86f, 1f), //Beige
-			Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+			Description = "Taken from the offical color palette of the NC.",
+			Main = new Color(0.11f, 0.27f, 0.6f, 1f), //Dark Blue
+			Secondary = new Color(0.98f, 0.82f, 0f, 1f), //Yellow
+			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
+			Detail = new Color(0.61f, 0.56f, 0.47f, 1f) //Tan
 		};
 		public readonly static TournamentFleetColor vanuSovereignty = new TournamentFleetColor()
 		{
 			Name = "Vanu Sovereignty, Planetside",
-			Description = "Propsed colors of the VS by Lucaya, the order was assumed to be main, secondary, trim.",
-			Main = new Color(0.5f, 0f, 0.5f, 1f), //Purple
-			Secondary = new Color(0f, 1f, 1f, 1f), //Aqua
-			Trim = new Color(0.5f, 0.5f, 0.5f, 1f), //Grey
-			Detail = new Color(0f, 0f, 0f, 0f) //Transparent
+			Description = "Taken from the offical color palette of the VS.",
+			Main = new Color(0.38f, 0.15f, 0.59f, 1f), //Blue violet
+			Secondary = new Color(0f, 0.5f, 0.51f, 1f), //Dark Cyan
+			Trim = new Color(0.61f, 0.61f, 0.64f, 1f), //Grey
+			Detail = new Color(0f, 0f, 0f, 1f) //Black
 		};
 		public readonly static TournamentFleetColor naniteSystemsOps = new TournamentFleetColor()
 		{
 			Name = "Nanite Systems Operative, Planetside",
-			Description = "Proposed colors of the NSO by Lucaya, the order was assumed to be main, secondary, trim, detail.",
-			Main = new Color(0.67f, 0.67f, 0.67f, 1f), //Light grey
-			Secondary = new Color(0.33f, 0.33f, 0.33f, 1f), //Dark grey
-			Trim = new Color(0.96f, 0.96f, 0.86f, 1f), //Beige
-			Detail = new Color(1f, 1f, 1f, 1f) //White
+			Description = "Taken from the offical color palette of the NSO.",
+			Main = new Color(0.95f, 0.93f, 0.91f, 1f), //Silver
+			Secondary = new Color(0.49f, 0.47f, 0.36f, 1f), //Dark grey
+			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
+			Detail = new Color(0.18f, 0.18f, 0.18f, 1f) //Light Black
 		};
 		public readonly static TournamentFleetColor[] colorSchemes = {
 			classicYellow,
