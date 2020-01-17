@@ -10,11 +10,11 @@ using UnityEngine;
 using BrilliantSkies.Ftd.Planets.World;
 namespace Tournament.UI
 {
-	public class TeamSplittedRules : SuperScreen<Tournament>
+	public class TeamSplittedRules : AbstractTournamentTab
 	{
 		private int heightmapRange;
 		private float fullGravityHeight;
-		public TeamSplittedRules(ConsoleWindow window, Tournament focus) : base(window, focus) {
+		public TeamSplittedRules(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Team-splitted Rules", "You can set team-specific rules for spawning and penaltytime-pickup here.");
 		}
 		public override void Build()

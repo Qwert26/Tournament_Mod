@@ -10,10 +10,10 @@ using Tournament.Serialisation;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective;
 namespace Tournament.UI
 {
-	public class EyecandyTab : SuperScreen<Tournament>
+	public class EyecandyTab : AbstractTournamentTab
 	{
 		private int currentTeam = 0;
-		public EyecandyTab(ConsoleWindow window, Tournament focus) : base(window, focus)
+		public EyecandyTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus)
 		{
 			Name = new Content("Eyecandy", "Change the fleet appearence of a Team.");
 		}

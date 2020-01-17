@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace Tournament.UI
 {
-	public class AdvancedSettingsTab : SuperScreen<Tournament>
+	public class AdvancedSettingsTab :AbstractTournamentTab
 	{
-		public AdvancedSettingsTab(ConsoleWindow window, Tournament focus) : base(window, focus) {
+		public AdvancedSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Advanced Settings", "Setup advanced Parameters for the fight.");
 		}
 		public override void Build()

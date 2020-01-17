@@ -10,10 +10,10 @@ using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
 namespace Tournament.UI
 {
-	public class ParticipantManagementTab : SuperScreen<Tournament>
+	public class ParticipantManagementTab : AbstractTournamentTab
 	{
 		internal ParticipantConsole participantConsole;
-		public ParticipantManagementTab(ConsoleWindow window, Tournament focus) : base(window, focus) {
+		public ParticipantManagementTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Participants", "View and edit Participants.");
 			participantConsole = new ParticipantConsole(focus, this);
 		}
@@ -34,7 +34,7 @@ namespace Tournament.UI
 				{
 					teamList.Value.ForEach((TournamentEntry te) => te.FactionIndex = teamList.Key);
 				}
-				TriggerRebuild();
+				TriggerScreenRebuild();
 			}));
 			for (int i = 0; i < 6; i++)
 			{
@@ -42,7 +42,7 @@ namespace Tournament.UI
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {i + 1}", new ToolTip($"Inverts the direction for Team {i + 1}, by turning each entry 180°."), delegate (Tournament t)
 				{
 					t.entries[factionIndex].ForEach((TournamentEntry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
-					TriggerRebuild();
+					TriggerScreenRebuild();
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			horizontal = CreateStandardHorizontalSegment();
@@ -51,7 +51,7 @@ namespace Tournament.UI
 				foreach (var team in t.entries) {
 					team.Value.Clear();
 				}
-				TriggerRebuild();
+				TriggerScreenRebuild();
 			}));
 			for (int i = 0; i < 6; i++)
 			{
@@ -59,7 +59,7 @@ namespace Tournament.UI
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Clear Team {i + 1}", new ToolTip($"Removes all entries for Team {i + 1}."), delegate (Tournament t)
 				{
 					t.entries[factionIndex].Clear();
-					TriggerRebuild();
+					TriggerScreenRebuild();
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			horizontal = CreateStandardHorizontalSegment();
@@ -71,7 +71,7 @@ namespace Tournament.UI
 						member.Spawn_height = t.Parameters.SpawnHeight;
 					}
 				}
-				TriggerRebuild();
+				TriggerScreenRebuild();
 			}));
 			for (int i = 0; i < 6; i++)
 			{
@@ -82,7 +82,7 @@ namespace Tournament.UI
 						member.Spawn_direction = t.Parameters.Direction;
 						member.Spawn_height = t.Parameters.SpawnHeight;
 					}
-					TriggerRebuild();
+					TriggerScreenRebuild();
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			bool ready = true;
@@ -128,25 +128,25 @@ namespace Tournament.UI
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Remove", new ToolTip("Removes this entry."), delegate (Tournament t)
 					{
 						t.entries[factionIndex].Remove(entry);
-						TriggerRebuild();
+						TriggerScreenRebuild();
 					}), 0, 1);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Update", new ToolTip("Updates this entry with new values for its direction and height."), delegate (Tournament t)
 					{
 						entry.Spawn_direction = t.Parameters.Direction;
 						entry.Spawn_height = t.Parameters.SpawnHeight;
-						TriggerRebuild();
+						TriggerScreenRebuild();
 					}), 1, 1);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Move up", new ToolTip("Moves the entry one place up in its teamlist."), delegate (Tournament t)
 					{
 						t.entries[factionIndex].RemoveAt(indexInFaction);
 						t.entries[factionIndex].Insert(indexInFaction - 1, entry);
-						TriggerRebuild();
+						TriggerScreenRebuild();
 					}), 0, 2).SetConditionalDisplayFunction(() => indexInFaction != 0);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Move Down", new ToolTip("Moves the entry one place down in its teamlist."), delegate (Tournament t)
 					{
 						t.entries[factionIndex].RemoveAt(indexInFaction);
 						t.entries[factionIndex].Insert(indexInFaction + 1, entry);
-						TriggerRebuild();
+						TriggerScreenRebuild();
 					}), 1, 2).SetConditionalDisplayFunction(() => indexInFaction + 1 != teamSize);
 				}
 			}
@@ -171,20 +171,12 @@ namespace Tournament.UI
 			posthead.AddInterpretter(StringDisplay.Quick("It seems at least one Team has no Entry. Reduce the number of Teams or give the Team(s) in question at least one Entry.")).SetConditionalDisplayFunction(() => !ready);
 		}
 		public override Action OnSelectTab => delegate() {
-			if (!participantConsole.MenuActiveOrInStack)
-			{
-				participantConsole.ActivateGui(GuiActivateType.Add);
-			}
+			PopThisUp(participantConsole);
 			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
 		};
 		public override Action<OnDeselectTabSource> OnDeselectTab => (OnDeselectTabSource source) => {
-			participantConsole.DeactivateGui(GuiDeactivateType.Standard);
-			Window.SetSizeAndPosition(WindowSizing.GetCentralHuge());
+			DeactivatePopup();
+			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
 		};
-		public override void OnDeactivateGui()
-		{
-			base.OnDeactivateGui();
-			participantConsole.DeactivateGui(GuiDeactivateType.Standard);
-		}
 	}
 }

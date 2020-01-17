@@ -289,6 +289,7 @@
     <Compile Include="Tournament\Serialisation\TournamentParametersFile.cs" />
     <Compile Include="Tournament\Serialisation\Vector2List.cs" />
     <Compile Include="Tournament\Tournament.cs" />
+    <Compile Include="Tournament\UI\AbstractTournamentTab.cs" />
     <Compile Include="Tournament\UI\BaseSettingsTab.cs" />
     <Compile Include="Tournament\UI\EyecandyTab.cs" />
     <Compile Include="Tournament\UI\ParticipantConsole.cs" />

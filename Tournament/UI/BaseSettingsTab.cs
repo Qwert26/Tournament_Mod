@@ -10,12 +10,12 @@ using Tournament.Serialisation;
 using UnityEngine;
 namespace Tournament.UI
 {
-	public class BaseSettingsTab : SuperScreen<Tournament>
+	public class BaseSettingsTab : AbstractTournamentTab
 	{
 		private int sectionsNorthSouth, sectionsEastWest;
 		private int heightmapRange;
 		private float fullGravityHeight;
-		public BaseSettingsTab(ConsoleWindow window, Tournament focus) : base(window, focus) {
+		public BaseSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Base Settings", "Setup the basic Parameters of the Fight.");
 		}
 		public override void Build()
