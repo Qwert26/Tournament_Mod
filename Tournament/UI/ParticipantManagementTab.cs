@@ -174,7 +174,7 @@ namespace Tournament.UI
 			PopThisUp(participantConsole);
 			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
 		};
-		public override Action<OnDeselectTabSource> OnDeselectTab => (OnDeselectTabSource source) => {
+		public override Action<OnDeselectTabSource> OnDeselectTab => delegate(OnDeselectTabSource source) {
 			DeactivatePopup();
 			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
 		};
