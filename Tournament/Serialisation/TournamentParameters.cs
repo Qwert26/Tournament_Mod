@@ -54,7 +54,7 @@ namespace Tournament.Serialisation
 		[Variable(20,"Default Keymapping","When true the Tournament-Mod uses a static keymap, otherwise it uses your currently configured Keymap.")]
 		public VarBool DefaultKeys { get; set; } = new VarBool(false);
 		/// <summary>
-		/// Zu letzt genutzte Spawnhöhe.
+		/// Zu letzt genutzte Spawnhöhe. Die eigentliche Schranke hängt von der aktuelle Karte ab.
 		/// </summary>
 		[Variable(21,"Location")]
 		public Var<int> SpawnHeight { get; set; } = new VarIntClamp(0, -1000, 100000);
@@ -79,8 +79,10 @@ namespace Tournament.Serialisation
 		public Var<bool> UniformRules { get; set; } = new VarBool(true);
 		[Variable(27,"Maximum Speed(m/s)","The maximum speed a construct is allowed to have.")]
 		public VarList<int> MaximumSpeed { get; set; } = new IntList();
-		[Variable(28,"")]
+		[Variable(28,"Attack Percentage(%)","When out of bounds, a construct must move towards a certain percentage of enemies in order to not pick up penalty time.")]
 		public VarList<int> EnemyAttackPercentage { get; set; } = new IntList();
+		[Variable(29,"Pause on Victory","When active, the game will be paused once a team has won.")]
+		public Var<bool> PauseOnVictory { get; set; } = new VarBool(false);
 		#endregion
 		#region Fortgeschrittene Optionen
 		[Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]

@@ -240,6 +240,10 @@ namespace Tournament.UI
 				{
 					tp.Rotation.Us = (int)f;
 				}, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
+			CreateStandardSegment().AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Pause on Victory", new ToolTip("When active, the game will be paused once a winner has been determined."), delegate (TournamentParameters tp, bool b)
+			   {
+				   tp.PauseOnVictory.Us = b;
+			   }, (tp) => tp.PauseOnVictory));
 			horizontal = CreateStandardHorizontalSegment();
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)

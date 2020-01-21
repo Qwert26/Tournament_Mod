@@ -836,7 +836,7 @@ namespace Tournament
 						{
 							violatingRules = CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex]/100f, out bool noEnemies);
 							//Are there no more enemies?
-							if (noEnemies)
+							if (noEnemies && Parameters.PauseOnVictory)
 							{
 								GameSpeedManager.Instance.TogglePause();
 								break;
@@ -861,53 +861,6 @@ namespace Tournament
 				}
 				timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
 			}
-		}
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="current"></param>
-		/// <param name="teamIndex"></param>
-		/// <param name="noEnemiesFound"></param>
-		/// <returns></returns>
-		private bool CheckDistanceClosest(MainConstruct current, int teamIndex, out bool noEnemiesFound) {
-			float currentDistance = -1;
-			float futureDistance = -1;
-			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
-			foreach (MainConstruct potentialEnemy in array2)
-			{
-				if (current != potentialEnemy && current.GetTeam() != potentialEnemy.GetTeam())
-				{
-					float distance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, potentialEnemy.CentreOfMass);
-					if (currentDistance < 0) //This is the first enemy encountered.
-					{
-						currentDistance = distance;
-						futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass);
-					}
-					else if (distance < currentDistance) //We already encountered an enemy, but the current one is closer.
-					{
-						currentDistance = distance;
-						futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, potentialEnemy.CentreOfMass);
-					}
-				}
-			}
-			noEnemiesFound = currentDistance < 0;
-			//Too far away?
-			if (currentDistance > Parameters.DistanceLimit[teamIndex])
-			{
-				if (Parameters.SoftLimits[teamIndex])
-				{
-					//Moving away faster than DistanceReverse allows?
-					if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
-					{
-						return true;
-					}
-				}
-				else
-				{
-					return true;
-				}
-			}
-			return false;
 		}
 		/// <summary>
 		/// 
