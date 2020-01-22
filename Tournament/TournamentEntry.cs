@@ -119,7 +119,7 @@ namespace Tournament
 		public Vector3 VLoc(float gapLR, float gapFB, int count, int pos, float dis)
 		{
 			Vector3 ret = Tournament._me.GetFormation(FactionIndex).DetermineLocalPosition(Tournament._me.Parameters.ComputeFactionRotation(FactionIndex), gapLR, gapFB, count, pos, dis, Spawn_height);
-			return Tournament._me.Rotation * ret;
+			return Tournament._me.LocalOffsetFromTerrainCenter() + Tournament._me.Rotation * ret;
 		}
 		public Quaternion VDir()
 		{

@@ -353,7 +353,7 @@ namespace Tournament
 			cam.AddComponent<MouseLook>();
 			flycam = cam.GetComponent<MouseLook>();
 			flycam.enabled = true;
-			flycam.transform.position = new Vector3(-500f, 50f, 0f);
+			flycam.transform.position = new Vector3(0f, 50f, 0f);
 			flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
 			orbitcam = cam.GetComponent<MouseOrbit>();
 			orbitcam.OperateRegardlessOfUiOptions = false;
@@ -370,15 +370,21 @@ namespace Tournament
 		/// </summary>
 		public void MoveCam()
 		{
-			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0);
+			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0) + LocalOffsetFromTerrainCenter();
 		}
 		public Vector3 FramePositionOfBoardSection()
 		{
-			return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection());
+			return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection()+LocalTerrainOffsetFromSectionCenter());
 		}
 		public Vector3d UniversalPositionOfBoardSection()
 		{
 			return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
+		}
+		public Vector3 LocalTerrainOffsetFromSectionCenter() {
+			return WorldSpecification.i.BoardLayout.TerrainSize * new Vector3(Parameters.EastWestTerrain, 0, Parameters.NorthSouthTerrain);
+		}
+		public Vector3 LocalOffsetFromTerrainCenter() {
+			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
 		/// <summary>
 		/// Saves the current Parameters.

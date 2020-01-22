@@ -83,6 +83,26 @@ namespace Tournament.Serialisation
 		public VarList<int> EnemyAttackPercentage { get; set; } = new IntList();
 		[Variable(29,"Pause on Victory","When active, the game will be paused once a team has won.")]
 		public Var<bool> PauseOnVictory { get; set; } = new VarBool(false);
+		/// <summary>
+		/// Es gibt maximal 11 Terrains pro Sektor. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
+		/// </summary>
+		[Variable(30, "East-West-Terrain of Sector", "A Sector is made up from multiple Terrain-segments.")]
+		public Var<int> EastWestTerrain { get; set; } = new VarIntClamp(0, -5, 5);
+		/// <summary>
+		/// Es gibt maximal 11 Terrains pro Sektor. Die eigentliche obere Schranke häng von der aktuellen Karte ab.
+		/// </summary>
+		[Variable(31, "North-South-Terrain of Sector", "A Sector is made up from multiple Terrain-segments.")]
+		public Var<int> NorthSouthTerrain { get; set; } = new VarIntClamp(0, -5, 5);
+		/// <summary>
+		/// Ein Terrain ist maximal 4096m lang. Die eigentliche obere Schranke hängt von der aktuellen Karte ab.
+		/// </summary>
+		[Variable(32,"East-West-Offset from Terrain")]
+		public Var<float> EastWestOffset { get; set; } = new VarFloatClamp(0, -2048, 2048);
+		/// <summary>
+		/// Ein Terrain ist maximal 4096m lang. Die eigentliche obere Schranke hängt von der aktuellen Karte ab.
+		/// </summary>
+		[Variable(33, "North-South-Offset from Terrain")]
+		public Var<float> NorthSouthOffset { get; set; } = new VarFloatClamp(0, -2048, 2048);
 		#endregion
 		#region Fortgeschrittene Optionen
 		[Variable(100,"Show advanced options", "Usually closed, use this for further customization.")]

@@ -12,9 +12,9 @@ namespace Tournament.UI
 {
 	public class BaseSettingsTab : AbstractTournamentTab
 	{
-		private int sectionsNorthSouth, sectionsEastWest;
+		private int sectionsNorthSouth, sectionsEastWest, terrainsPerSection;
 		private int heightmapRange;
-		private float fullGravityHeight;
+		private float fullGravityHeight, terrainSize;
 		public BaseSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Base Settings", "Setup the basic Parameters of the Fight.");
 		}
@@ -240,10 +240,37 @@ namespace Tournament.UI
 				{
 					tp.Rotation.Us = (int)f;
 				}, null, M.m<TournamentParameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
+			horizontal = CreateStandardHorizontalSegment();
+			terrainsPerSection = WorldSpecification.i.BoardLayout.TerrainsPerBoard;
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -terrainsPerSection / 2, terrainsPerSection / 2, 1, 0,
+			M.m((TournamentParameters tp) => tp.EastWestTerrain), "East-West Terrain {0}", delegate (TournamentParameters tp, float f)
+				{
+					tp.EastWestTerrain.Us = (int) f;
+					_focus.MoveCam();
+				}, new ToolTip("Change the offset on the east-west axis, measured in whole terrains. 0 is the center of a map tile.")));
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -terrainsPerSection / 2, terrainsPerSection / 2, 1, 0,
+				M.m((TournamentParameters tp) => tp.NorthSouthTerrain), "North-South Terrain {0}", delegate (TournamentParameters tp, float f)
+				{
+					tp.NorthSouthTerrain.Us = (int) f;
+					_focus.MoveCam();
+				}, new ToolTip("Change the offset on the north-south axis, measured in whole terrains. 0 is the center of a map tile.")));
+			terrainSize = WorldSpecification.i.BoardLayout.TerrainSize;
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -terrainSize / 2, terrainSize / 2, 1, 0,
+				M.m((TournamentParameters tp) => tp.EastWestOffset), "East-West Offset {0}m", delegate (TournamentParameters tp, float f)
+				{
+					tp.EastWestOffset.Us = f;
+					_focus.MoveCam();
+				}, new ToolTip("Change the offset on the east-west axis, measured in meters. 0 is the center of a terrain.")));
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -terrainSize / 2, terrainSize / 2, 1, 0,
+				M.m((TournamentParameters tp) => tp.NorthSouthOffset), "North-South Offset {0}m", delegate (TournamentParameters tp, float f)
+				{
+					tp.NorthSouthOffset.Us = f;
+					_focus.MoveCam();
+				}, new ToolTip("Change the offset on the north-south axis, measured in meters. 0 is the center of a terrain.")));
 			CreateStandardSegment().AddInterpretter(SubjectiveToggle<TournamentParameters>.Quick(_focus.Parameters, "Pause on Victory", new ToolTip("When active, the game will be paused once a winner has been determined."), delegate (TournamentParameters tp, bool b)
-			   {
-				   tp.PauseOnVictory.Us = b;
-			   }, (tp) => tp.PauseOnVictory));
+			{
+				tp.PauseOnVictory.Us = b;
+			}, (tp) => tp.PauseOnVictory));
 			horizontal = CreateStandardHorizontalSegment();
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
