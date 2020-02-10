@@ -53,11 +53,11 @@ namespace Tournament
 		private byte overtimeCounter;
 		private Vector2 scrollPos = Vector2.zero;
 		//Management
-		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, TournamentParticipant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, TournamentParticipant>>();
+		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, Participant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, Participant>>();
 		private bool showLists = true;
-		public List<TournamentFormation> teamFormations = new List<TournamentFormation>();
-		public TournamentParameters Parameters { get; set; } = new TournamentParameters(1u);
-		public Dictionary<int, List<TournamentEntry>> entries = new Dictionary<int, List<TournamentEntry>>();
+		public List<Formation> teamFormations = new List<Formation>();
+		public Parameters Parameters { get; set; } = new Parameters(1u);
+		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
 		private List<int> materials;
 		static Tournament() {
 			penaltyTimeColor = new Gradient
@@ -142,7 +142,7 @@ namespace Tournament
 					{
 						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
 					}
-					foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+					foreach (KeyValuePair<int, List<Entry>> team in entries)
 					{
 						if (team.Key >= Parameters.ActiveFactions)
 						{
@@ -160,7 +160,7 @@ namespace Tournament
 					List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
 					Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
 					Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
-					foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+					foreach (KeyValuePair<int, List<Entry>> team in entries)
 					{
 						if (team.Key >= Parameters.ActiveFactions)
 						{
@@ -212,7 +212,7 @@ namespace Tournament
 						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Parameters.ResourcesPerTeam[i]);
 					}
 				}
-				foreach (KeyValuePair<int, List<TournamentEntry>> team in entries)
+				foreach (KeyValuePair<int, List<Entry>> team in entries)
 				{
 					for (int pos = 0; pos < team.Value.Count; pos++)
 					{
@@ -255,7 +255,7 @@ namespace Tournament
 			{
 				if (!HUDLog.ContainsKey(constructable.GetTeam()))
 				{
-					HUDLog.Add(constructable.GetTeam(), new Dictionary<MainConstruct, TournamentParticipant>());
+					HUDLog.Add(constructable.GetTeam(), new Dictionary<MainConstruct, Participant>());
 				}
 				if (!HUDLog[constructable.GetTeam()].ContainsKey(constructable))
 				{
@@ -263,7 +263,7 @@ namespace Tournament
 					switch (Parameters.HealthCalculation)
 					{
 						case 0:
-							HUDLog[constructable.GetTeam()].Add(constructable, new TournamentParticipant
+							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
 							{
 								TeamId = constructable.GetTeam(),
 								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -276,7 +276,7 @@ namespace Tournament
 							});
 							break;
 						case 1:
-							HUDLog[constructable.GetTeam()].Add(constructable, new TournamentParticipant
+							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
 							{
 								TeamId = constructable.GetTeam(),
 								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -289,7 +289,7 @@ namespace Tournament
 							});
 							break;
 						case 2:
-							HUDLog[constructable.GetTeam()].Add(constructable, new TournamentParticipant
+							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
 							{
 								TeamId = constructable.GetTeam(),
 								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -302,7 +302,7 @@ namespace Tournament
 							});
 							break;
 						case 3:
-							HUDLog[constructable.GetTeam()].Add(constructable, new TournamentParticipant
+							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
 							{
 								TeamId = constructable.GetTeam(),
 								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
@@ -406,7 +406,7 @@ namespace Tournament
 			{
 				try
 				{
-					Parameters = settingsFile.LoadData<TournamentParameters>();
+					Parameters = settingsFile.LoadData<Parameters>();
 					Parameters.EnsureEnoughData();
 				}
 				catch (Exception)
@@ -423,7 +423,7 @@ namespace Tournament
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
 			{
-				entries.Add(i, new List<TournamentEntry>());
+				entries.Add(i, new List<Entry>());
 			}
 		}
 		/// <summary>
@@ -447,7 +447,7 @@ namespace Tournament
 				GUILayout.BeginArea(new Rect(0, 50, 200, 700), sidelist);
 				scrollPos = GUILayout.BeginScrollView(scrollPos);
 				float t = Time.realtimeSinceStartup * 30;
-				foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, TournamentParticipant>> team in HUDLog)
+				foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> team in HUDLog)
 				{
 					string teamMaterials = "M: " + team.Key.FactionInst().ResourceStore.Material.ToString();
 					float teamMaxHP = 0, teamCurHP = 0;
@@ -456,7 +456,7 @@ namespace Tournament
 					string teamHP = $"{Mathf.RoundToInt(100 * teamCurHP / teamMaxHP)}%";
 					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>", sidelist);
 					int maxTimeForTeam = Parameters.MaximumPenaltyTime[TournamentPlugin.factionManagement.TeamIndexFromObjectID(team.Key)];
-					foreach (KeyValuePair<MainConstruct, TournamentParticipant> member in team.Value)
+					foreach (KeyValuePair<MainConstruct, Participant> member in team.Value)
 					{
 						string name = member.Value.BlueprintName;
 						string percentHP = $"{Mathf.RoundToInt(member.Value.HP)}%";
@@ -792,7 +792,7 @@ namespace Tournament
 				}
 				foreach (MainConstruct currentConstruct in array)
 				{
-					if (!HUDLog[currentConstruct.GetTeam()].TryGetValue(currentConstruct, out TournamentParticipant tournamentParticipant))
+					if (!HUDLog[currentConstruct.GetTeam()].TryGetValue(currentConstruct, out Participant tournamentParticipant))
 					{
 						UpdateConstructs();
 						tournamentParticipant = HUDLog[currentConstruct.GetTeam()][currentConstruct];
@@ -917,7 +917,7 @@ namespace Tournament
 		/// </summary>
 		/// <param name="tournamentParticipant">The offending Participant</param>
 		/// <param name="teamIndex">The index of its corresponding Team</param>
-		private void AddPenalty(TournamentParticipant tournamentParticipant, int teamIndex)
+		private void AddPenalty(Participant tournamentParticipant, int teamIndex)
 		{
 			if (Parameters.SoftLimits[teamIndex])
 			{
@@ -942,9 +942,9 @@ namespace Tournament
 		public void SlowUpdate(ITimeStep dt)
 		{
 			UpdateConstructs();
-			foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, TournamentParticipant>> teamAndMembers in HUDLog)
+			foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> teamAndMembers in HUDLog)
 			{
-				foreach (KeyValuePair<MainConstruct, TournamentParticipant> member in HUDLog[teamAndMembers.Key])
+				foreach (KeyValuePair<MainConstruct, Participant> member in HUDLog[teamAndMembers.Key])
 				{
 					if (StaticConstructablesManager.constructables.Contains(member.Key))
 					{
@@ -992,9 +992,9 @@ namespace Tournament
 			MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
 			foreach (MainConstruct val in array)
 			{
-				if (!HUDLog[val.GetTeam()].TryGetValue(val, out TournamentParticipant tournamentParticipant))
+				if (!HUDLog[val.GetTeam()].TryGetValue(val, out Participant tournamentParticipant))
 				{
-					tournamentParticipant = new TournamentParticipant
+					tournamentParticipant = new Participant
 					{
 						AICount = val.BlockTypeStorage.MainframeStore.Count,
 						TeamId = val.GetTeam(),
@@ -1087,9 +1087,9 @@ namespace Tournament
 		/// </summary>
 		/// <param name="index">The index of the Team</param>
 		/// <returns></returns>
-		public TournamentFormation GetFormation(int index)
+		public Formation GetFormation(int index)
 		{
-			return TournamentFormation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
+			return Formation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
 		}
 		/// <summary>
 		/// Overrides the default team colors with the ones set in the Parameters.

@@ -27,23 +27,23 @@ namespace Tournament.UI
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
 				ScreenSegmentStandardHorizontal table = CreateStandardHorizontalSegment();
 				table.SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
-				table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Main Color"),
-					M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.MainColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Main Color"),
+					M.m<Parameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((Parameters tp) => tp.MainColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
 						  tp.MainColorsPerTeam.Us[index] = c;
 					  }));
-				table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Secondary Color"),
-					M.m<TournamentParameters>(new ToolTip($"Set the Secondary Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.SecondaryColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Secondary Color"),
+					M.m<Parameters>(new ToolTip($"Set the Secondary Color for Team {i + 1}")), M.m((Parameters tp) => tp.SecondaryColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
 						  tp.SecondaryColorsPerTeam.Us[index] = c;
 					  }));
-				table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Trim Color"),
-					M.m<TournamentParameters>(new ToolTip($"Set the Trim Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.TrimColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Trim Color"),
+					M.m<Parameters>(new ToolTip($"Set the Trim Color for Team {i + 1}")), M.m((Parameters tp) => tp.TrimColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
 						  tp.TrimColorsPerTeam.Us[index] = c;
 					  }));
-				table.AddInterpretter(new SubjectiveColorChanger<TournamentParameters>(_focus.Parameters, M.m<TournamentParameters>($"Team {i + 1} Detail Color"),
-					M.m<TournamentParameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((TournamentParameters tp) => tp.DetailColorsPerTeam[index]), delegate (TournamentParameters tp, Color c)
+				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Detail Color"),
+					M.m<Parameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((Parameters tp) => tp.DetailColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
 						  tp.DetailColorsPerTeam.Us[index] = c;
 					  }));
@@ -80,10 +80,10 @@ namespace Tournament.UI
 				{
 					et.currentTeam = (int)f;
 				}, null, M.m<EyecandyTab>(new ToolTip("Select the Team to apply one of the prefabs below."))));
-			foreach (TournamentFleetColor tfc in TournamentFleetColor.colorSchemes) {
-				TournamentFleetColor current = tfc;
+			foreach (FleetColor tfc in FleetColor.colorSchemes) {
+				FleetColor current = tfc;
 				ScreenSegmentStandard standard = CreateStandardSegment();
-				standard.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, current.Name, new ToolTip(current.Description), delegate (TournamentParameters tp)
+				standard.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, current.Name, new ToolTip(current.Description), delegate (Parameters tp)
 				{
 					tp.MainColorsPerTeam.Us[currentTeam] = current.Main;
 					tp.SecondaryColorsPerTeam.Us[currentTeam] = current.Secondary;
@@ -92,10 +92,10 @@ namespace Tournament.UI
 				}));
 				ScreenSegmentTable table = CreateTableSegment(4, 1);
 				table.SqueezeTable = false;
-				table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Main Color"), M.m<TournamentFleetColor>(new ToolTip($"The Main Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Main)));
-				table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Secondary Color"), M.m<TournamentFleetColor>(new ToolTip($"The Secondary Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Secondary)));
-				table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Trim Color"), M.m<TournamentFleetColor>(new ToolTip($"The Trim Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Trim)));
-				table.AddInterpretter(new SubjectiveColorDisplay<TournamentFleetColor>(current, M.m<TournamentFleetColor>("Detail Color"), M.m<TournamentFleetColor>(new ToolTip($"The Detail Color of the \"{current.Name}\"-Prefab.")), M.m((TournamentFleetColor tFC) => tFC.Detail)));
+				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Main Color"), M.m<FleetColor>(new ToolTip($"The Main Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Main)));
+				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Secondary Color"), M.m<FleetColor>(new ToolTip($"The Secondary Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Secondary)));
+				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Trim Color"), M.m<FleetColor>(new ToolTip($"The Trim Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Trim)));
+				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Detail Color"), M.m<FleetColor>(new ToolTip($"The Detail Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Detail)));
 				CreateSpace(15);
 			}
 		}

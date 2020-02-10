@@ -23,16 +23,16 @@ namespace Tournament.UI
 			ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Cycle Teams", new ToolTip("Cycles the entries through the currently active Teams. Non-active Teams will be excluded."), delegate (Tournament t)
 			{
-				List<TournamentEntry> temp = t.entries[0];
+				List<Entry> temp = t.entries[0];
 				int i;
 				for (i = 1; i < t.Parameters.ActiveFactions; i++)
 				{
 					t.entries[i - 1] = t.entries[i];
 				}
 				t.entries[i - 1] = temp;
-				foreach (KeyValuePair<int, List<TournamentEntry>> teamList in t.entries)
+				foreach (KeyValuePair<int, List<Entry>> teamList in t.entries)
 				{
-					teamList.Value.ForEach((TournamentEntry te) => te.FactionIndex = teamList.Key);
+					teamList.Value.ForEach((Entry te) => te.FactionIndex = teamList.Key);
 				}
 				TriggerScreenRebuild();
 			}));
@@ -41,7 +41,7 @@ namespace Tournament.UI
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {i + 1}", new ToolTip($"Inverts the direction for Team {i + 1}, by turning each entry 180°."), delegate (Tournament t)
 				{
-					t.entries[factionIndex].ForEach((TournamentEntry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
+					t.entries[factionIndex].ForEach((Entry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
 					TriggerScreenRebuild();
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
@@ -97,7 +97,7 @@ namespace Tournament.UI
 				CreateHeader("Team " + (i + 1), new ToolTip($"Current Entries for Team{i + 1}. The list goes from top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
 				for (int j = 0; j < teamSize; j++) {
 					int indexInFaction = j;
-					TournamentEntry entry = _focus.entries[factionIndex][indexInFaction];
+					Entry entry = _focus.entries[factionIndex][indexInFaction];
 					string text = "";
 					string[] labelCost = entry.LabelCost;
 					foreach (string str in labelCost)

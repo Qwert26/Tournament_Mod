@@ -10,7 +10,7 @@ using BrilliantSkies.Ftd.Persistence.Inits;
 
 namespace Tournament
 {
-	public class TournamentEntry
+	public class Entry
 	{
 		private BlueprintFile _bpf;
 		public Blueprint bp;

@@ -1,7 +1,7 @@
 using BrilliantSkies.Core.Id;
 namespace Tournament
 {
-	public class TournamentParticipant
+	public class Participant
 	{
 		public ObjectId TeamId {
 			get;

@@ -42,7 +42,7 @@ namespace Tournament
 			}
 			else
 			{
-				float x = 0, z = 0;
+				float x, z;
 				if (count <= 3) //Sind es 3 oder weniger Schiffe?
 				{
 					z = distance;

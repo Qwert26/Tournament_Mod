@@ -285,8 +285,8 @@
     <Compile Include="Tournament\FormationPositionDescription.cs" />
     <Compile Include="Tournament\Serialisation\BoolList.cs" />
     <Compile Include="Tournament\Serialisation\ColorList.cs" />
-    <Compile Include="Tournament\Serialisation\TournamentParametersFolder.cs" />
-    <Compile Include="Tournament\Serialisation\TournamentParametersFile.cs" />
+    <Compile Include="Tournament\Serialisation\ParametersFolder.cs" />
+    <Compile Include="Tournament\Serialisation\ParametersFile.cs" />
     <Compile Include="Tournament\Serialisation\Vector2List.cs" />
     <Compile Include="Tournament\Tournament.cs" />
     <Compile Include="Tournament\UI\AbstractTournamentTab.cs" />
@@ -296,11 +296,11 @@
     <Compile Include="Tournament\UI\ParticipantManagementTab.cs" />
     <Compile Include="Tournament\UI\TeamSplittedRules.cs" />
     <Compile Include="Tournament\UI\TournamentConsole.cs" />
-    <Compile Include="Tournament\TournamentEntry.cs" />
-    <Compile Include="Tournament\TournamentFleetColors.cs" />
-    <Compile Include="Tournament\TournamentFormation.cs" />
-    <Compile Include="Tournament\Serialisation\TournamentParameters.cs" />
-    <Compile Include="Tournament\TournamentParticipant.cs" />
+    <Compile Include="Tournament\Entry.cs" />
+    <Compile Include="Tournament\FleetColors.cs" />
+    <Compile Include="Tournament\Formation.cs" />
+    <Compile Include="Tournament\Serialisation\Parameters.cs" />
+    <Compile Include="Tournament\Participant.cs" />
     <Compile Include="Tournament\TournamentPlugin.cs" />
     <Compile Include="Tournament\UI\AdvancedSettingsTab.cs" />
   </ItemGroup>

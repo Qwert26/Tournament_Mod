@@ -5,9 +5,9 @@ using System.Linq;
 using UnityEngine;
 namespace Tournament.Serialisation
 {
-	internal class TournamentParametersFile : BaseFile
+	internal class ParametersFile : BaseFile
 	{
-		public TournamentParametersFile(IFileSource source) : base(source)
+		public ParametersFile(IFileSource source) : base(source)
 		{
 			if (_fileSource.Exists)
 			{
@@ -23,11 +23,11 @@ namespace Tournament.Serialisation
 				Debug.Log("The given File doesn't exist! Path is " + _fileSource.FilePath);
 			}
 		}
-		public void Save(TournamentParameters parameters) {
+		public void Save(Parameters parameters) {
 			_fileSource.SaveData(parameters, Formatting.Indented);
 		}
-		public TournamentParameters Load() {
-			return _fileSource.LoadData<TournamentParameters>();
+		public Parameters Load() {
+			return _fileSource.LoadData<Parameters>();
 		}
 	}
 }

@@ -32,15 +32,15 @@ namespace Tournament.UI
 			treeView.SpaceAbove = 20;
 			treeView.SpaceBelow = 20;
 			ScreenSegmentStandardHorizontal horizontal = screen.CreateStandardHorizontalSegment();
-			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
-				M.m((TournamentParameters tp) => tp.Direction), "Starting Direction: {0}°", delegate (TournamentParameters tp, float f)
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
+				M.m((Parameters tp) => tp.Direction), "Starting Direction: {0}°", delegate (Parameters tp, float f)
 				{
 					tp.Direction.Us = f;
 				}, new ToolTip("0° is the old forward, 90° is the old right and -90° is the old left.")));
 			heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
 			fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
-			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<TournamentParameters>.Quick(_focus.Parameters, -heightmapRange, fullGravityHeight, 1, 0,
-				M.m((TournamentParameters tp) => tp.SpawnHeight), "Starting Height: {0}m", delegate (TournamentParameters tp, float f)
+			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -heightmapRange, fullGravityHeight, 1, 0,
+				M.m((Parameters tp) => tp.SpawnHeight), "Starting Height: {0}m", delegate (Parameters tp, float f)
 				{
 					tp.SpawnHeight.Us = (int)f;
 				}, new ToolTip("The starting height of the entry")));
@@ -51,7 +51,7 @@ namespace Tournament.UI
 				{
 					for (int i = 0; i < _focus.Parameters.ActiveFactions; i++)
 					{
-						_focus.entries[i].Add(new TournamentEntry()
+						_focus.entries[i].Add(new Entry()
 						{
 							FactionIndex = i,
 							Spawn_direction = _focus.Parameters.Direction,
@@ -69,7 +69,7 @@ namespace Tournament.UI
 				{
 					if (tree.HasSelection)
 					{
-						_focus.entries[factionIndex].Add(new TournamentEntry()
+						_focus.entries[factionIndex].Add(new Entry()
 						{
 							FactionIndex = factionIndex,
 							Spawn_direction = _focus.Parameters.Direction,
