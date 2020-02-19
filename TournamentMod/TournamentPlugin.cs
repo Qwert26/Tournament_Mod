@@ -7,7 +7,7 @@ using BrilliantSkies.Modding;
 using System;
 using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
-namespace Tournament
+namespace TournamentMod
 {
 	public class TournamentPlugin : GamePlugin
 	{

@@ -2,7 +2,7 @@
 using BrilliantSkies.Core.Widgets;
 using System;
 using UnityEngine;
-namespace Tournament.Serialisation
+namespace TournamentMod.Serialisation
 {
 	/// <summary>
 	/// Stores each and every Parameter of the Fight.

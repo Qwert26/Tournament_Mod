@@ -1,7 +1,7 @@
 ﻿using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
 using UnityEngine;
 using System;
-namespace Tournament.Serialisation
+namespace TournamentMod.Serialisation
 {
 	/// <summary>
 	/// Stores a list of colors for usage with the prototype-system.

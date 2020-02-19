@@ -1,5 +1,5 @@
 ﻿using BrilliantSkies.Core.FilesAndFolders;
-namespace Tournament.Serialisation
+namespace TournamentMod.Serialisation
 {
 	internal class ParametersFolder : BaseFolder<ParametersFile>
 	{

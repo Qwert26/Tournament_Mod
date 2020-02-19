@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Tournament
+namespace TournamentMod.Formations
 {
 	public struct Formation {
 		public delegate Vector3 LocalPosition(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height);

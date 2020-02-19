@@ -1,5 +1,5 @@
 ﻿using BrilliantSkies.Ui.Consoles;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public abstract class AbstractTournamentTab : SuperScreen<Tournament>
 	{

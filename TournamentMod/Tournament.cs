@@ -21,10 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Tournament.Serialisation;
-using Tournament.UI;
+using TournamentMod.Serialisation;
+using TournamentMod.UI;
 using UnityEngine;
-namespace Tournament
+namespace TournamentMod
 {
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
 	{
@@ -1087,9 +1087,9 @@ namespace Tournament
 		/// </summary>
 		/// <param name="index">The index of the Team</param>
 		/// <returns></returns>
-		public Formation GetFormation(int index)
+		public Formations.Formation GetFormation(int index)
 		{
-			return Formation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
+			return Formations.Formation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
 		}
 		/// <summary>
 		/// Overrides the default team colors with the ones set in the Parameters.

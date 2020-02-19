@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
 using BrilliantSkies.Ftd.Planets.Factions;
-namespace Tournament
+namespace TournamentMod
 {
 	internal class FactionManagement
 	{

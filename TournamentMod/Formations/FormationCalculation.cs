@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System;
-namespace Tournament
+namespace TournamentMod.Formations
 {
-	internal static class FormationCalculation {
+	public static class FormationCalculation {
 		public static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad * 68);
 		public static Quaternion FactionRotation(float angle) {
 			return Quaternion.Euler(0, angle, 0);

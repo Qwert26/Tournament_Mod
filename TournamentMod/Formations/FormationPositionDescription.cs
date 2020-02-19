@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
-namespace Tournament
+namespace TournamentMod.Formations
 {
-	internal static class FormationPositionDescription
+	public static class FormationPositionDescription
 	{
 		/// <summary>
 		/// Für neue Formationen, die noch keine eigene Positions-Beschreibungen haben.

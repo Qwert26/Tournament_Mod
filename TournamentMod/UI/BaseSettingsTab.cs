@@ -6,9 +6,9 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
-using Tournament.Serialisation;
+using TournamentMod.Serialisation;
 using UnityEngine;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class BaseSettingsTab : AbstractTournamentTab
 	{

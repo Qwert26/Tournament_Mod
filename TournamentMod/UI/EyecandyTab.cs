@@ -6,9 +6,9 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using UnityEngine;
-using Tournament.Serialisation;
+using TournamentMod.Serialisation;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class EyecandyTab : AbstractTournamentTab
 	{

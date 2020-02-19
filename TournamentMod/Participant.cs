@@ -1,5 +1,5 @@
 using BrilliantSkies.Core.Id;
-namespace Tournament
+namespace TournamentMod
 {
 	public class Participant
 	{

@@ -9,8 +9,8 @@ using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Special.PopUps;
 using BrilliantSkies.Ui.Tips;
 using BrilliantSkies.Ui.TreeSelection;
-using Tournament.Serialisation;
-namespace Tournament.UI
+using TournamentMod.Serialisation;
+namespace TournamentMod.UI
 {
 	public class ParticipantConsole : ConsoleUi<Tournament>
 	{

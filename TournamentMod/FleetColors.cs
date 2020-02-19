@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace Tournament
+namespace TournamentMod
 {
 	public struct FleetColor
 	{

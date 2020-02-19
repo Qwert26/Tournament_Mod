@@ -6,7 +6,6 @@ D:\GitHub\Tournament_Mod\obj\Debug\Tournament.csprojAssemblyReference.cache
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.csproj.CopyComplete
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.dll
 D:\GitHub\Tournament_Mod\obj\Debug\Tournament.pdb
-D:\GitHub\Tournament_Mod\bin\Debug\Tournament\plugin.json
 D:\GitHub\Tournament_Mod\bin\Debug\MoonSharp.Interpreter.dll
 D:\GitHub\Tournament_Mod\bin\Debug\Newtonsoft.Json.Bson.dll
 D:\GitHub\Tournament_Mod\bin\Debug\Ai.dll
@@ -59,3 +58,4 @@ D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.VRModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.WebModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\UnityEngine.WindModule.xml
 D:\GitHub\Tournament_Mod\bin\Debug\Localisation.dll
+D:\GitHub\Tournament_Mod\bin\Debug\TournamentMod\plugin.json

@@ -4,11 +4,11 @@ using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
-using Tournament.Serialisation;
+using TournamentMod.Serialisation;
 using BrilliantSkies.Ui.Consoles.Getters;
 using UnityEngine;
 using BrilliantSkies.Ftd.Planets.World;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class TeamSplittedRules : AbstractTournamentTab
 	{

@@ -3,7 +3,7 @@ using BrilliantSkies.Core.FilesAndFolders;
 using Newtonsoft.Json;
 using System.Linq;
 using UnityEngine;
-namespace Tournament.Serialisation
+namespace TournamentMod.Serialisation
 {
 	internal class ParametersFile : BaseFile
 	{

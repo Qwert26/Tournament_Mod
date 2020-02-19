@@ -5,11 +5,12 @@ using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
-using Tournament.Serialisation;
+using TournamentMod.Serialisation;
+using TournamentMod.Formations;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class AdvancedSettingsTab :AbstractTournamentTab
 	{
@@ -62,11 +63,11 @@ namespace Tournament.UI
 			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
 			for (int i = 0; i < 6; i++) {
 				int index = i;
-				segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Formation.tournamentFormations.Length - 1),
-					M.m((Parameters tp) => tp.FormationIndexPerTeam[index]), M.m<Parameters>(1), _focus.Parameters, M.m((Parameters tp) => $"Team {index+1} Formation: {Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Name}"), delegate (Parameters tp, float f)
+				segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Formations.Formation.tournamentFormations.Length - 1),
+					M.m((Parameters tp) => tp.FormationIndexPerTeam[index]), M.m<Parameters>(1), _focus.Parameters, M.m((Parameters tp) => $"Team {index+1} Formation: {Formations.Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Name}"), delegate (Parameters tp, float f)
 					  {
 						  tp.FormationIndexPerTeam.Us[index] = (int)f;
-					  }, null, M.m((Parameters tp) => new ToolTip(Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Description)))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
+					  }, null, M.m((Parameters tp) => new ToolTip(Formations.Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Description)))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
 			}
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
 				M.m((Parameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (Parameters tp, float f)

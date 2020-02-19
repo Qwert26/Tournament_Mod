@@ -1,6 +1,6 @@
 ﻿using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Displayer;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class TournamentConsole : ConsoleUi<Tournament>
 	{

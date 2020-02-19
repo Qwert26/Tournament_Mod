@@ -7,8 +7,8 @@ using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Persistence.Inits;
-
-namespace Tournament
+using TournamentMod.Formations;
+namespace TournamentMod
 {
 	public class Entry
 	{

@@ -8,7 +8,7 @@ using BrilliantSkies.Ui.Consoles.Interpretters;
 using System;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
-namespace Tournament.UI
+namespace TournamentMod.UI
 {
 	public class ParticipantManagementTab : AbstractTournamentTab
 	{

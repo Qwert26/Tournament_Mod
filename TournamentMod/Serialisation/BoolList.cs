@@ -1,5 +1,5 @@
 ﻿using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
-namespace Tournament.Serialisation
+namespace TournamentMod.Serialisation
 {
 	/// <summary>
 	/// Stores a list of bools for usage with the prototype-system.

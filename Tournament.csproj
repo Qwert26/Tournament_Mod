@@ -279,33 +279,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tournament\FactionManagement.cs" />
-    <Compile Include="Tournament\FormationCalculation.cs" />
+    <Compile Include="TournamentMod\FactionManagement.cs" />
+    <Compile Include="TournamentMod\Formations\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tournament\FormationPositionDescription.cs" />
-    <Compile Include="Tournament\Serialisation\BoolList.cs" />
-    <Compile Include="Tournament\Serialisation\ColorList.cs" />
-    <Compile Include="Tournament\Serialisation\ParametersFolder.cs" />
-    <Compile Include="Tournament\Serialisation\ParametersFile.cs" />
-    <Compile Include="Tournament\Serialisation\Vector2List.cs" />
-    <Compile Include="Tournament\Tournament.cs" />
-    <Compile Include="Tournament\UI\AbstractTournamentTab.cs" />
-    <Compile Include="Tournament\UI\BaseSettingsTab.cs" />
-    <Compile Include="Tournament\UI\EyecandyTab.cs" />
-    <Compile Include="Tournament\UI\ParticipantConsole.cs" />
-    <Compile Include="Tournament\UI\ParticipantManagementTab.cs" />
-    <Compile Include="Tournament\UI\TeamSplittedRules.cs" />
-    <Compile Include="Tournament\UI\TournamentConsole.cs" />
-    <Compile Include="Tournament\Entry.cs" />
-    <Compile Include="Tournament\FleetColors.cs" />
-    <Compile Include="Tournament\Formation.cs" />
-    <Compile Include="Tournament\Serialisation\Parameters.cs" />
-    <Compile Include="Tournament\Participant.cs" />
-    <Compile Include="Tournament\TournamentPlugin.cs" />
-    <Compile Include="Tournament\UI\AdvancedSettingsTab.cs" />
+    <Compile Include="TournamentMod\Formations\FormationPositionDescription.cs" />
+    <Compile Include="TournamentMod\Serialisation\BoolList.cs" />
+    <Compile Include="TournamentMod\Serialisation\ColorList.cs" />
+    <Compile Include="TournamentMod\Serialisation\ParametersFolder.cs" />
+    <Compile Include="TournamentMod\Serialisation\ParametersFile.cs" />
+    <Compile Include="TournamentMod\Serialisation\Vector2List.cs" />
+    <Compile Include="TournamentMod\Tournament.cs" />
+    <Compile Include="TournamentMod\UI\AbstractTournamentTab.cs" />
+    <Compile Include="TournamentMod\UI\BaseSettingsTab.cs" />
+    <Compile Include="TournamentMod\UI\EyecandyTab.cs" />
+    <Compile Include="TournamentMod\UI\ParticipantConsole.cs" />
+    <Compile Include="TournamentMod\UI\ParticipantManagementTab.cs" />
+    <Compile Include="TournamentMod\UI\TeamSplittedRules.cs" />
+    <Compile Include="TournamentMod\UI\TournamentConsole.cs" />
+    <Compile Include="TournamentMod\Entry.cs" />
+    <Compile Include="TournamentMod\FleetColors.cs" />
+    <Compile Include="TournamentMod\Formations\Formation.cs" />
+    <Compile Include="TournamentMod\Serialisation\Parameters.cs" />
+    <Compile Include="TournamentMod\Participant.cs" />
+    <Compile Include="TournamentMod\TournamentPlugin.cs" />
+    <Compile Include="TournamentMod\UI\AdvancedSettingsTab.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Tournament\plugin.json">
+    <None Include="TournamentMod\plugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
