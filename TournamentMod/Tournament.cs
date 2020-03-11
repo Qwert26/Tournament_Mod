@@ -585,6 +585,7 @@ namespace TournamentMod
 			bool orbitcamOn = false;
 			bool changeExtraInfo = false;
 			bool changeShowList = false;
+			int oldIndex = orbitindex;
 			if (Parameters.DefaultKeys.Us)
 			{
 				pause = Input.GetKeyDown(KeyCode.F11); // default f11
@@ -759,6 +760,10 @@ namespace TournamentMod
 					Vector3d position = PlanetList.MainFrame.FramePositionToUniversalPosition(StaticConstructablesManager.constructables.ToArray()[orbitindex].CentreOfMass);
 					Quaternion rotation = StaticConstructablesManager.constructables.ToArray()[orbitindex].SafeRotation;
 					orbitcam.OrbitTarget = new PositionAndRotationReturnUniverseCoord(new UniversalTransform(position, rotation));
+					//if (oldIndex != orbitindex)
+					//{
+					//	orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
+					//}
 				}
 			}
 		}

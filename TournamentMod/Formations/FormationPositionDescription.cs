@@ -49,6 +49,10 @@ namespace TournamentMod.Formations
 					return "None";
 			}
 		}
+		public static string GuardLineFormation(float gapLeftRight, float _1, int count, int index)
+		{
+			return LineFormation(gapLeftRight, 0, count, index);
+		}
 		public static string WedgeFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
@@ -94,7 +98,7 @@ namespace TournamentMod.Formations
 			else
 				return "None";
 		}
-		public static string CommandedParallelColumns(float gapLeftRight, float gapForwardBackward, int count, int index) {
+		public static string CommandedParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count, int index) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * FormationCalculation.factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
@@ -105,7 +109,7 @@ namespace TournamentMod.Formations
 			else
 				return "None";
 		}
-		public static string ParallelColumns(float gapLeftRight, float gapForwardBackward, int count, int index)
+		public static string ParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(currentGapRatio * FormationCalculation.factorFor1To1GapRatio));
@@ -120,7 +124,7 @@ namespace TournamentMod.Formations
 		{
 			return ManipelFormation(gapLeftRight, gapForwardBackward, count, index, true);
 		}
-		private static string ManipelFormation(float gapLeftRight, float gapForwardBackward, int count, int index,bool attack)
+		private static string ManipelFormation(float _1, float _2, int count, int index, bool attack)
 		{
 			int groups = Mathf.CeilToInt(count / 6f);
 			int line = index / groups;

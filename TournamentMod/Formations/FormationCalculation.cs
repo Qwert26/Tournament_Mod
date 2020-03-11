@@ -12,10 +12,14 @@ namespace TournamentMod.Formations
 			float z = distance + (count - 1) * gapForwardBackward / 2f - index * gapForwardBackward;
 			return FactionRotation(factionRotation)*new Vector3(x, height, z);
 		}
-		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 GuardLineFormation(float factionRotation, float gapLeftRight, float _1, int count, int index, float distance, float height) {
+			float x = (count - 1) * gapLeftRight / 2f - index * gapLeftRight;
+			return FactionRotation(factionRotation) * new Vector3(x, height, distance);
+		}
+		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int _1, int index, float distance, float height) {
 			if (index == 0) //Ist es das Flaggschiff?
 			{
-				return FactionRotation(factionRotation) * new Vector3(0, height,distance);
+				return FactionRotation(factionRotation) * new Vector3(0, height, distance);
 			}
 			else
 			{
@@ -114,7 +118,7 @@ namespace TournamentMod.Formations
 				return FactionRotation(factionRotation) * new Vector3(x, height, z);
 			}
 		}
-		public static Vector3 ParallelColumns(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 ParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerColumn = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRatio));
 			int columns = (int)Math.Ceiling((double)count / shipsPerColumn);
@@ -122,7 +126,7 @@ namespace TournamentMod.Formations
 			float z = distance - (shipsPerColumn - 1) * gapForwardBackward / 2 + (index / columns * gapForwardBackward);
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
 		}
-		public static Vector3 CommandedParallelColumns(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 CommandedParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
@@ -153,12 +157,12 @@ namespace TournamentMod.Formations
 			int group = index % groups;
 			float x, z = distance + line * gapForwardBackward;
 			switch (line) {
-				case 0:
-				case 4:
-				case 5:
+				case 0: //erste Reihe
+				case 4: //fünfte Reihe
+				case 5: //sechste Reihe
 					x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
 					break;
-				case 1:
+				case 1: //zweite Reihe
 					if (attack) //Fülle die Lücken der ersten Reihe auf.
 					{
 						z = distance;
@@ -169,8 +173,8 @@ namespace TournamentMod.Formations
 						x = (2 * groups - 1) * gapLeftRight / 2f - 2 * group * gapLeftRight;
 					}
 					break;
-				case 2:
-				case 3:
+				case 2: //dritte Reihe
+				case 3: //vierte Reihe
 					x = (2 * groups - 1) * gapLeftRight / 2f - (2 * group + 1) * gapLeftRight;
 					break;
 				default:
