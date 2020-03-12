@@ -6,7 +6,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
 using TournamentMod.Serialisation;
-using TournamentMod.Formations;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;

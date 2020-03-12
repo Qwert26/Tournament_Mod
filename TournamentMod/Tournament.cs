@@ -21,11 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using TournamentMod.Serialisation;
-using TournamentMod.UI;
 using UnityEngine;
 namespace TournamentMod
 {
+	using UI;
+	using Serialisation;
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
 	{
 		public static Tournament _me;

@@ -10,7 +10,7 @@ namespace TournamentMod.Formations
 		public static Vector3 LineFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
 			float x = (count - 1) * gapLeftRight / 2f - index * gapLeftRight;
 			float z = distance + (count - 1) * gapForwardBackward / 2f - index * gapForwardBackward;
-			return FactionRotation(factionRotation)*new Vector3(x, height, z);
+			return FactionRotation(factionRotation) * new Vector3(x, height, z);
 		}
 		public static Vector3 GuardLineFormation(float factionRotation, float gapLeftRight, float _1, int count, int index, float distance, float height) {
 			float x = (count - 1) * gapLeftRight / 2f - index * gapLeftRight;

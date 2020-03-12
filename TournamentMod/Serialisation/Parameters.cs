@@ -32,7 +32,7 @@ namespace TournamentMod.Serialisation
 		[Variable(2, "Spawn gap Forward-Backward(m)", "Spawn distance between team members front to back.")]
 		public VarList<int> SpawngapFB { get; set; } = new IntList();
 		/// <summary>
-		/// In the Planeten-Editor are -1000 and 100000 absolute borders. The real borders depend from the terrain and the space-border.
+		/// In the Planet-Editor are -1000 and 100000 absolute borders. The real borders depend from the terrain and the space-border.
 		/// </summary>
 		[Variable(3, "Altitude Limits(m)", "x is minimum altitude and y is maximum altitude.")]
 		public VarList<Vector2> AltitudeLimits { get; set; } = new Vector2List();

@@ -7,9 +7,9 @@ using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Persistence.Inits;
-using TournamentMod.Formations;
 namespace TournamentMod
 {
+	using Formations;
 	public class Entry
 	{
 		private BlueprintFile _bpf;
