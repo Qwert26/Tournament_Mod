@@ -172,7 +172,6 @@ namespace TournamentMod.UI
 		}
 		public override Action OnSelectTab => delegate() {
 			PopThisUp(participantConsole);
-			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();
 		};
 		public override Action<OnDeselectTabSource> OnDeselectTab => delegate(OnDeselectTabSource source) {
 			DeactivatePopup();

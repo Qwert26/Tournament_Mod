@@ -26,6 +26,7 @@ namespace TournamentMod
 {
 	using UI;
 	using Serialisation;
+	using Formations;
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
 	{
 		public static Tournament _me;
@@ -55,11 +56,12 @@ namespace TournamentMod
 		//Management
 		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, Participant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, Participant>>();
 		private bool showLists = true;
-		public List<Formation> teamFormations = new List<Formation>();
+		public List<CombinedFormation> teamFormations = new List<CombinedFormation>();
 		public Parameters Parameters { get; set; } = new Parameters(1u);
 		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
 		private List<int> materials;
-		static Tournament() {
+		static Tournament()
+		{
 			penaltyTimeColor = new Gradient
 			{
 				colorKeys = new GradientColorKey[] {
@@ -80,7 +82,6 @@ namespace TournamentMod
 		public Tournament()
 		{
 			_me = this;
-			LoadSettings();
 			timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
 			{
 				alignment = TextAnchor.MiddleCenter,
@@ -122,6 +123,15 @@ namespace TournamentMod
 				clipping = TextClipping.Clip
 			};
 			_GUI = new TournamentConsole(_me);
+			teamFormations = new List<CombinedFormation>() {
+				new CombinedFormation(),
+				new CombinedFormation(),
+				new CombinedFormation(),
+				new CombinedFormation(),
+				new CombinedFormation(),
+				new CombinedFormation()
+			};
+			LoadSettings();
 		}
 		/// <summary>
 		/// Loads in all selected crafts and sets their materialstorage or the storage of their team, depending if local resources are enabled.
@@ -386,6 +396,29 @@ namespace TournamentMod
 		public Vector3 LocalOffsetFromTerrainCenter() {
 			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
+		private void PopulateFormations() {
+			foreach (CombinedFormation cf in teamFormations) {
+				cf.formationEntrycount.Clear();
+			}
+			Parameters.TeamFormations.Us.Sort(delegate (Vector4i x, Vector4i y)
+			{
+				if (x.x == y.x) //Selbes Team: Der Positionsindex entscheidet.
+				{
+					return x.y - y.y;
+				}
+				else //Unterschiedliche Teams
+				{
+					return x.x - y.x;
+				}
+			});
+			foreach (Vector4i v4i in Parameters.TeamFormations)
+			{
+				teamFormations[v4i.x].Import(v4i);
+			}
+		}
+		private void PopulateParameters() {
+			Parameters.TeamFormations.Clear();
+		}
 		/// <summary>
 		/// Saves the current Parameters.
 		/// </summary>
@@ -393,6 +426,7 @@ namespace TournamentMod
 		{
 			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+			PopulateParameters();
 			settingsFile.SaveData(Parameters, Formatting.Indented);
 		}
 		/// <summary>
@@ -408,6 +442,7 @@ namespace TournamentMod
 				{
 					Parameters = settingsFile.LoadData<Parameters>();
 					Parameters.EnsureEnoughData();
+					PopulateFormations();
 				}
 				catch (Exception)
 				{
@@ -433,6 +468,11 @@ namespace TournamentMod
 		{
 			Parameters.ResetToDefault();
 			Parameters.EnsureEnoughData();
+			foreach (CombinedFormation cf in teamFormations)
+			{
+				cf.formationEntrycount.Clear();
+				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, int.MaxValue));
+			}
 		}
 		/// <summary>
 		/// Displays the Sidelist and when required the Extra-Info-Panel.
@@ -1088,13 +1128,13 @@ namespace TournamentMod
 			return Vector3.Distance(a, b);
 		}
 		/// <summary>
-		/// Retrieves the Formation-struct of a given Team.
+		/// Retrieves the CombinedFormation of a given Team.
 		/// </summary>
 		/// <param name="index">The index of the Team</param>
 		/// <returns></returns>
-		public Formations.Formation GetFormation(int index)
+		public CombinedFormation GetFormation(int index)
 		{
-			return Formations.Formation.tournamentFormations[Parameters.FormationIndexPerTeam[index]];
+			return teamFormations[index];
 		}
 		/// <summary>
 		/// Overrides the default team colors with the ones set in the Parameters.

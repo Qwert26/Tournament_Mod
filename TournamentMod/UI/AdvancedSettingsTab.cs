@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace TournamentMod.UI
 {
-	public class AdvancedSettingsTab :AbstractTournamentTab
+	public class AdvancedSettingsTab : AbstractTournamentTab
 	{
 		public AdvancedSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Advanced Settings", "Setup advanced Parameters for the fight.");
@@ -33,15 +33,19 @@ namespace TournamentMod.UI
 						}
 					}
 				}, new ToolTip("The amount of active Teams.")));
+			for (int i = 0; i < 6; i++)
+			{
+				int index = i;
+				segment1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Open Formation-Console for Team {index + 1}.", new ToolTip($"Manage the Formation of Team {index + 1}."), delegate (Tournament t)
+					   {
+						   PopThisUp(new FormationConsole(t.teamFormations[index], this, index, t.entries[index].Count));
+					   })).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
+			}
 			segment1.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Activate Advanced Options", new ToolTip("Shows the advanced options. Unless you know exactly what you want in here, i suggest leaving it closed."), delegate (Parameters tp, bool b)
 			   {
 				   tp.ShowAdvancedOptions.Us = b;
 				   if (!b)
 				   {
-					   for (int i = 0; i < _focus.Parameters.ActiveFactions; i++)
-					   {
-						   _focus.Parameters.FormationIndexPerTeam.Us[i] = 0;
-					   }
 					   _focus.Parameters.MaterialConversion.Reset();
 					   _focus.Parameters.CleanUpMode.Reset();
 					   _focus.Parameters.HealthCalculation.Reset();
@@ -60,14 +64,6 @@ namespace TournamentMod.UI
 			   }, (tp) => tp.ShowAdvancedOptions.Us));
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
 			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
-			for (int i = 0; i < 6; i++) {
-				int index = i;
-				segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Formations.Formation.tournamentFormations.Length - 1),
-					M.m((Parameters tp) => tp.FormationIndexPerTeam[index]), M.m<Parameters>(1), _focus.Parameters, M.m((Parameters tp) => $"Team {index+1} Formation: {Formations.Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Name}"), delegate (Parameters tp, float f)
-					  {
-						  tp.FormationIndexPerTeam.Us[index] = (int)f;
-					  }, null, M.m((Parameters tp) => new ToolTip(Formations.Formation.tournamentFormations[tp.FormationIndexPerTeam[index]].Description)))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
-			}
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
 				M.m((Parameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (Parameters tp, float f)
 				{

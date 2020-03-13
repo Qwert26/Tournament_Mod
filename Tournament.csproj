@@ -279,13 +279,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="TournamentMod\Datatypes\Vector4Int.cs" />
     <Compile Include="TournamentMod\FactionManagement.cs" />
     <Compile Include="TournamentMod\Formations\CombinedFormation.cs" />
     <Compile Include="TournamentMod\Formations\FormationCalculation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TournamentMod\Formations\FormationPositionDescription.cs" />
     <Compile Include="TournamentMod\Formations\FormationSizeCalculation.cs" />
+    <Compile Include="TournamentMod\Formations\FormationType.cs" />
     <Compile Include="TournamentMod\Serialisation\BoolList.cs" />
     <Compile Include="TournamentMod\Serialisation\ColorList.cs" />
     <Compile Include="TournamentMod\Serialisation\ParametersFolder.cs" />
@@ -296,6 +296,7 @@
     <Compile Include="TournamentMod\UI\AbstractTournamentTab.cs" />
     <Compile Include="TournamentMod\UI\BaseSettingsTab.cs" />
     <Compile Include="TournamentMod\UI\EyecandyTab.cs" />
+    <Compile Include="TournamentMod\UI\FormationConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantManagementTab.cs" />
     <Compile Include="TournamentMod\UI\TeamSplittedRules.cs" />

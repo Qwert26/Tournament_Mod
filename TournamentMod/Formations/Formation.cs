@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 namespace TournamentMod.Formations
 {
 	public struct Formation {
@@ -64,7 +65,7 @@ namespace TournamentMod.Formations
 		public static readonly Formation RomanManipelAttack = new Formation()
 		{
 			Name = "Roman Legion, Manipel Attack",
-			Description = "Similar to the Baseformation, but the second line of the Baseformation moved into the gaps of the first line, forming a solid line.",
+			Description = "Similar to the Baseformation, but the second line of the Baseformation moved into the gaps of the first line, forming a solid line at the front.",
 			DetermineLocalPosition = FormationCalculation.ManipelAttackFormation,
 			DeterminePositionDescription = FormationPositionDescription.ManipelAttackFormation,
 			DetermineSize = FormationSizeCalculation.ManipelFormation
@@ -72,7 +73,7 @@ namespace TournamentMod.Formations
 		public static readonly Formation GuardLine = new Formation()
 		{
 			Name = "Guard Line",
-			Description = "Similar to the Line-Formation, but its intent is to be part of a greater \"Super-Formation\".",
+			Description = "Similar to the Line-Formation, but its intent is to be part of a greater \"Super-Formation\", as it ignores the Forward-Backward-Gap.",
 			DetermineLocalPosition = FormationCalculation.GuardLineFormation,
 			DeterminePositionDescription = FormationPositionDescription.GuardLineFormation,
 			DetermineSize = FormationSizeCalculation.GuardLineFormation,

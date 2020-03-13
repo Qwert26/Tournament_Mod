@@ -188,11 +188,6 @@ namespace TournamentMod.Serialisation
 		[Variable(100, "Show advanced options", "Usually closed, use this for further customization.")]
 		public VarBool ShowAdvancedOptions { get; set; } = new VarBool(false);
 		/// <summary>
-		/// Each Team uses an index in order to reference a formation.
-		/// </summary>
-		[Variable(101, "Formation index for a given Team at a given index", "The index for the formation of a Team.")]
-		public VarList<int> FormationIndexPerTeam { get; set; } = new IntList();
-		/// <summary>
 		/// Stores the Lifesteal-value. -1 means that there is no material regain in selfdamage.
 		/// </summary>
 		[Variable(103, "Lifesteal(%)", "-1 is a special value: In this case, materials by friendly fire are not refunded.")]
@@ -268,6 +263,11 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		[Variable(117, "Maximum Delay Time", "If the repairs could not make a construct operational in this timeframe, it will still be removed.")]
 		public Var<int> RepairDelayTime { get; set; } = new VarIntClamp(100, 10, 600);
+		/// <summary>
+		/// Contains a representation of the formation composition of each team. X is Team-Index, Y is Position of the Formation, Z is Formation-Index & W is Entry-count.
+		/// </summary>
+		[Variable(118, "Team index-Formation position-Formation index-Starting index")]
+		public Vector4IntList TeamFormations { get; set; } = new Vector4IntList();
 		#endregion
 		#endregion
 		#region Teams
@@ -313,10 +313,6 @@ namespace TournamentMod.Serialisation
 			while (ResourcesPerTeam.Count < 6)
 			{
 				ResourcesPerTeam.Add(10000);
-			}
-			while (FormationIndexPerTeam.Count < 6)
-			{
-				FormationIndexPerTeam.Add(0);
 			}
 			while (MainColorsPerTeam.Count < 6)
 			{
