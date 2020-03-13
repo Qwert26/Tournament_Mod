@@ -61,7 +61,12 @@ namespace TournamentMod.UI
 					}
 				}, _focus.Parameters));
 			*/
-			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) => t.LoadSettings()));
+			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) =>
+			{
+				t.LoadSettings();
+				t.MoveCam();
+				TriggerScreenRebuild();
+			}));
 			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
 				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
 				{
@@ -73,7 +78,12 @@ namespace TournamentMod.UI
 					}
 				}));
 			}));*/
-			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) => t.LoadDefaults()));
+			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) =>
+			{
+				t.LoadDefaults();
+				t.MoveCam();
+				TriggerScreenRebuild();
+			}));
 			CreateHeader("Prepared Fleet Colors", new ToolTip("Here you can find prepared fleet colors back from the old days."));
 			CreateStandardSegment().AddInterpretter(new SubjectiveFloatClampedWithBar<EyecandyTab>(M.m<EyecandyTab>(0), M.m((EyecandyTab et) => et._focus.Parameters.ActiveFactions - 1), M.m((EyecandyTab et) => et.currentTeam),
 				M.m<EyecandyTab>(1), this, M.m((EyecandyTab et) => $"Apply Fleetcolor-Prefeb to Team {et.currentTeam + 1}"), delegate (EyecandyTab et, float f)

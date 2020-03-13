@@ -418,6 +418,10 @@ namespace TournamentMod
 		}
 		private void PopulateParameters() {
 			Parameters.TeamFormations.Clear();
+			for (int team = 0; team < teamFormations.Count; team++)
+			{
+				Parameters.TeamFormations.Us.AddRange(teamFormations[team].Export(team));
+			}
 		}
 		/// <summary>
 		/// Saves the current Parameters.
@@ -458,7 +462,10 @@ namespace TournamentMod
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
 			{
-				entries.Add(i, new List<Entry>());
+				if (!entries.ContainsKey(i))
+				{
+					entries.Add(i, new List<Entry>());
+				}
 			}
 		}
 		/// <summary>
@@ -797,13 +804,10 @@ namespace TournamentMod
 				}
 				else
 				{
-					Vector3d position = PlanetList.MainFrame.FramePositionToUniversalPosition(StaticConstructablesManager.constructables.ToArray()[orbitindex].CentreOfMass);
-					Quaternion rotation = StaticConstructablesManager.constructables.ToArray()[orbitindex].SafeRotation;
-					orbitcam.OrbitTarget = new PositionAndRotationReturnUniverseCoord(new UniversalTransform(position, rotation));
-					//if (oldIndex != orbitindex)
-					//{
-					//	orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
-					//}
+					if (oldIndex != orbitindex)
+					{
+						orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
+					}
 				}
 			}
 		}
