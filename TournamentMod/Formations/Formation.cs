@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 namespace TournamentMod.Formations
 {
 	public struct Formation {
@@ -10,7 +9,7 @@ namespace TournamentMod.Formations
 		public string Description { get; set; }
 		public LocalPosition DetermineLocalPosition { get; set; }
 		public PositionDescription DeterminePositionDescription { get; set; }
-		public Size DetermineSize{ get; set; }
+		public Size DetermineSize { get; set; }
 		public static readonly Formation Line = new Formation()
 		{
 			Name = "Line",

@@ -9,11 +9,16 @@ namespace TournamentMod.Formations
 	{
 		public List<Tuple<FormationType,int>> formationEntrycount;
 		public CombinedFormation() {
-			formationEntrycount = new List<Tuple<FormationType,int>>
+			formationEntrycount = new List<Tuple<FormationType, int>>
 			{
-				new Tuple<FormationType,int>(FormationType.Line, int.MaxValue)
+				new Tuple<FormationType, int>(FormationType.Line, 0)
 			};
 		}
+		/// <summary>
+		/// Exports the entire list into an array of Vector4i.
+		/// </summary>
+		/// <param name="teamIndex">The future x-value for the Vector4i, used for sorting when loading in.</param>
+		/// <returns></returns>
 		public Vector4i[] Export(int teamIndex)
 		{
 			Vector4i[] ret = new Vector4i[formationEntrycount.Count];
@@ -23,6 +28,10 @@ namespace TournamentMod.Formations
 			}
 			return ret;
 		}
+		/// <summary>
+		/// Imports a Vector4i, it assumes that the original list was already sorted by teamindex and position of the formation.
+		/// </summary>
+		/// <param name="v4i"></param>
 		public void Import(Vector4i v4i)
 		{
 			formationEntrycount.Add(new Tuple<FormationType, int>((FormationType)v4i.z, v4i.w));

@@ -478,7 +478,7 @@ namespace TournamentMod
 			foreach (CombinedFormation cf in teamFormations)
 			{
 				cf.formationEntrycount.Clear();
-				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, int.MaxValue));
+				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, 0));
 			}
 		}
 		/// <summary>

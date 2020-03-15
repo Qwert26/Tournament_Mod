@@ -14,64 +14,26 @@ namespace TournamentMod.UI
     using Formations;
     public class FormationConsole : ConsoleUi<CombinedFormation>
 	{
-		private ConsoleUiScreen _parentTab;
 		private readonly int teamSize, teamIndex;
 		private readonly DropDownMenuAlt<FormationType> formationOptions;
-		public FormationConsole(CombinedFormation focus, ConsoleUiScreen parentTab, int teamIndex, int currentTeamSize) : base(focus)
+		public FormationConsole(CombinedFormation focus, int teamIndex, int currentTeamSize) : base(focus)
 		{
-			_parentTab = parentTab;
 			teamSize = currentTeamSize;
 			this.teamIndex = teamIndex;
 			formationOptions = new DropDownMenuAlt<FormationType>(TextAnchor.MiddleCenter);
-			formationOptions.SetItems(
-				new DropDownMenuAltItem<FormationType>()
+			FormationType[] types = (FormationType[]) Enum.GetValues(typeof(FormationType));
+			DropDownMenuAltItem<FormationType>[] items = new DropDownMenuAltItem<FormationType>[types.Length];
+			for (int i = 0; i < types.Length; i++)
+			{
+				FormationType ft = types[i];
+				items[i] = new DropDownMenuAltItem<FormationType>()
 				{
-					Name= FormationType.Line.getFormation().Name,
-					ToolTip=FormationType.Line.getFormation().Description,
-					ObjectForAction=FormationType.Line
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.Wedge.getFormation().Name,
-					ToolTip = FormationType.Wedge.getFormation().Description,
-					ObjectForAction = FormationType.Wedge
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.DividedWedge.getFormation().Name,
-					ToolTip = FormationType.DividedWedge.getFormation().Description,
-					ObjectForAction = FormationType.DividedWedge
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.ParallelColumns.getFormation().Name,
-					ToolTip = FormationType.ParallelColumns.getFormation().Description,
-					ObjectForAction = FormationType.ParallelColumns
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.CommandedParallelColumns.getFormation().Name,
-					ToolTip = FormationType.CommandedParallelColumns.getFormation().Description,
-					ObjectForAction = FormationType.CommandedParallelColumns
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.RomanManipelBase.getFormation().Name,
-					ToolTip = FormationType.RomanManipelBase.getFormation().Description,
-					ObjectForAction = FormationType.RomanManipelBase
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.RomanManipelAttack.getFormation().Name,
-					ToolTip = FormationType.RomanManipelAttack.getFormation().Description,
-					ObjectForAction = FormationType.RomanManipelAttack
-				},
-				new DropDownMenuAltItem<FormationType>()
-				{
-					Name = FormationType.GuardLine.getFormation().Name,
-					ToolTip = FormationType.GuardLine.getFormation().Description,
-					ObjectForAction = FormationType.GuardLine
-				});
+					Name = ft.getFormation().Name,
+					ToolTip = ft.getFormation().Description,
+					ObjectForAction = ft
+				};
+			}
+			formationOptions.SetItems(items);
 		}
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
@@ -79,7 +41,7 @@ namespace TournamentMod.UI
 			window.DisplayTextPrompt = false;
 			ConsoleUiScreen screen = window.Screen;
 			screen.CreateHeader($"Current Formation List for Team {teamIndex + 1}", new ToolTip("Entries will spawn in these Formation from the top to the bottom. The last formation will act as an Overflow-buffer: " +
-				"Taking in any entries, which would go over the last set count."));
+				"Taking in any entries, which would go over the last set count, this even works if its count has been set to 0."));
 			for (int i = 0; i < _focus.formationEntrycount.Count; i++)
 			{
 				int index = i;
@@ -143,7 +105,7 @@ namespace TournamentMod.UI
 			int sum = 0;
 			for (int i = 0; i < _focus.formationEntrycount.Count; i++)
 			{
-				sum += (i != index ? _focus.formationEntrycount[i].Item2 : 0);
+				sum += i != index ? _focus.formationEntrycount[i].Item2 : 0;
 			}
 			return teamSize - sum;
 		}

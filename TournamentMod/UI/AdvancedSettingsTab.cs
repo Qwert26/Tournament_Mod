@@ -5,12 +5,12 @@ using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Getters;
-using TournamentMod.Serialisation;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace TournamentMod.UI
 {
+	using Serialisation;
 	public class AdvancedSettingsTab : AbstractTournamentTab
 	{
 		public AdvancedSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
@@ -38,7 +38,7 @@ namespace TournamentMod.UI
 				int index = i;
 				segment1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Open Formation-Console for Team {index + 1}.", new ToolTip($"Manage the Formation of Team {index + 1}."), delegate (Tournament t)
 					   {
-						   PopThisUp(new FormationConsole(t.teamFormations[index], this, index, t.entries[index].Count));
+						   PopThisUp(new FormationConsole(t.teamFormations[index], index, t.entries[index].Count));
 					   })).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
 			}
 			segment1.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Activate Advanced Options", new ToolTip("Shows the advanced options. Unless you know exactly what you want in here, i suggest leaving it closed."), delegate (Parameters tp, bool b)
