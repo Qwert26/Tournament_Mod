@@ -3,8 +3,15 @@ using System;
 using BrilliantSkies.Core.Types;
 namespace TournamentMod.Serialisation
 {
+	/// <summary>
+	/// Stores a list of Vector4i for the prototype system.
+	/// </summary>
 	public class Vector4IntList : VarList<Vector4i>
 	{
+		/// <summary>
+		/// Converts a byte into a Vector4i and adds it to the list.
+		/// </summary>
+		/// <param name="bytes">The byte-array which must contain at least 16 bytes.</param>
 		public override void ByteToEntry(byte[] bytes)
 		{
 			Vector4i entry;
@@ -14,11 +21,21 @@ namespace TournamentMod.Serialisation
 			entry.w = BitConverter.ToInt32(bytes, 12);
 			Add(entry);
 		}
+		/// <summary>
+		/// Computes the number of entries in the list and uses the parameter to give out the size of each entry.
+		/// </summary>
+		/// <param name="entryBytes">Will be 16 after the call.</param>
+		/// <returns>the size of the list</returns>
 		public override uint EntriesAndBytesPerEntry(out uint entryBytes)
 		{
 			entryBytes = 4 * 4;
 			return (uint)Us.Count;
 		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="keyIndex"></param>
+		/// <param name="byteArray"></param>
 		public override void EntryToByte(uint keyIndex, ref byte[] byteArray)
 		{
 			Vector4i entry = Us[(int)keyIndex];

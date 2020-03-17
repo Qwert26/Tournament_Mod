@@ -2,6 +2,9 @@
 using UnityEngine;
 namespace TournamentMod.Formations
 {
+	/// <summary>
+	/// Contains functions for size calculations.
+	/// </summary>
 	public static class FormationSizeCalculation
 	{
 		public static Vector2 Abs(this Vector2 v2) {

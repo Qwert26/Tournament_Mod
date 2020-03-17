@@ -1,7 +1,6 @@
 using Assets.Scripts;
 using Assets.Scripts.Persistence;
 using BrilliantSkies.Core.Id;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
@@ -10,6 +9,9 @@ using BrilliantSkies.Ftd.Persistence.Inits;
 namespace TournamentMod
 {
 	using Formations;
+	/// <summary>
+	/// An Entry to be spawned into the fight.
+	/// </summary>
 	public class Entry
 	{
 		private BlueprintFile _bpf;
@@ -27,10 +29,6 @@ namespace TournamentMod
 			set;
 		}
 		public ObjectId Team_id {
-			get;
-			set;
-		}
-		public float Res {
 			get;
 			set;
 		}
@@ -55,46 +53,16 @@ namespace TournamentMod
 						float num = 0f;
 						for (int i = 0; i < count; i = checked(i + 1))
 						{
-							float material = list[i].CalculateResourceCost(false, true,false).Material;
+							float material = list[i].CalculateResourceCost(false, true, false).Material;
 							array[checked(i + 1)] = $"{list[i].blueprintName} <color=cyan>{material}</color>";
 							num += material;
 						}
-						array[0] = $"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true,false).Material - num}</color>";
+						array[0] = $"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true, false).Material - num}</color>";
 						return array;
 					}
 					return new string[1]
 					{
-						$"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true,false).Material}</color>"
-					};
-				}
-				return null;
-			}
-		}
-		public string[] Label {
-			get {
-				if (bp != null)
-				{
-					List<Blueprint> list = bp.SCs.FindAll((Blueprint x) => !x.IsSubConstructable());
-					int count = list.Count;
-					if (count > 0)
-					{
-						string[] array = new string[(count + 1)];
-						float num = 0f;
-						float num2 = 0f;
-						for (int i = 0; i < count; i = (i + 1))
-						{
-							float material = list[i].CalculateResourceCost(false, true,false).Material;
-							float material2 = list[i].CalculateResourceCost(true, true,false).Material;
-							array[(i + 1)] = $"{list[i].blueprintName} {Math.Round(material2 / material * 100f, 1)}";
-							num += material;
-							num2 += material2;
-						}
-						array[0] = $"{bp.blueprintName} {Math.Round((bp.CalculateResourceCost(true, true,false).Material - num2) / (bp.CalculateResourceCost(false, true,false).Material - num) * 100f, 1)}";
-						return array;
-					}
-					return new string[1]
-					{
-						$"{bp.blueprintName} {Math.Round(bp.CalculateResourceCost(true, true,false).Material / bp.CalculateResourceCost(false, true,false).Material * 100f, 1)}"
+						$"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true, false).Material}</color>"
 					};
 				}
 				return null;

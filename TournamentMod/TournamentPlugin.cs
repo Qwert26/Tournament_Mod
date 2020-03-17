@@ -49,7 +49,7 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Creates the instance.
+		/// Creates the instance and adds it to the list of designers.
 		/// </summary>
 		public void OnPlanetChange()
 		{

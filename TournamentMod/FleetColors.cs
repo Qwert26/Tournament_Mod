@@ -1,14 +1,34 @@
 ﻿using UnityEngine;
 namespace TournamentMod
 {
+	/// <summary>
+	/// Contains all necessary information about a fleet colorscheme
+	/// </summary>
 	public struct FleetColor
 	{
+		/// <summary>
+		/// The Main-Color, usually the one which is seen the most.
+		/// </summary>
 		public Color Main { get; set; }
+		/// <summary>
+		/// The secondary color
+		/// </summary>
 		public Color Secondary { get; set; }
+		/// <summary>
+		/// The color usually for details.
+		/// </summary>
 		public Color Detail { get; set; }
+		/// <summary>
+		/// The color usually for borders.
+		/// </summary>
 		public Color Trim { get; set; }
-		public Color[] Colors { get => new Color[4] { Main, Secondary, Trim, Detail }; }
+		/// <summary>
+		/// The Name of the fleet, which colorscheme belongs to.
+		/// </summary>
 		public string Name { get; set; }
+		/// <summary>
+		/// The description of the colorscheme.
+		/// </summary>
 		public string Description { get; set; }
 		public readonly static FleetColor classicYellow = new FleetColor()
 		{

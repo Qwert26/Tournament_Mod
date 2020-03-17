@@ -1,15 +1,63 @@
 ﻿using UnityEngine;
 namespace TournamentMod.Formations
 {
-	public struct Formation {
+	/// <summary>
+	/// Contains all required information to build a formation.
+	/// </summary>
+	public struct Formation
+	{
+		/// <summary>
+		/// A function which uses the provided information to determine a position, rotated appropiated for a team.
+		/// </summary>
+		/// <param name="factionRotation">The final rotation for a team to apply</param>
+		/// <param name="gapLeftRight">The distance along the local x-axis</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis</param>
+		/// <param name="count">the amount of entries inside this formation</param>
+		/// <param name="index">the current entry</param>
+		/// <param name="distance">The distance ffrom the center</param>
+		/// <param name="height">The set height of the entry</param>
+		/// <returns></returns>
 		public delegate Vector3 LocalPosition(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height);
+		/// <summary>
+		/// A function which uses the provided information to descripe a position inside a formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis</param>
+		/// <param name="count">the amount of entries inside this formation</param>
+		/// <param name="index">the current entry</param>
+		/// <returns></returns>
 		public delegate string PositionDescription(float gapLeftRight, float gapForwardBackward, int count, int index);
+		/// <summary>
+		/// A function which uses the provided information to calculate the size of the bounding box
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis</param>
+		/// <param name="gapForwardBackward">the distance along the local z-axis</param>
+		/// <param name="count"></param>
+		/// <returns></returns>
 		public delegate Vector2 Size(float gapLeftRight, float gapForwardBackward, int count);
+		/// <summary>
+		/// The Name of the Formation
+		/// </summary>
 		public string Name { get; set; }
+		/// <summary>
+		/// The Description of the Formation
+		/// </summary>
 		public string Description { get; set; }
+		/// <summary>
+		/// Executes the function for a local position
+		/// </summary>
 		public LocalPosition DetermineLocalPosition { get; set; }
+		/// <summary>
+		/// Executes the function for a description of a position
+		/// </summary>
 		public PositionDescription DeterminePositionDescription { get; set; }
+		/// <summary>
+		/// Executes the function for a size
+		/// </summary>
 		public Size DetermineSize { get; set; }
+		/// <summary>
+		/// The "Line"-Formation
+		/// </summary>
 		public static readonly Formation Line = new Formation()
 		{
 			Name = "Line",
@@ -18,6 +66,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.LineFormation,
 			DetermineSize = FormationSizeCalculation.LineFormation
 		};
+		/// <summary>
+		/// A "Funnel"- or "Arrow"-Formation
+		/// </summary>
 		public static readonly Formation Wedge = new Formation()
 		{
 			Name = "Wedge",
@@ -27,6 +78,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.WedgeFormation,
 			DetermineSize = FormationSizeCalculation.WedgeFormation
 		};
+		/// <summary>
+		/// A "Funnel"- or "Arrow"-Formation consisting our of three groups
+		/// </summary>
 		public static readonly Formation DividedWedge = new Formation()
 		{
 			Name = "Divided Wedge",
@@ -36,6 +90,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.DividedWedgeFormation,
 			DetermineSize = FormationSizeCalculation.DividedWedgeFormation
 		};
+		/// <summary>
+		/// a square-like formation
+		/// </summary>
 		public static readonly Formation ParallelColumns = new Formation()
 		{
 			Name = "Columns",
@@ -45,6 +102,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.ParallelColumnsFormation,
 			DetermineSize = FormationSizeCalculation.ParallelColumnsFormation
 		};
+		/// <summary>
+		/// a square-like formation where each pair of columns has an additional ship in front of them.
+		/// </summary>
 		public static readonly Formation CommandedParallelColumns = new Formation()
 		{
 			Name = "Commanded Columns",
@@ -53,6 +113,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.CommandedParallelColumnsFormation,
 			DetermineSize = FormationSizeCalculation.CommandedParallelColumnsFormation
 		};
+		/// <summary>
+		/// The Roman Manipel Formation when marching.
+		/// </summary>
 		public static readonly Formation RomanManipelBase = new Formation()
 		{
 			Name = "Roman Legion, Manipel Base",
@@ -61,6 +124,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.ManipelBaseFormation,
 			DetermineSize = FormationSizeCalculation.ManipelFormation
 		};
+		/// <summary>
+		/// The Roman Manipel Formation when attacking.
+		/// </summary>
 		public static readonly Formation RomanManipelAttack = new Formation()
 		{
 			Name = "Roman Legion, Manipel Attack",
@@ -69,6 +135,9 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.ManipelAttackFormation,
 			DetermineSize = FormationSizeCalculation.ManipelFormation
 		};
+		/// <summary>
+		/// A straight line.
+		/// </summary>
 		public static readonly Formation GuardLine = new Formation()
 		{
 			Name = "Guard Line",
@@ -76,16 +145,6 @@ namespace TournamentMod.Formations
 			DetermineLocalPosition = FormationCalculation.GuardLineFormation,
 			DeterminePositionDescription = FormationPositionDescription.GuardLineFormation,
 			DetermineSize = FormationSizeCalculation.GuardLineFormation,
-		};
-		public static readonly Formation[] tournamentFormations = {
-			Line,
-			Wedge,
-			DividedWedge,
-			ParallelColumns,
-			CommandedParallelColumns,
-			RomanManipelBase,
-			RomanManipelAttack,
-			GuardLine
 		};
 	}
 }

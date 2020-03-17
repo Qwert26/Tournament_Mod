@@ -37,16 +37,16 @@ namespace TournamentMod.Formations
 			formationEntrycount.Add(new Tuple<FormationType, int>((FormationType)v4i.z, v4i.w));
 		}
 		/// <summary>
-		/// 
+		/// Determines the local position of an entry using the information provided, as well as its internal list of formations and entry-counts.
 		/// </summary>
-		/// <param name="factionRotation"></param>
-		/// <param name="gapLeftRight"></param>
-		/// <param name="gapForwardBackward"></param>
-		/// <param name="count"></param>
-		/// <param name="index"></param>
-		/// <param name="distance"></param>
-		/// <param name="height"></param>
-		/// <returns></returns>
+		/// <param name="factionRotation">The final Rotationangle to apply after the position has been determined</param>
+		/// <param name="gapLeftRight">The distance along the local x-axis</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis</param>
+		/// <param name="count">The amount of total entries in the team</param>
+		/// <param name="index">The index of the current entry</param>
+		/// <param name="distance">The distance from the choosen center</param>
+		/// <param name="height">the set height of the entry</param>
+		/// <returns>The spawn position for the entry</returns>
 		public Vector3 DetermineLocalPosition(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
 		{
 			int formationSpecificIndex = index, formationSpecificCount = count;
@@ -68,13 +68,13 @@ namespace TournamentMod.Formations
 			return last.Item1.getFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex, distance, height);
 		}
 		/// <summary>
-		/// 
+		/// Determines the role of an entry inside the formation it will fall into.
 		/// </summary>
-		/// <param name="gapLeftRight"></param>
-		/// <param name="gapForwardBackward"></param>
-		/// <param name="count"></param>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="gapLeftRight">The distance along the local x-axis</param>
+		/// <param name="gapForwardBackward">the distance along the local z-axis</param>
+		/// <param name="count">The amount of entries in the team</param>
+		/// <param name="index">The index of the current entry</param>
+		/// <returns>The role description</returns>
 		public string DeterminePositionDescription(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			int formationSpecificIndex = index, formationSpecificCount = count;

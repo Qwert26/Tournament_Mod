@@ -2,17 +2,21 @@
 using UnityEngine;
 namespace TournamentMod.Formations
 {
+	/// <summary>
+	/// Contains functions for positional descriptions
+	/// </summary>
 	public static class FormationPositionDescription
 	{
 		/// <summary>
-		/// Für neue Formationen, die noch keine eigene Positions-Beschreibungen haben.
+		/// For new Formation, which don't have descriptions yet.
 		/// </summary>
 		/// <param name="gapLeftRight"></param>
 		/// <param name="gapForwardBackward"></param>
 		/// <param name="count"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public static string UnknownFormation(float gapLeftRight=0, float gapForwardBackward=0, int count=0, int index=0) {
+		public static string UnknownFormation(float gapLeftRight = 0, float gapForwardBackward = 0, int count = 0, int index = 0)
+		{
 			return "None";
 		}
 		public static string LineFormation(float gapLeftRight, float gapForwardBackward, int count, int index)

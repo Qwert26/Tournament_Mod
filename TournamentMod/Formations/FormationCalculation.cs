@@ -2,8 +2,19 @@
 using System;
 namespace TournamentMod.Formations
 {
+	/// <summary>
+	/// Contains functions for positional calculations
+	/// </summary>
 	public static class FormationCalculation {
+		/// <summary>
+		/// Important value for PC- and CPC-Formation.
+		/// </summary>
 		public static readonly float factorFor1To1GapRatio = Mathf.Tan(Mathf.Deg2Rad * 68);
+		/// <summary>
+		/// The final rotation for a team.
+		/// </summary>
+		/// <param name="angle"></param>
+		/// <returns></returns>
 		public static Quaternion FactionRotation(float angle) {
 			return Quaternion.Euler(0, angle, 0);
 		}
