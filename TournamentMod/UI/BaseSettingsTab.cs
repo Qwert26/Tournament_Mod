@@ -8,6 +8,8 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
 using TournamentMod.Serialisation;
 using UnityEngine;
+using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
+
 namespace TournamentMod.UI
 {
 	public class BaseSettingsTab : AbstractTournamentTab
@@ -161,7 +163,7 @@ namespace TournamentMod.UI
 				}, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Local Resources", new ToolTip("Enable or Disable local Resources. When enabled, teams can not have infinte Materials!"), delegate (Parameters tp, bool b)
 			   {
-				   tp.LocalResources.Us = b;
+				   tp.LocalResources.Us = b = true;
 				   if (b)
 				   {
 					   for (int i = 0; i < 6; i++)
@@ -169,7 +171,10 @@ namespace TournamentMod.UI
 						   tp.InfinteResourcesPerTeam.Us[i] = false;
 					   }
 				   }
-			   }, (tp) => tp.LocalResources.Us));
+			   }, (tp) => tp.LocalResources.Us | true));
+
+			segment3.AddInterpretter(StringDisplay.Quick("<b>With this Version \"Local Resources\" is forced on! The above toggle will be removed, once devtest hits stable, as well as everything that is linked to global resources!</b>"));
+
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute local Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
 			{
 				tp.DistributeLocalResources.Us = b;

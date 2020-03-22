@@ -143,7 +143,7 @@ namespace TournamentMod
 			materials?.Clear();
 			materials = null;
 			InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
-			InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
+			//InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
 			if (Parameters.LocalResources)
 			{
 				if (!Parameters.DistributeLocalResources)
@@ -161,7 +161,7 @@ namespace TournamentMod
 						for (int pos = 0; pos < team.Value.Count; pos++)
 						{
 							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-							mc.RawResource.Material.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
+							mc.GetForce().ResourceStore.iMaterial.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
 						}
 					}
 				}
@@ -182,7 +182,7 @@ namespace TournamentMod
 						{
 							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
 							constructs[team.Key].Add(mc);
-							maxMaterials[team.Key] += (int)mc.RawResource.Material.Maximum;
+							maxMaterials[team.Key] += (int)mc.GetForce().ResourceStore.iMaterial.Maximum;
 						}
 					}
 					for (int i = 0; i < Parameters.ActiveFactions; i++)
@@ -191,8 +191,8 @@ namespace TournamentMod
 						{
 							foreach (MainConstruct mc in constructs[i])
 							{
-								mc.RawResource.Material.SetQuantity(materials[i]);
-								materials[i] -= (int)mc.RawResource.Material.Maximum;
+								mc.GetForce().ResourceStore.iMaterial.SetQuantity(materials[i]);
+								materials[i] -= (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
 							}
 							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
 						}
@@ -201,7 +201,7 @@ namespace TournamentMod
 							double expectedFraction = ((double)materials[i]) / maxMaterials[i];
 							foreach (MainConstruct mc in constructs[i])
 							{
-								mc.RawResource.Material.SetQuantity(mc.RawResource.Material.Maximum * expectedFraction);
+								mc.GetForce().ResourceStore.iMaterial.SetQuantity(mc.GetForce().ResourceStore.iMaterial.Maximum * expectedFraction);
 							}
 							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
 						}
@@ -227,7 +227,7 @@ namespace TournamentMod
 					for (int pos = 0; pos < team.Value.Count; pos++)
 					{
 						team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-						StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].RawResource.Material.SetQuantity(0);
+						StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].GetForce().ResourceStore.iMaterial.SetQuantity(0);
 					}
 				}
 			}
@@ -428,7 +428,7 @@ namespace TournamentMod
 		/// </summary>
 		public void SaveSettings()
 		{
-			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
 			PopulateParameters();
 			settingsFile.SaveData(Parameters, Formatting.Indented);
@@ -438,7 +438,7 @@ namespace TournamentMod
 		/// </summary>
 		public void LoadSettings()
 		{
-			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
 			if (settingsFile.Exists)
 			{
@@ -546,11 +546,11 @@ namespace TournamentMod
 					MainConstruct targetConstruct = StaticConstructablesManager.constructables.Where(x => x.iMain == target).First();
 					string name = targetConstruct.blueprintName;
 					string team = targetConstruct.GetTeam().FactionSpec().Name;
-					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
-					string resources = $"{Math.Round(targetConstruct.RawResource.Material.Quantity, 0)}/{Math.Round(targetConstruct.RawResource.Material.Maximum, 0)}";
-					string ammo = $"{Math.Round(targetConstruct.Ammo.Ammo.Quantity, 0)}/{Math.Round(targetConstruct.Ammo.Ammo.Maximum, 0)}";
-					string fuel = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Maximum, 0)}";
-					string battery = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Maximum, 0)}";
+					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1)}%";
+					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum, 0)}";
+					string ammo = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Maximum, 0)}";
+					string fuel = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Maximum, 0)}";
+					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum, 0)}";
 					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power, 0)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower, 0)}";
 					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude, 1)}m/s";
 					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y, 0)}m";
@@ -687,7 +687,7 @@ namespace TournamentMod
 					orbitindex = 0;
 				}
 				if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != 0 ||
-					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID != orbitMothership))
+					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id != orbitMothership))
 				{
 					int index;
 					if (orbitMothership == -1)
@@ -696,7 +696,7 @@ namespace TournamentMod
 					}
 					else
 					{
-						index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.Drones.LoadedMothershipC.uniqueID == orbitMothership);
+						index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id == orbitMothership);
 					}
 					if (index >= 0) { orbitindex = index; }
 					else { orbitindex = 0; }
@@ -724,13 +724,13 @@ namespace TournamentMod
 					}
 				}
 				if (orbittarget != StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId ||
-					(StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null &&
-					 orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID))
+					(StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them != null &&
+					 orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them.LinkedCorrectly?.OurForce.Id.Id))
 				{
 					orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
-					if (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null)
+					if (StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them != null)
 					{
-						orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID;
+						orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them.LinkedCorrectly?.OurForce.Id.Id ?? -1;
 					}
 					else
 					{
@@ -1007,7 +1007,7 @@ namespace TournamentMod
 							HUDLog[teamAndMembers.Key][member.Key].Scrapped = true;
 							Vector3 centreOfMass = member.Key.CentreOfMass;
 							UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
-							member.Key.DestroyCompletely(true);
+							member.Key.DestroyCompletely(DestroyReason.Wiped, true);
 							HUDLog[teamAndMembers.Key][member.Key].TimeOfDespawn = timerTotal;
 						}
 					}

@@ -15,7 +15,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(2, 5, 2, 19);
+		public Version version => new Version(2, 6, 1, 4);
 		internal static FactionManagement factionManagement;
 		public void OnLoad()
 		{
@@ -89,7 +89,7 @@ namespace TournamentMod
 			@is.Header.CommonSettings.SavingOptions = SavingOptions.None;
 			@is.Header.CommonSettings.BlueprintSpawningOptions = BlueprintSpawningOptions.NoNewVehicles;
 			@is.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = 0f;
-			@is.Header.CommonSettings.LocalisedResourceMode = LocalisedResourceMode.UseCentralStore;
+			//@is.Header.CommonSettings.LocalisedResourceMode = LocalisedResourceMode.UseCentralStore;
 			@is.Header.CommonSettings.FogOfWarType = FogOfWarType.None;
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;

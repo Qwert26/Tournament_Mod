@@ -70,17 +70,14 @@ namespace TournamentMod
 		}
 		public MainConstruct Spawn(float dis, float gapLR, float gapFB, int count, int pos)
 		{
-			MainConstruct val = BlueprintConverter.Convert(bp, SpawnInstructions.IgnoreDamage);
+			MainConstruct val = BlueprintConverter.Convert(null, bp, SpawnInstructions.IgnoreDamage);
 			FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
 			Team_id = faction.Id;
-			BlueprintInitialisation initialisation = new BlueprintInitialisation(val)
+			BlueprintInitialisation initialisation = new BlueprintInitialisation();
+			initialisation.Run(new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gapLR, gapFB, count, pos, dis)), VDir())
 			{
-				Positioning = new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(VLoc(gapLR, gapFB, count, pos, dis)), VDir())
-				{
-					PositioningType = SpawnPositioning.OriginOrCentre
-				}
-			};
-			initialisation.Run(Team_id);
+				PositioningType = SpawnPositioning.OriginOrCentre
+			}, null, Team_id);
 			(val.Owner as ConstructableOwner).SetFleetColors(Team_id);
 			return val;
 		}
