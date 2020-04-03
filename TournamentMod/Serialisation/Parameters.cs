@@ -85,11 +85,6 @@ namespace TournamentMod.Serialisation
 		[Variable(12, "Overtime(s)")]
 		public Var<int> Overtime { get; set; } = new VarIntClamp(0, 0, 3600);
 		/// <summary>
-		/// The instance can either use local materials or global materials.
-		/// </summary>
-		[Variable(13, "Local resources", "When active, fills up the material containers of each entry up to the specified amounts.")]
-		public VarBool LocalResources { get; set; } = new VarBool(false);
-		/// <summary>
 		/// Every team has the same material settings if this is active.
 		/// </summary>
 		[Variable(14, "Same materials", "When active, all teams will have the exact same starting materials.")]

@@ -143,38 +143,41 @@ namespace TournamentMod
 			materials?.Clear();
 			materials = null;
 			InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
-			//InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
-			if (Parameters.LocalResources)
+			if (!Parameters.DistributeLocalResources)
 			{
-				if (!Parameters.DistributeLocalResources)
+				for (int i = 0; i < Parameters.ActiveFactions; i++)
 				{
-					for (int i = 0; i < Parameters.ActiveFactions; i++)
+					TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+				}
+				foreach (KeyValuePair<int, List<Entry>> team in entries)
+				{
+					if (team.Key >= Parameters.ActiveFactions)
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+						break;
 					}
-					foreach (KeyValuePair<int, List<Entry>> team in entries)
+					for (int pos = 0; pos < team.Value.Count; pos++)
 					{
-						if (team.Key >= Parameters.ActiveFactions)
-						{
-							break;
-						}
-						for (int pos = 0; pos < team.Value.Count; pos++)
-						{
-							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-							mc.GetForce().ResourceStore.iMaterial.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
-						}
+						MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
+						mc.GetForce().ResourceStore.iMaterial.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
 					}
 				}
-				else
+			}
+			else
+			{
+				List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
+				Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
+				Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
+				foreach (KeyValuePair<int, List<Entry>> team in entries)
 				{
-					List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
-					Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
-					Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
-					foreach (KeyValuePair<int, List<Entry>> team in entries)
+					if (team.Key >= Parameters.ActiveFactions)
 					{
-						if (team.Key >= Parameters.ActiveFactions)
+						break;
+					}
+					else
+					{
+						if (Parameters.InfinteResourcesPerTeam[team.Key])
 						{
-							break;
+							continue;
 						}
 						maxMaterials.Add(team.Key, 0);
 						constructs.Add(team.Key, new List<MainConstruct>());
@@ -182,52 +185,33 @@ namespace TournamentMod
 						{
 							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
 							constructs[team.Key].Add(mc);
-							maxMaterials[team.Key] += (int)mc.GetForce().ResourceStore.iMaterial.Maximum;
-						}
-					}
-					for (int i = 0; i < Parameters.ActiveFactions; i++)
-					{
-						if (maxMaterials[i] <= materials[i])
-						{
-							foreach (MainConstruct mc in constructs[i])
-							{
-								mc.GetForce().ResourceStore.iMaterial.SetQuantity(materials[i]);
-								materials[i] -= (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
-							}
-							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
-						}
-						else
-						{
-							double expectedFraction = ((double)materials[i]) / maxMaterials[i];
-							foreach (MainConstruct mc in constructs[i])
-							{
-								mc.GetForce().ResourceStore.iMaterial.SetQuantity(mc.GetForce().ResourceStore.iMaterial.Maximum * expectedFraction);
-							}
-							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+							maxMaterials[team.Key] += (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
 						}
 					}
 				}
-			}
-			else //Global Store
-			{
-				materials = new List<int>(Parameters.ResourcesPerTeam.Us);
 				for (int i = 0; i < Parameters.ActiveFactions; i++)
 				{
 					if (Parameters.InfinteResourcesPerTeam[i])
 					{
 						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResourcesInfinite();
 					}
+					else if (maxMaterials[i] <= materials[i])
+					{
+						foreach (MainConstruct mc in constructs[i])
+						{
+							mc.GetForce().ResourceStore.iMaterial.SetQuantity(materials[i]);
+							materials[i] -= (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
+						}
+						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
+					}
 					else
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Parameters.ResourcesPerTeam[i]);
-					}
-				}
-				foreach (KeyValuePair<int, List<Entry>> team in entries)
-				{
-					for (int pos = 0; pos < team.Value.Count; pos++)
-					{
-						team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-						StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].GetForce().ResourceStore.iMaterial.SetQuantity(0);
+						double expectedFraction = ((double)materials[i]) / maxMaterials[i];
+						foreach (MainConstruct mc in constructs[i])
+						{
+							mc.GetForce().ResourceStore.iMaterial.SetQuantity(mc.GetForce().ResourceStore.iMaterial.Maximum * expectedFraction);
+						}
+						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
 					}
 				}
 			}

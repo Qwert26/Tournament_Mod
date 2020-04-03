@@ -8,8 +8,6 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
 using TournamentMod.Serialisation;
 using UnityEngine;
-using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
-
 namespace TournamentMod.UI
 {
 	public class BaseSettingsTab : AbstractTournamentTab
@@ -161,24 +159,10 @@ namespace TournamentMod.UI
 				{
 					tp.Overtime.Us = (int)f;
 				}, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
-			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Local Resources", new ToolTip("Enable or Disable local Resources. When enabled, teams can not have infinte Materials!"), delegate (Parameters tp, bool b)
-			   {
-				   tp.LocalResources.Us = b = true;
-				   if (b)
-				   {
-					   for (int i = 0; i < 6; i++)
-					   {
-						   tp.InfinteResourcesPerTeam.Us[i] = false;
-					   }
-				   }
-			   }, (tp) => tp.LocalResources.Us | true));
-
-			segment3.AddInterpretter(StringDisplay.Quick("<b>With this Version \"Local Resources\" is forced on! The above toggle will be removed, once devtest hits stable, as well as everything that is linked to global resources!</b>"));
-
-			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute local Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
+			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
 			{
 				tp.DistributeLocalResources.Us = b;
-			}, (Parameters tp) => tp.DistributeLocalResources)).SetConditionalDisplayFunction(() => _focus.Parameters.LocalResources);
+			}, (Parameters tp) => tp.DistributeLocalResources));
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (Parameters tp, bool b)
 			{
 				tp.SameMaterials.Us = b;
@@ -187,7 +171,7 @@ namespace TournamentMod.UI
 			ScreenSegmentStandard segmentIdenticalMaterials = CreateStandardSegment();
 			segmentIdenticalMaterials.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
 			_focus.Parameters.EnsureEnoughData();
-			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Infinte Resources", new ToolTip("Give all Teams infinte Materials"), delegate (Parameters tp, bool b)
+			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Infinte Resources", new ToolTip("Give all Teams infinte Materials. It is unclear how it currently interacts with local Resources."), delegate (Parameters tp, bool b)
 			{
 				for (int i = 0; i < 6; i++)
 				{
@@ -196,7 +180,7 @@ namespace TournamentMod.UI
 			}, (tp) =>
 			{
 				return tp.InfinteResourcesPerTeam[0];
-			})).SetConditionalDisplayFunction(() => !_focus.Parameters.LocalResources);
+			}));
 			segmentIdenticalMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 				M.m((Parameters tp) => tp.ResourcesPerTeam[0]), "{0} Materials for all Teams", delegate (Parameters tp, float f)
 				{
@@ -204,24 +188,24 @@ namespace TournamentMod.UI
 					{
 						tp.ResourcesPerTeam.Us[i] = (int)f;
 					}
-				}, new ToolTip("For local Resources, this determines with how much Materials a participant can spawn at maximum, for global resources, it determines the amount of Materials in storage."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.InfinteResourcesPerTeam[0]);
+				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.InfinteResourcesPerTeam[0]);
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
 			for (int i = 0; i < 6; i++)
 			{
 				int index = i;
-				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index + 1}", new ToolTip($"Give Team {index + 1} infinte Materials."), delegate (Parameters tp, bool b)
+				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index + 1}", new ToolTip($"Give Team {index + 1} infinte Materials. It is unclear how it currently interacts with local Resources."), delegate (Parameters tp, bool b)
 					{
 						tp.InfinteResourcesPerTeam.Us[index] = b;
 					}, (tp) =>
 					{
 						return tp.InfinteResourcesPerTeam[index];
-					})).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
+					})).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
 				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 					M.m((Parameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (Parameters tp, float f)
 					  {
 						  tp.ResourcesPerTeam.Us[index] = (int) f;
-					  }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
+					  }, new ToolTip("This determines with how much Materials a participant of this team can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
 			}
 			#endregion
 			sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
