@@ -11,11 +11,23 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace TournamentMod.UI
 {
 	using Serialisation;
+	/// <summary>
+	/// GUI-Class for advanced settings such as active teams, formations and cleanup-functions.
+	/// </summary>
 	public class AdvancedSettingsTab : AbstractTournamentTab
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public AdvancedSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Advanced Settings", "Setup advanced Parameters for the fight.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();
@@ -215,6 +227,5 @@ namespace TournamentMod.UI
 				TriggerScreenRebuild();
 			}));
 		}
-		public override Action OnSelectTab => base.OnSelectTab;
 	}
 }

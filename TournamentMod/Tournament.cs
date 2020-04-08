@@ -27,8 +27,14 @@ namespace TournamentMod
 	using UI;
 	using Serialisation;
 	using Formations;
+	/// <summary>
+	/// GUI-Class for the Overlay and general Mangement.
+	/// </summary>
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
 	{
+		/// <summary>
+		/// The Singleton-instance.
+		/// </summary>
 		public static Tournament _me;
 		public TournamentConsole _GUI;
 		#region GUI-Stil
@@ -60,6 +66,9 @@ namespace TournamentMod
 		public Parameters Parameters { get; set; } = new Parameters(1u);
 		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
 		private List<int> materials;
+		/// <summary>
+		/// Static initialiser.
+		/// </summary>
 		static Tournament()
 		{
 			penaltyTimeColor = new Gradient
@@ -68,8 +77,8 @@ namespace TournamentMod
 				new GradientColorKey(Color.white, 0f),
 				new GradientColorKey(Color.blue, 0.25f),
 				new GradientColorKey(Color.green, 0.5f),
-				new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),
-				new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),
+				new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),//Yellow
+				new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),//Orange
 				new GradientColorKey(Color.red, 1f)
 			},
 				alphaKeys = new GradientAlphaKey[] {
@@ -134,7 +143,7 @@ namespace TournamentMod
 			LoadSettings();
 		}
 		/// <summary>
-		/// Loads in all selected crafts and sets their materialstorage or the storage of their team, depending if local resources are enabled.
+		/// Loads in all selected crafts and sets their materialstorage.
 		/// </summary>
 		public void LoadCraft()
 		{
@@ -366,20 +375,23 @@ namespace TournamentMod
 		{
 			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0) + LocalOffsetFromTerrainCenter();
 		}
-		public Vector3 FramePositionOfBoardSection()
+		private Vector3 FramePositionOfBoardSection()
 		{
 			return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection()+LocalTerrainOffsetFromSectionCenter());
 		}
-		public Vector3d UniversalPositionOfBoardSection()
+		private Vector3d UniversalPositionOfBoardSection()
 		{
 			return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
 		}
-		public Vector3 LocalTerrainOffsetFromSectionCenter() {
+		private Vector3 LocalTerrainOffsetFromSectionCenter() {
 			return WorldSpecification.i.BoardLayout.TerrainSize * new Vector3(Parameters.EastWestTerrain, 0, Parameters.NorthSouthTerrain);
 		}
 		public Vector3 LocalOffsetFromTerrainCenter() {
 			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
+		/// <summary>
+		/// Uses the loaded list to reconstruct the combined formation.
+		/// </summary>
 		private void PopulateFormations() {
 			foreach (CombinedFormation cf in teamFormations) {
 				cf.formationEntrycount.Clear();
@@ -400,6 +412,9 @@ namespace TournamentMod
 				teamFormations[v4i.x].Import(v4i);
 			}
 		}
+		/// <summary>
+		/// Saves the combined formations into a list.
+		/// </summary>
 		private void PopulateParameters() {
 			Parameters.TeamFormations.Clear();
 			for (int team = 0; team < teamFormations.Count; team++)
@@ -904,11 +919,11 @@ namespace TournamentMod
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="current"></param>
-		/// <param name="teamIndex"></param>
-		/// <param name="percentage"></param>
-		/// <param name="noEnemiesFound"></param>
-		/// <returns></returns>
+		/// <param name="current">The current construct to check distances.</param>
+		/// <param name="teamIndex">Its team index</param>
+		/// <param name="percentage">The relative value for attacking.</param>
+		/// <param name="noEnemiesFound">Set to true, if no enemies were found this pass.</param>
+		/// <returns>True, if the current participant is considered as "fleeing from battle" and has to accumulate penalty time.</returns>
 		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
 		{
 			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();

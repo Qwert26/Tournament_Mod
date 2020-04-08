@@ -10,15 +10,23 @@ namespace TournamentMod.Formations
 		/// <summary>
 		/// For new Formation, which don't have descriptions yet.
 		/// </summary>
-		/// <param name="gapLeftRight"></param>
-		/// <param name="gapForwardBackward"></param>
-		/// <param name="count"></param>
-		/// <param name="index"></param>
-		/// <returns></returns>
-		public static string UnknownFormation(float gapLeftRight = 0, float gapForwardBackward = 0, int count = 0, int index = 0)
+		/// <param name="_1">The distance along the local x-axis.</param>
+		/// <param name="_2">The distance along the local z-axis.</param>
+		/// <param name="_3">The amount of entries inside the formation</param>
+		/// <param name="_4">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
+		public static string UnknownFormation(float _1 = 0, float _2 = 0, int _3 = 0, int _4 = 0)
 		{
 			return "None";
 		}
+		/// <summary>
+		/// Gives out upto 4 unique position descriptions.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
 		public static string LineFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
@@ -53,10 +61,26 @@ namespace TournamentMod.Formations
 					return "None";
 			}
 		}
+		/// <summary>
+		/// Uses the line-formation with a forward-backward-gap of 0.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="_1">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
 		public static string GuardLineFormation(float gapLeftRight, float _1, int count, int index)
 		{
 			return LineFormation(gapLeftRight, 0, count, index);
 		}
+		/// <summary>
+		/// Gives out upto 3 unique position descriptions.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
 		public static string WedgeFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
@@ -84,7 +108,15 @@ namespace TournamentMod.Formations
 					return "None";
 			}
 		}
-		public static string DividedWedgeFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
+		/// <summary>
+		/// Gives out upto 3 unique position descriptions.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="_1">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
+		public static string DividedWedgeFormation(float gapLeftRight, float _1, int count, int index)
 		{
 			int signLR = Math.Sign(Mathf.RoundToInt(gapLeftRight));
 			//int signFB = Math.Sign(Mathf.RoundToInt(gapForwardBackward));
@@ -102,6 +134,14 @@ namespace TournamentMod.Formations
 			else
 				return "None";
 		}
+		/// <summary>
+		/// Marks the right entries as "Commandships" of column-pairs.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
 		public static string CommandedParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count, int index) {
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * FormationCalculation.factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
@@ -113,6 +153,14 @@ namespace TournamentMod.Formations
 			else
 				return "None";
 		}
+		/// <summary>
+		/// Gives each entry a column and row position.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
 		public static string ParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
@@ -120,15 +168,38 @@ namespace TournamentMod.Formations
 			int lines = (int) Math.Ceiling((double) count / shipsPerLine);
 			return $"Column {(index % lines) + 1}, Row {(index / lines) + 1}";
 		}
-		public static string ManipelBaseFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
+		/// <summary>
+		/// Gives each entry a Group, a Line and a Side descriptions.
+		/// </summary>
+		/// <param name="_1">The distance along the local x-axis.</param>
+		/// <param name="_2">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
+		public static string ManipelBaseFormation(float _1, float _2, int count, int index)
 		{
-			return ManipelFormation(gapLeftRight, gapForwardBackward, count, index, false);
+			return ManipelFormation(count, index, false);
 		}
-		public static string ManipelAttackFormation(float gapLeftRight, float gapForwardBackward, int count, int index)
+		/// <summary>
+		/// Gives each entry a Group, a Line and a Side descriptions.
+		/// </summary>
+		/// <param name="_1">The distance along the local x-axis.</param>
+		/// <param name="_2">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
+		public static string ManipelAttackFormation(float _1, float _2, int count, int index)
 		{
-			return ManipelFormation(gapLeftRight, gapForwardBackward, count, index, true);
+			return ManipelFormation(count, index, true);
 		}
-		private static string ManipelFormation(float _1, float _2, int count, int index, bool attack)
+		/// <summary>
+		/// Gives each entry a Group, a Line and a Side descriptions.
+		/// </summary>
+		/// <param name="count">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <param name="attack">If true, the attacking version will be used, otherwise the marching one.</param>
+		/// <returns>A description of the current position.</returns>
+		private static string ManipelFormation(int count, int index, bool attack)
 		{
 			int groups = Mathf.CeilToInt(count / 6f);
 			int line = index / groups;

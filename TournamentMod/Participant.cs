@@ -6,18 +6,30 @@ namespace TournamentMod
 	/// </summary>
 	public class Participant
 	{
+		/// <summary>
+		/// The ID of its Team.
+		/// </summary>
 		public ObjectId TeamId {
 			get;
 			set;
 		}
+		/// <summary>
+		/// The Name of the Team.
+		/// </summary>
 		public string TeamName {
 			get;
 			set;
 		}
+		/// <summary>
+		/// The unique ID of its construct.
+		/// </summary>
 		public int UniqueId {
 			get;
 			set;
 		}
+		/// <summary>
+		/// The Name of the Blueprint.
+		/// </summary>
 		public string BlueprintName {
 			get;
 			set;

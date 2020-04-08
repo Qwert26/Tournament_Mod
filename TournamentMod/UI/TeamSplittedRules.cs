@@ -10,13 +10,31 @@ using UnityEngine;
 using BrilliantSkies.Ftd.Planets.World;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for splitting spawn and penalty rules across teams.
+	/// </summary>
 	public class TeamSplittedRules : AbstractTournamentTab
 	{
+		/// <summary>
+		/// Used as minimal value for height-limits.
+		/// </summary>
 		private int heightmapRange;
+		/// <summary>
+		/// Used as maximal value for height-limits.
+		/// </summary>
 		private float fullGravityHeight;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public TeamSplittedRules(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Team-splitted Rules", "You can set team-specific rules for spawning and penaltytime-pickup here.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			CreateHeader("Uniform Rules are active", new ToolTip("Team-based Spawn- and Penalty-Rules are not currently active.")).SetConditionalDisplay(() => _focus.Parameters.UniformRules);

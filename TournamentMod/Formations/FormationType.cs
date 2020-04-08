@@ -1,6 +1,9 @@
 ﻿using System;
 namespace TournamentMod.Formations
 {
+	/// <summary>
+	/// The implemented and available formations.
+	/// </summary>
 	public enum FormationType
 	{
 		Line,
@@ -12,9 +15,17 @@ namespace TournamentMod.Formations
 		RomanManipelAttack,
 		GuardLine
 	}
+	/// <summary>
+	/// Extension-Methods for the FormationTypes.
+	/// </summary>
 	public static class FormationTypeExtensions
 	{
-		public static Formation getFormation(this FormationType type) {
+		/// <summary>
+		/// Gets a Formation-struct based on the value of the FormationType.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Formation GetFormation(this FormationType type) {
 			switch (type)
 			{
 				case FormationType.Line:

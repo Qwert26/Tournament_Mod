@@ -10,14 +10,25 @@ using TournamentMod.Serialisation;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for Eyecandy, currently only fleetcolors of active teams.
+	/// </summary>
 	public class EyecandyTab : AbstractTournamentTab
 	{
 		private int currentTeam = 0;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public EyecandyTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus)
 		{
 			Name = new Content("Eyecandy", "Change the fleet appearence of a Team.");
 		}
-		public override Action OnSelectTab => base.OnSelectTab;
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();

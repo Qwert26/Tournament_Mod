@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
 namespace TournamentMod
 {
+	/// <summary>
+	/// The Plugin, necessary to hook up the Mod into the Game.
+	/// </summary>
 	public class TournamentPlugin : GamePlugin
 	{
 		private static Tournament _t;

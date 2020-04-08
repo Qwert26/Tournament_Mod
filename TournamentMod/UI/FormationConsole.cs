@@ -12,10 +12,22 @@ using System;
 namespace TournamentMod.UI
 {
     using Formations;
+	/// <summary>
+	/// GUI-Class for Formation-setting of a singular team.
+	/// </summary>
     public class FormationConsole : ConsoleUi<CombinedFormation>
 	{
 		private readonly int teamSize, teamIndex;
+		/// <summary>
+		/// All the available formations.
+		/// </summary>
 		private readonly DropDownMenuAlt<FormationType> formationOptions;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="focus"></param>
+		/// <param name="teamIndex"></param>
+		/// <param name="currentTeamSize"></param>
 		public FormationConsole(CombinedFormation focus, int teamIndex, int currentTeamSize) : base(focus)
 		{
 			teamSize = currentTeamSize;
@@ -28,13 +40,18 @@ namespace TournamentMod.UI
 				FormationType ft = types[i];
 				items[i] = new DropDownMenuAltItem<FormationType>()
 				{
-					Name = ft.getFormation().Name,
-					ToolTip = ft.getFormation().Description,
+					Name = ft.GetFormation().Name,
+					ToolTip = ft.GetFormation().Description,
 					ObjectForAction = ft
 				};
 			}
 			formationOptions.SetItems(items);
 		}
+		/// <summary>
+		/// Builds the Content.
+		/// </summary>
+		/// <param name="suggestedName"></param>
+		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
 			ConsoleWindow window = NewWindow("Manage Formation", WindowSizing.GetRhs());
@@ -100,6 +117,11 @@ namespace TournamentMod.UI
 				}));
 			return window;
 		}
+		/// <summary>
+		/// Determines the maximum amount of entries inside a formation depending on the set entries for all other formations.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		private float DetermineMaximum(int index)
 		{
 			int sum = 0;

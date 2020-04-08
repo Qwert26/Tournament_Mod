@@ -10,13 +10,28 @@ using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for managing participants.
+	/// </summary>
 	public class ParticipantManagementTab : AbstractTournamentTab
 	{
+		/// <summary>
+		/// The Console for adding Participants.
+		/// </summary>
 		internal ParticipantConsole participantConsole;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public ParticipantManagementTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Participants", "View and edit Participants.");
 			participantConsole = new ParticipantConsole(focus, this);
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			CreateHeader("Modify current Entries", new ToolTip("Modify current Entries from active Teams."));
@@ -170,9 +185,15 @@ namespace TournamentMod.UI
 			})).SetConditionalDisplayFunction(() => ready);
 			posthead.AddInterpretter(StringDisplay.Quick("It seems at least one Team has no Entry. Reduce the number of Teams or give the Team(s) in question at least one Entry.")).SetConditionalDisplayFunction(() => !ready);
 		}
+		/// <summary>
+		/// Automatically pops up the Participant-Console.
+		/// </summary>
 		public override Action OnSelectTab => delegate() {
 			PopThisUp(participantConsole);
 		};
+		/// <summary>
+		/// Automatically deactivates the current Popup, when the Tab (or the whole Console) get closed.
+		/// </summary>
 		public override Action<OnDeselectTabSource> OnDeselectTab => delegate(OnDeselectTabSource source) {
 			DeactivatePopup();
 			GuiDisplayer.GetSingleton().EvenOutUisAcrossTheScreen();

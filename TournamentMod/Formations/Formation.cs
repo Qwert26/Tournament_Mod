@@ -16,7 +16,7 @@ namespace TournamentMod.Formations
 		/// <param name="index">the current entry</param>
 		/// <param name="distance">The distance ffrom the center</param>
 		/// <param name="height">The set height of the entry</param>
-		/// <returns></returns>
+		/// <returns>The Position of the entry of a team in respect to the center of the battlefield.</returns>
 		public delegate Vector3 LocalPosition(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height);
 		/// <summary>
 		/// A function which uses the provided information to descripe a position inside a formation.
@@ -25,15 +25,15 @@ namespace TournamentMod.Formations
 		/// <param name="gapForwardBackward">The distance along the local z-axis</param>
 		/// <param name="count">the amount of entries inside this formation</param>
 		/// <param name="index">the current entry</param>
-		/// <returns></returns>
+		/// <returns>The description of the current entry inside a particular formation.</returns>
 		public delegate string PositionDescription(float gapLeftRight, float gapForwardBackward, int count, int index);
 		/// <summary>
 		/// A function which uses the provided information to calculate the size of the bounding box
 		/// </summary>
 		/// <param name="gapLeftRight">The distance along the local x-axis</param>
 		/// <param name="gapForwardBackward">the distance along the local z-axis</param>
-		/// <param name="count"></param>
-		/// <returns></returns>
+		/// <param name="count">The amount of entries inside this formation</param>
+		/// <returns>The bounding-box of this formation, used for combining formations.</returns>
 		public delegate Vector2 Size(float gapLeftRight, float gapForwardBackward, int count);
 		/// <summary>
 		/// The Name of the Formation
@@ -56,7 +56,7 @@ namespace TournamentMod.Formations
 		/// </summary>
 		public Size DetermineSize { get; set; }
 		/// <summary>
-		/// The "Line"-Formation
+		/// The classic "Line"-Formation
 		/// </summary>
 		public static readonly Formation Line = new Formation()
 		{
@@ -91,7 +91,7 @@ namespace TournamentMod.Formations
 			DetermineSize = FormationSizeCalculation.DividedWedgeFormation
 		};
 		/// <summary>
-		/// a square-like formation
+		/// a rectangular formation
 		/// </summary>
 		public static readonly Formation ParallelColumns = new Formation()
 		{
@@ -103,7 +103,7 @@ namespace TournamentMod.Formations
 			DetermineSize = FormationSizeCalculation.ParallelColumnsFormation
 		};
 		/// <summary>
-		/// a square-like formation where each pair of columns has an additional ship in front of them.
+		/// a rectangular formation where each distinct pair of columns has an additional ship in front of them.
 		/// </summary>
 		public static readonly Formation CommandedParallelColumns = new Formation()
 		{

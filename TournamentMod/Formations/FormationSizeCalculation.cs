@@ -7,17 +7,43 @@ namespace TournamentMod.Formations
 	/// </summary>
 	public static class FormationSizeCalculation
 	{
+		/// <summary>
+		/// Calculates the element-wise absolute value of a Vector2.
+		/// </summary>
+		/// <param name="v2"></param>
+		/// <returns></returns>
 		public static Vector2 Abs(this Vector2 v2) {
 			return new Vector2(Mathf.Abs(v2.x), Mathf.Abs(v2.y));
 		}
+		/// <summary>
+		/// Calculates the size of the line-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 LineFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			return (new Vector2(gapLeftRight, gapForwardBackward) * count).Abs();
 		}
+		/// <summary>
+		/// Calculates the size of the guardline-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 GuardLineFormation(float gapLeftRight, float _1, int count)
 		{
 			return new Vector2(gapLeftRight * count, 0).Abs();
 		}
+		/// <summary>
+		/// Calculates the size of the "arrow"/"funnel"-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 WedgeFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			Vector2 ret = new Vector2(gapLeftRight, gapForwardBackward);
@@ -29,6 +55,13 @@ namespace TournamentMod.Formations
 			}
 			return ret.Abs();
 		}
+		/// <summary>
+		/// Calculates the size of a "divided wedge"-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 DividedWedgeFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			if (count <= 3)
@@ -49,6 +82,13 @@ namespace TournamentMod.Formations
 				return new Vector2(width, height).Abs();
 			}
 		}
+		/// <summary>
+		/// Calculates the size of the columns-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 ParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
@@ -56,6 +96,13 @@ namespace TournamentMod.Formations
 			int columns = (int) Math.Ceiling((double) count / shipsPerColumn);
 			return new Vector2(gapLeftRight * columns, gapForwardBackward * shipsPerColumn).Abs();
 		}
+		/// <summary>
+		/// Calculates the size of the commanded columns-formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 CommandedParallelColumnsFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
@@ -63,6 +110,13 @@ namespace TournamentMod.Formations
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
 			return new Vector2(gapLeftRight * 4 * groups, gapForwardBackward * (1 + 2 * groups)).Abs();
 		}
+		/// <summary>
+		/// Calculates the size of a roman manipel formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 ManipelFormation(float gapLeftRight, float gapForwardBackward, int count)
 		{
 			int groups = Mathf.CeilToInt(count / 6f);

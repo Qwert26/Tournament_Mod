@@ -10,14 +10,26 @@ using TournamentMod.Serialisation;
 using UnityEngine;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for basic settings such as starting distance, spawngaps, penalty- and match-time.
+	/// </summary>
 	public class BaseSettingsTab : AbstractTournamentTab
 	{
 		private int sectionsNorthSouth, sectionsEastWest, terrainsPerSection;
 		private int heightmapRange;
 		private float fullGravityHeight, terrainSize;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public BaseSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Base Settings", "Setup the basic Parameters of the Fight.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();
