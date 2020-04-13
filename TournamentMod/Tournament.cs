@@ -1,11 +1,9 @@
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
 using BrilliantSkies.Core.Id;
-using BrilliantSkies.Core.Returns.PositionAndRotation;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Core.Types;
 using BrilliantSkies.Core.UniverseRepresentation;
-using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
 using BrilliantSkies.Effects.Cameras;
 using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
@@ -36,13 +34,25 @@ namespace TournamentMod
 		/// The Singleton-instance.
 		/// </summary>
 		public static Tournament _me;
+		/// <summary>
+		/// The Console-Window for setting things up.
+		/// </summary>
 		public TournamentConsole _GUI;
 		#region GUI-Stil
+		/// <summary>
+		/// Style for the Timer at the top of the screen
+		/// </summary>
 		private readonly GUIStyle timerStyle;
 		private readonly GUIStyle extrainfoLeft;
+		/// <summary>
+		/// Style for the Sidelist with the Teams and Participants.
+		/// </summary>
 		private readonly GUIStyle sidelist;
 		private readonly GUIStyle extrainfoRight;
 		private readonly GUIStyle extrainfoName;
+		/// <summary>
+		/// The Colorgradient for the Penaltytime for Participants.
+		/// </summary>
 		private static readonly Gradient penaltyTimeColor;
 		#endregion
 		#region Kamerakontrolle
@@ -54,23 +64,48 @@ namespace TournamentMod
 		private int orbitMothership;
 		private int orbitindex;
 		#endregion
-		private bool extraInfo;
+		private bool extraInfo = false;
 		private float timerTotal;
 		private float timerTotal2;
-		private byte overtimeCounter;
+		/// <summary>
+		/// Amount of Overtimes the battles had.
+		/// </summary>
+		private byte overtimeCounter = 0;
+		/// <summary>
+		/// Current scrollpostition of the Sidelist.
+		/// </summary>
 		private Vector2 scrollPos = Vector2.zero;
 		//Management
+		/// <summary>
+		/// A 2D-Table to Map Teams/Factions to their Mainconstructs which map to their Participant-Object.
+		/// </summary>
 		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, Participant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, Participant>>();
+		/// <summary>
+		/// When true, the Sidelist gets shown.
+		/// </summary>
 		private bool showLists = true;
+		/// <summary>
+		/// The Formation for each Team. For saving, the entire list gets converted into a list of Vector4Int.
+		/// </summary>
 		public List<CombinedFormation> teamFormations = new List<CombinedFormation>();
+		/// <summary>
+		/// The Parameters used for the fight.
+		/// </summary>
 		public Parameters Parameters { get; set; } = new Parameters(1u);
+		/// <summary>
+		/// The Blueprints to spawn in at the beginning.
+		/// </summary>
 		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
+		/// <summary>
+		/// For distributed Materials.
+		/// </summary>
 		private List<int> materials;
 		/// <summary>
 		/// Static initialiser.
 		/// </summary>
 		static Tournament()
 		{
+			//Erzeuge den Farbverlauf von YouTube: Weiß-Blau-Grün-Gelb-Orange-Rot(eigentlich Schwarz)
 			penaltyTimeColor = new Gradient
 			{
 				colorKeys = new GradientColorKey[] {
@@ -252,7 +287,7 @@ namespace TournamentMod
 			}
 			orbitindex = 0;
 			orbittarget = 0;
-			flycam.transform.position = new Vector3(-500f, 50f, 0f);
+			flycam.transform.position = new Vector3(-500f, 50f, 0f) + LocalOffsetFromTerrainCenter();
 			flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
 			foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
 			{
@@ -375,17 +410,33 @@ namespace TournamentMod
 		{
 			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0) + LocalOffsetFromTerrainCenter();
 		}
+		/// <summary>
+		/// Calculates the frame position and moves the frame when necessary.
+		/// </summary>
+		/// <returns></returns>
 		private Vector3 FramePositionOfBoardSection()
 		{
 			return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection()+LocalTerrainOffsetFromSectionCenter());
 		}
+		/// <summary>
+		/// Calculates the universal position of the selected map-sector.
+		/// </summary>
+		/// <returns></returns>
 		private Vector3d UniversalPositionOfBoardSection()
 		{
 			return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
 		}
+		/// <summary>
+		/// Uses the selected Terrain-tile and its size to get the offset from the center of a map-sector.
+		/// </summary>
+		/// <returns></returns>
 		private Vector3 LocalTerrainOffsetFromSectionCenter() {
 			return WorldSpecification.i.BoardLayout.TerrainSize * new Vector3(Parameters.EastWestTerrain, 0, Parameters.NorthSouthTerrain);
 		}
+		/// <summary>
+		/// Packs the terrain-based offsets into a Vector3.
+		/// </summary>
+		/// <returns></returns>
 		public Vector3 LocalOffsetFromTerrainCenter() {
 			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
@@ -632,7 +683,7 @@ namespace TournamentMod
 			bool changeExtraInfo = false;
 			bool changeShowList = false;
 			int oldIndex = orbitindex;
-			if (Parameters.DefaultKeys.Us)
+			if (Parameters.DefaultKeys)
 			{
 				pause = Input.GetKeyDown(KeyCode.F11); // default f11
 				shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -890,9 +941,12 @@ namespace TournamentMod
 						{
 							violatingRules = CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex]/100f, out bool noEnemies);
 							//Are there no more enemies?
-							if (noEnemies && Parameters.PauseOnVictory)
+							if (noEnemies)
 							{
-								GameSpeedManager.Instance.TogglePause();
+								if (Parameters.PauseOnVictory)
+								{
+									GameSpeedManager.Instance.TogglePause();
+								}
 								break;
 								//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
 							}
@@ -917,7 +971,7 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// 
+		/// Performs a distance-check for a given Construct against all its enemies to determine, if it is currently violating the distance-rule.
 		/// </summary>
 		/// <param name="current">The current construct to check distances.</param>
 		/// <param name="teamIndex">Its team index</param>
@@ -947,15 +1001,20 @@ namespace TournamentMod
 				float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
 				float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
 				//Too far away?
-				if(currentDistance>Parameters.DistanceLimit[teamIndex]){
+				if (currentDistance > Parameters.DistanceLimit[teamIndex])
+				{
 					if (Parameters.SoftLimits[teamIndex])
 					{
 						//Going away faster than DistanceReverse allows?
 						if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
-						{ rulebreaks++; }
+						{
+							rulebreaks++;
+						}
 					}
 					else
-					{ rulebreaks++; }
+					{
+						rulebreaks++;
+					}
 				}
 			}
 			return Mathf.Max(1, Mathf.RoundToInt((1 - percentage) * enemies.Count)) <= rulebreaks;
@@ -1106,6 +1165,9 @@ namespace TournamentMod
 							break;
 						case 3:
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
+							break;
+						default:
+							Debug.LogError("Health calculation of Construct is not available!");
 							break;
 					}
 					tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;
