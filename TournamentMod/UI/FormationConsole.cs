@@ -4,7 +4,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Tips;
-using UnityEngine;
 using BrilliantSkies.Ui.Consoles.Interpretters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 using BrilliantSkies.Ui.Layouts.DropDowns;
@@ -21,7 +20,7 @@ namespace TournamentMod.UI
 		/// <summary>
 		/// All the available formations.
 		/// </summary>
-		private readonly DropDownMenuAlt<FormationType> formationOptions;
+		private readonly DropDownMenuAltItem<FormationType>[] items;
 		/// <summary>
 		/// 
 		/// </summary>
@@ -32,7 +31,6 @@ namespace TournamentMod.UI
 		{
 			teamSize = currentTeamSize;
 			this.teamIndex = teamIndex;
-			formationOptions = new DropDownMenuAlt<FormationType>(TextAnchor.MiddleCenter);
 			FormationType[] types = (FormationType[]) Enum.GetValues(typeof(FormationType));
 			DropDownMenuAltItem<FormationType>[] items = new DropDownMenuAltItem<FormationType>[types.Length];
 			for (int i = 0; i < types.Length; i++)
@@ -45,7 +43,6 @@ namespace TournamentMod.UI
 					ObjectForAction = ft
 				};
 			}
-			formationOptions.SetItems(items);
 		}
 		/// <summary>
 		/// Builds the Content.
@@ -65,6 +62,8 @@ namespace TournamentMod.UI
 				ScreenSegmentTable formationSegment = screen.CreateTableSegment(3, 3);
 				formationSegment.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
 				formationSegment.SqueezeTable = false;
+				DropDownMenuAlt<FormationType> formationOptions = new DropDownMenuAlt<FormationType>();
+				formationOptions.SetItems(items);
 				formationSegment.AddInterpretter(new DropDown<CombinedFormation, FormationType>(_focus, formationOptions, (CombinedFormation cf, FormationType ft) => cf.formationEntrycount[index].Item1 == ft, delegate (CombinedFormation cf, FormationType ft)
 					{
 						Tuple<FormationType, int> temp = cf.formationEntrycount[index];
