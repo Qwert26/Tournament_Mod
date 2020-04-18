@@ -24,15 +24,15 @@ namespace TournamentMod.UI
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="focus"></param>
-		/// <param name="teamIndex"></param>
-		/// <param name="currentTeamSize"></param>
+		/// <param name="focus">The Formation to modify</param>
+		/// <param name="teamIndex">The teamindex of the formation, used for the title</param>
+		/// <param name="currentTeamSize">The current teamsize, used for calculating maximums.</param>
 		public FormationConsole(CombinedFormation focus, int teamIndex, int currentTeamSize) : base(focus)
 		{
 			teamSize = currentTeamSize;
 			this.teamIndex = teamIndex;
 			FormationType[] types = (FormationType[]) Enum.GetValues(typeof(FormationType));
-			DropDownMenuAltItem<FormationType>[] items = new DropDownMenuAltItem<FormationType>[types.Length];
+			items = new DropDownMenuAltItem<FormationType>[types.Length];
 			for (int i = 0; i < types.Length; i++)
 			{
 				FormationType ft = types[i];
