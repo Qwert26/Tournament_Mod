@@ -219,25 +219,28 @@ namespace TournamentMod
 					}
 					else
 					{
-						if (Parameters.InfinteResourcesPerTeam[team.Key])
-						{
-							continue;
-						}
 						maxMaterials.Add(team.Key, 0);
 						constructs.Add(team.Key, new List<MainConstruct>());
 						for (int pos = 0; pos < team.Value.Count; pos++)
 						{
 							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
 							constructs[team.Key].Add(mc);
-							maxMaterials[team.Key] += (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
+							if (Parameters.TeamEntryMaterials[team.Key])
+							{
+								mc.GetForce().ResourceStore.iMaterial.Quantity = team.Value[pos].CurrentMaterials;
+							}
+							else
+							{
+								maxMaterials[team.Key] += (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
+							}
 						}
 					}
 				}
 				for (int i = 0; i < Parameters.ActiveFactions; i++)
 				{
-					if (Parameters.InfinteResourcesPerTeam[i])
+					if (Parameters.TeamEntryMaterials[i])
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResourcesInfinite();
+						continue;
 					}
 					else if (maxMaterials[i] <= materials[i])
 					{
@@ -250,7 +253,7 @@ namespace TournamentMod
 					}
 					else
 					{
-						double expectedFraction = ((double)materials[i]) / maxMaterials[i];
+						double expectedFraction = ((double) materials[i]) / maxMaterials[i];
 						foreach (MainConstruct mc in constructs[i])
 						{
 							mc.GetForce().ResourceStore.iMaterial.SetQuantity(mc.GetForce().ResourceStore.iMaterial.Maximum * expectedFraction);
@@ -682,7 +685,7 @@ namespace TournamentMod
 			bool orbitcamOn = false;
 			bool changeExtraInfo = false;
 			bool changeShowList = false;
-			int oldIndex = orbitindex;
+			int oldIndex = orbitindex, oldTarget = orbittarget;
 			if (Parameters.DefaultKeys)
 			{
 				pause = Input.GetKeyDown(KeyCode.F11); // default f11
@@ -735,6 +738,7 @@ namespace TournamentMod
 				if (orbitindex >= StaticConstructablesManager.constructables.Count)
 				{
 					orbitindex = 0;
+					orbittarget = 0;
 				}
 				if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != 0 ||
 					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id != orbitMothership))
@@ -854,7 +858,7 @@ namespace TournamentMod
 				}
 				else
 				{
-					if (oldIndex != orbitindex)
+					if (oldIndex != orbitindex || orbittarget != oldTarget)
 					{
 						orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
 					}

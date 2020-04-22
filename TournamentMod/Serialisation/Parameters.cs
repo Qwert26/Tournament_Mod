@@ -90,11 +90,6 @@ namespace TournamentMod.Serialisation
 		[Variable(14, "Same materials", "When active, all teams will have the exact same starting materials.")]
 		public VarBool SameMaterials { get; set; } = new VarBool(true);
 		/// <summary>
-		/// The faction storage for a team can be set to contain infinte materials.
-		/// </summary>
-		[Variable(15, "Infinte Resources for given Team", "When active, the Team at a particular index will have infinte Resources.")]
-		public VarList<bool> InfinteResourcesPerTeam { get; set; } = new BoolList();
-		/// <summary>
 		/// The total amount of materials a team has.
 		/// </summary>
 		[Variable(17, "Resources for a given Team at a given index")]
@@ -263,6 +258,11 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		[Variable(118, "Team index-Formation position-Formation index-Starting index")]
 		public Vector4IntList TeamFormations { get; set; } = new Vector4IntList();
+		/// <summary>
+		/// When set true for a team, its entries will have individualised materials.
+		/// </summary>
+		[Variable(119, "The Entries with a given team-index will have individual materials")]
+		public BoolList TeamEntryMaterials { get; set; } = new BoolList();
 		#endregion
 		#endregion
 		#region Teams
@@ -301,10 +301,6 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		public void EnsureEnoughData()
 		{
-			while (InfinteResourcesPerTeam.Count < 6)
-			{
-				InfinteResourcesPerTeam.Add(false);
-			}
 			while (ResourcesPerTeam.Count < 6)
 			{
 				ResourcesPerTeam.Add(10000);
@@ -373,6 +369,10 @@ namespace TournamentMod.Serialisation
 			{
 				EnemyAttackPercentage.Add(50);
 			}
+			while (TeamEntryMaterials.Count < 6)
+			{
+				TeamEntryMaterials.Add(false);
+			}
 		}
 		/// <summary>
 		/// Makes each team have identical settings. Uses Team 1 as a base line.
@@ -381,7 +381,6 @@ namespace TournamentMod.Serialisation
 		{
 			for (int i = 1; i < 6; i++)
 			{
-				InfinteResourcesPerTeam.Us[i] = InfinteResourcesPerTeam[0];
 				ResourcesPerTeam.Us[i] = ResourcesPerTeam[0];
 				AltitudeLimits.Us[i] = AltitudeLimits[0];
 				DistanceLimit.Us[i] = DistanceLimit[0];
@@ -395,6 +394,7 @@ namespace TournamentMod.Serialisation
 				AltitudeReverse.Us[i] = AltitudeReverse[0];
 				MaximumSpeed.Us[i] = MaximumSpeed[0];
 				EnemyAttackPercentage.Us[i] = EnemyAttackPercentage[0];
+				TeamEntryMaterials.Us[i] = TeamEntryMaterials[0];
 			}
 		}
 	}

@@ -8,6 +8,8 @@ using BrilliantSkies.Ui.Consoles.Interpretters;
 using System;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
+using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
+
 namespace TournamentMod.UI
 {
 	/// <summary>
@@ -54,7 +56,7 @@ namespace TournamentMod.UI
 			for (int i = 0; i < 6; i++)
 			{
 				int factionIndex = i;
-				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {i + 1}", new ToolTip($"Inverts the direction for Team {i + 1}, by turning each entry 180°."), delegate (Tournament t)
+				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {factionIndex + 1}", new ToolTip($"Inverts the direction for Team {factionIndex + 1}, by turning each entry 180°."), delegate (Tournament t)
 				{
 					t.entries[factionIndex].ForEach((Entry te) => te.Spawn_direction = (te.Spawn_direction + 180) % 360);
 					TriggerScreenRebuild();
@@ -71,7 +73,7 @@ namespace TournamentMod.UI
 			for (int i = 0; i < 6; i++)
 			{
 				int factionIndex = i;
-				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Clear Team {i + 1}", new ToolTip($"Removes all entries for Team {i + 1}."), delegate (Tournament t)
+				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Clear Team {factionIndex + 1}", new ToolTip($"Removes all entries for Team {factionIndex + 1}."), delegate (Tournament t)
 				{
 					t.entries[factionIndex].Clear();
 					TriggerScreenRebuild();
@@ -91,7 +93,7 @@ namespace TournamentMod.UI
 			for (int i = 0; i < 6; i++)
 			{
 				int factionIndex = i;
-				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Update Team {i + 1}", new ToolTip($"Updates all entries for Team {i + 1}."), delegate (Tournament t)
+				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Update Team {factionIndex + 1}", new ToolTip($"Updates all entries for Team {factionIndex + 1}."), delegate (Tournament t)
 				{
 					foreach (var member in t.entries[factionIndex]) {
 						member.Spawn_direction = t.Parameters.Direction;
@@ -108,8 +110,8 @@ namespace TournamentMod.UI
 				{
 					teamSize = _focus.entries[factionIndex].Count;
 				}
-				ready &= teamSize > 0 || i >= _focus.Parameters.ActiveFactions;
-				CreateHeader("Team " + (i + 1), new ToolTip($"Current Entries for Team{i + 1}. The list goes from top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
+				ready &= teamSize > 0 || factionIndex >= _focus.Parameters.ActiveFactions;
+				CreateHeader("Team " + (factionIndex + 1), new ToolTip($"Current Entries for Team{factionIndex + 1}. The list goes from top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
 				for (int j = 0; j < teamSize; j++) {
 					int indexInFaction = j;
 					Entry entry = _focus.entries[factionIndex][indexInFaction];
@@ -139,7 +141,10 @@ namespace TournamentMod.UI
 						_focus.Parameters.SpawngapFB[factionIndex],
 						_focus.entries[factionIndex].Count,
 						indexInFaction))), M.m<ToolTip>(new ToolTip("Here you can see every important information about the Blueprint."))), 0, 0);
-					entryControl.AddInterpretter(new Empty(), 1, 0);
+					entryControl.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Entry>.Quick(entry, 0, entry.MaxMaterials, 1, 0, M.m<Entry>((e) => e.CurrentMaterials), "Spawnmaterials: {0}", delegate (Entry e, float f)
+							 {
+								 e.CurrentMaterials = f;
+							 }, new ToolTip("Change the Spawnmaterials for this entry")), 1, 0).SetConditionalDisplayFunction(() => _focus.Parameters.TeamEntryMaterials[factionIndex]);
 					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Remove", new ToolTip("Removes this entry."), delegate (Tournament t)
 					{
 						t.entries[factionIndex].Remove(entry);

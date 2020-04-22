@@ -1,5 +1,4 @@
-﻿using System;
-using BrilliantSkies.Ui.Consoles;
+﻿using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Tips;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;

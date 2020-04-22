@@ -63,6 +63,14 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
+		/// Get the material capacity from the ConstrcutableSpecialInfo, will be used for Entry-specific materials.
+		/// </summary>
+		public float MaxMaterials => bp.CSI.MaterialCapacity;
+		/// <summary>
+		/// 
+		/// </summary>
+		public float CurrentMaterials { get; set; } = 0;
+		/// <summary>
 		/// Creates an array of the mainconstruct and all available drones in the style of name and cost.
 		/// </summary>
 		public string[] LabelCost {
@@ -103,14 +111,13 @@ namespace TournamentMod
 		/// <returns>A MainConstruct for further manipulation.</returns>
 		public MainConstruct Spawn(float distance, float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
-			MainConstruct val = BlueprintConverter.Convert(null, bp, SpawnInstructions.IgnoreDamage);
 			FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
 			Team_id = faction.Id;
 			BlueprintInitialisation initialisation = new BlueprintInitialisation();
-			initialisation.Run(new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(Location(gapLeftRight, gapForwardBackward, count, index, distance)), Direction())
+			MainConstruct val = initialisation.Run(new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(Location(gapLeftRight, gapForwardBackward, count, index, distance)), Direction())
 			{
 				PositioningType = SpawnPositioning.OriginOrCentre
-			}, null, Team_id);
+			}, new Blueprint2Construct(bp, SpawnInstructions.IgnoreDamage | SpawnInstructions.Creative), Team_id);
 			//(val.Owner as ConstructableOwner).SetFleetColors(Team_id);
 			return val;
 		}

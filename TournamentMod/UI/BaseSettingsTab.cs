@@ -183,41 +183,38 @@ namespace TournamentMod.UI
 			ScreenSegmentStandard segmentIdenticalMaterials = CreateStandardSegment();
 			segmentIdenticalMaterials.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
 			_focus.Parameters.EnsureEnoughData();
-			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Infinte Resources", new ToolTip("Give all Teams infinte Materials. It is unclear how it currently interacts with local Resources."), delegate (Parameters tp, bool b)
+			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Entry-specific Resources", new ToolTip("All entries on all teams get individualised materials, look at the Participant-Tab."), delegate (Parameters tp, bool b)
 			{
 				for (int i = 0; i < 6; i++)
 				{
-					tp.InfinteResourcesPerTeam.Us[i] = b;
+					tp.TeamEntryMaterials.Us[i] = b;
 				}
 			}, (tp) =>
 			{
-				return tp.InfinteResourcesPerTeam[0];
-			}));
+				return tp.TeamEntryMaterials[0];
+			})).SetConditionalDisplayFunction(() => _focus.Parameters.DistributeLocalResources);
 			segmentIdenticalMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 				M.m((Parameters tp) => tp.ResourcesPerTeam[0]), "{0} Materials for all Teams", delegate (Parameters tp, float f)
 				{
 					for (int i = 0; i < 6; i++)
 					{
-						tp.ResourcesPerTeam.Us[i] = (int)f;
+						tp.ResourcesPerTeam.Us[i] = (int) f;
 					}
-				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.InfinteResourcesPerTeam[0]);
+				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.TeamEntryMaterials[0]);
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
 			for (int i = 0; i < 6; i++)
 			{
 				int index = i;
-				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index + 1}", new ToolTip($"Give Team {index + 1} infinte Materials. It is unclear how it currently interacts with local Resources."), delegate (Parameters tp, bool b)
-					{
-						tp.InfinteResourcesPerTeam.Us[index] = b;
-					}, (tp) =>
-					{
-						return tp.InfinteResourcesPerTeam[index];
-					})).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions);
+				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Entry-specific Resources for Team {index + 1}", new ToolTip($"Give the entries on Team {index + 1} individualised Materials. See the Participant-Tab."), delegate (Parameters tp, bool b)
+					   {
+						   tp.TeamEntryMaterials.Us[index] = b;
+					   }, (tp) => tp.TeamEntryMaterials[index])).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && _focus.Parameters.DistributeLocalResources);
 				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 					M.m((Parameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (Parameters tp, float f)
 					  {
 						  tp.ResourcesPerTeam.Us[index] = (int) f;
-					  }, new ToolTip("This determines with how much Materials a participant of this team can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
+					  }, new ToolTip("This determines with how much Materials a participant of this team can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.TeamEntryMaterials[index]);
 			}
 			#endregion
 			sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;

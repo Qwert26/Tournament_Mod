@@ -32,10 +32,10 @@ namespace TournamentMod.Serialisation
 			return (uint)Us.Count;
 		}
 		/// <summary>
-		/// 
+		/// Converts a single entry into a byte-array which has at least 16 bytes.
 		/// </summary>
-		/// <param name="keyIndex"></param>
-		/// <param name="byteArray"></param>
+		/// <param name="keyIndex">The index of the entry to convert.</param>
+		/// <param name="byteArray">The array to store the entry in, needs to have at least 16 bytes.</param>
 		public override void EntryToByte(uint keyIndex, ref byte[] byteArray)
 		{
 			Vector4i entry = Us[(int)keyIndex];
