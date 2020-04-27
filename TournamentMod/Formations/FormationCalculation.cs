@@ -5,7 +5,8 @@ namespace TournamentMod.Formations
 	/// <summary>
 	/// Contains functions for positional calculations
 	/// </summary>
-	public static class FormationCalculation {
+	public static class FormationCalculation
+	{
 		/// <summary>
 		/// Important value for PC- and CPC-Formation.
 		/// </summary>
@@ -15,8 +16,24 @@ namespace TournamentMod.Formations
 		/// </summary>
 		/// <param name="angle"></param>
 		/// <returns></returns>
-		public static Quaternion FactionRotation(float angle) {
+		public static Quaternion FactionRotation(float angle)
+		{
 			return Quaternion.Euler(0, angle, 0);
+		}
+		///	<summary>
+		///	The default method for new formation.
+		///	</summary>
+		/// <param name="_1">The rotation angle for a team</param>
+		/// <param name="_2">The distance along the local x-axis.</param>
+		/// <param name="_3">The distance along the local z-axis.</param>
+		/// <param name="_4">The amount of entries.</param>
+		/// <param name="_5">The index of the current entry.</param>
+		/// <param name="_6">The distance of the formation to the center of the battlefield.</param>
+		/// <param name="_7">The spawn-height of the entry.</param>
+		/// <returns>The Vector (0,0,0).</returns>
+		public static Vector3 UnkownFormation(float _1, float _2, float _3, int _4, int _5, float _6, float _7)
+		{
+			return Vector3.zero;
 		}
 		/// <summary>
 		/// Calculates the position of an individual entry inside a line-formation.
@@ -29,8 +46,9 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 LineFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
-			float x = - (count - 1) * gapLeftRight / 2f + index * gapLeftRight;
+		public static Vector3 LineFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
+			float x = -(count - 1) * gapLeftRight / 2f + index * gapLeftRight;
 			float z = distance /*+ (count - 1) * gapForwardBackward / 2f*/ + index * gapForwardBackward;
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
 		}
@@ -45,7 +63,8 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 GuardLineFormation(float factionRotation, float gapLeftRight, float _1, int count, int index, float distance, float height) {
+		public static Vector3 GuardLineFormation(float factionRotation, float gapLeftRight, float _1, int count, int index, float distance, float height)
+		{
 			float x = (count - 1) * gapLeftRight / 2f - index * gapLeftRight;
 			return FactionRotation(factionRotation) * new Vector3(x, height, distance);
 		}
@@ -61,7 +80,8 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int _1, int index, float distance, float height) {
+		public static Vector3 WedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int _1, int index, float distance, float height)
+		{
 			if (index == 0) //Ist es das Flaggschiff?
 			{
 				return FactionRotation(factionRotation) * new Vector3(0, height, distance);
@@ -96,7 +116,8 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 DividedWedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 DividedWedgeFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
 			if (index == 0) //Ist es das Flaggschiff?
 			{
 				return FactionRotation(factionRotation) * new Vector3(0, height, distance);
@@ -161,7 +182,7 @@ namespace TournamentMod.Formations
 								break;
 							case 4: //Rechts hinter dem linken Kommandoschiff
 								x = bufferSpaces * gapLeftRight;
-								z = distance  + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
+								z = distance + ((2 + bufferSpaces + groupLine) * gapForwardBackward);
 								break;
 							case 5: //Links hinter dem rechten Kommandoschiff
 								x = -bufferSpaces * gapLeftRight;
@@ -186,10 +207,11 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 ParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 ParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerColumn = Math.Max(1, Mathf.RoundToInt(currentGapRatio * factorFor1To1GapRatio));
-			int columns = (int)Math.Ceiling((double)count / shipsPerColumn);
+			int columns = (int) Math.Ceiling((double) count / shipsPerColumn);
 			float x = (columns - 1) * gapLeftRight / 2 - index % columns * gapLeftRight;
 			float z = distance - (shipsPerColumn - 1) * gapForwardBackward / 2 + (index / columns * gapForwardBackward);
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
@@ -205,7 +227,8 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 CommandedParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 CommandedParallelColumnsFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
@@ -234,7 +257,8 @@ namespace TournamentMod.Formations
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 ManipelBaseFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height) {
+		public static Vector3 ManipelBaseFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
 			return ManipelFormation(factionRotation, gapLeftRight, gapForwardBackward, count, index, distance, height, false);
 		}
 		/// <summary>
@@ -264,12 +288,14 @@ namespace TournamentMod.Formations
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <param name="attack">If true, the attacking formation will be used, otherwise the marching one.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		private static Vector3 ManipelFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height, bool attack) {
+		private static Vector3 ManipelFormation(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height, bool attack)
+		{
 			int groups = Mathf.CeilToInt(count / 6f);
 			int line = index / groups;
 			int group = index % groups;
 			float x, z = distance + line * gapForwardBackward;
-			switch (line) {
+			switch (line)
+			{
 				case 0: //erste Reihe
 				case 4: //fünfte Reihe
 				case 5: //sechste Reihe
@@ -294,6 +320,35 @@ namespace TournamentMod.Formations
 					throw new Exception("Someone modified line with a debugger...");
 			}
 			return FactionRotation(factionRotation) * new Vector3(x, height, z);
+		}
+		/// <summary>
+		/// Calculates the position of an individual entry inside a triangle formation.
+		/// </summary>
+		/// <param name="factionRotation">The rotation angle for a team</param>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries.</param>
+		/// <param name="index">The index of the current entry.</param>
+		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
+		/// <param name="height">The spawn-height of the entry.</param>
+		/// <returns>The local spawnposition of an entry.</returns>
+		public static Vector3 Triangle(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
+			Vector3 ret = new Vector3(0, height, distance);
+			count--;
+			index--;
+			int group = 1;
+			for (int s = 2; s > count; s++)
+			{
+				count -= s;
+				index -= s;
+				group++;
+			}
+			if (index >= 0)
+			{
+				ret += new Vector3(gapLeftRight * (2 * index - group), 0, gapForwardBackward * group);
+			}
+			return FactionRotation(factionRotation) * ret;
 		}
 	}
 }

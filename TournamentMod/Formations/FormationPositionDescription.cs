@@ -226,5 +226,24 @@ namespace TournamentMod.Formations
 					throw new Exception("Someone modified line with a debugger...");
 			}
 		}
+		/// <summary>
+		/// Gives each entry a Group, a Line and a Side descriptions.
+		/// </summary>
+		/// <param name="_1">The distance along the local x-axis.</param>
+		/// <param name="_2">The distance along the local z-axis.</param>
+		/// <param name="_3">The amount of entries inside the formation</param>
+		/// <param name="index">The current entry.</param>
+		/// <returns>A description of the current position.</returns>
+		public static string Triangle(float _1, float _2, int _3, int index)
+		{
+			if (index == 0)
+			{
+				return "Flagship";
+			}
+			else
+			{
+				return "None";
+			}
+		}
 	}
 }

@@ -13,7 +13,8 @@ namespace TournamentMod.Formations
 		CommandedParallelColumns,
 		RomanManipelBase,
 		RomanManipelAttack,
-		GuardLine
+		GuardLine,
+		Triangle
 	}
 	/// <summary>
 	/// Extension-Methods for the FormationTypes.
@@ -44,8 +45,10 @@ namespace TournamentMod.Formations
 					return Formation.RomanManipelAttack;
 				case FormationType.GuardLine:
 					return Formation.GuardLine;
+				case FormationType.Triangle:
+					return Formation.Triangle;
 				default:
-					throw new ArgumentOutOfRangeException("type","No known Formation for this type!");
+					return Formation.UnknownFormation;
 			}
 		}
 	}

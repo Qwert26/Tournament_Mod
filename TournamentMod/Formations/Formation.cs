@@ -56,6 +56,17 @@ namespace TournamentMod.Formations
 		/// </summary>
 		public Size DetermineSize { get; set; }
 		/// <summary>
+		/// The Formation for unknown Types.
+		/// </summary>
+		public static readonly Formation UnknownFormation = new Formation()
+		{
+			Name = "Unknown",
+			Description = "You have selected a Type, which has not been implemented yet: Don't expect it to work!",
+			DetermineLocalPosition = FormationCalculation.UnkownFormation,
+			DeterminePositionDescription = FormationPositionDescription.UnknownFormation,
+			DetermineSize = FormationSizeCalculation.UnkownFormation
+		};
+		/// <summary>
 		/// The classic "Line"-Formation
 		/// </summary>
 		public static readonly Formation Line = new Formation()
@@ -145,6 +156,18 @@ namespace TournamentMod.Formations
 			DetermineLocalPosition = FormationCalculation.GuardLineFormation,
 			DeterminePositionDescription = FormationPositionDescription.GuardLineFormation,
 			DetermineSize = FormationSizeCalculation.GuardLineFormation,
+		};
+		/// <summary>
+		/// A triangle.
+		/// </summary>
+		public static readonly Formation Triangle = new Formation()
+		{
+			Name = "Triangle",
+			Description = "A conceptional Mix between a Wedge- and a Line-Formation. The Flagship should be in the first position, as it will form one of the points. " +
+			"The Formation was mentioned by Hibachi on the official FtD-Discord.",
+			DetermineLocalPosition = FormationCalculation.Triangle,
+			DeterminePositionDescription = FormationPositionDescription.Triangle,
+			DetermineSize = FormationSizeCalculation.Triangle
 		};
 	}
 }

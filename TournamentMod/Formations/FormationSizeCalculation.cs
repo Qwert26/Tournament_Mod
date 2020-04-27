@@ -16,6 +16,16 @@ namespace TournamentMod.Formations
 			return new Vector2(Mathf.Abs(v2.x), Mathf.Abs(v2.y));
 		}
 		/// <summary>
+		/// The default Method for new Formation.
+		/// </summary>
+		/// <param name="_1">The distance along the local x-axis.</param>
+		/// <param name="_2">The distance along the local z-axis.</param>
+		/// <param name="_3">The amount of entries in the formation.</param>
+		/// <returns>The Vector (0,0).</returns>
+		public static Vector2 UnkownFormation(float _1, float _2, int _3) {
+			return Vector2.zero;
+		}
+		/// <summary>
 		/// Calculates the size of the line-formation.
 		/// </summary>
 		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
@@ -122,6 +132,22 @@ namespace TournamentMod.Formations
 			int groups = Mathf.CeilToInt(count / 6f);
 			int lastLine = (count - 1) / groups;
 			return new Vector2(gapLeftRight * groups * 2, gapForwardBackward * lastLine).Abs();
+		}
+		/// <summary>
+		/// Calculates the size of a triangle formation.
+		/// </summary>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries in the formation.</param>
+		/// <returns>The bounding box of the formation.</returns>
+		public static Vector2 Triangle(float gapLeftRight, float gapForwardBackward, int count) {
+			int groups = 1;
+			for (int s = 0; s < count; s++)
+			{
+				count -= s;
+				groups++;
+			}
+			return new Vector2(gapLeftRight * 2 * groups, gapForwardBackward * groups);
 		}
 	}
 }
