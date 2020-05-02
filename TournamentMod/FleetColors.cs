@@ -72,7 +72,7 @@ namespace TournamentMod
 		public readonly static FleetColor neoGreen = new FleetColor()
 		{
 			Name = "Neo Green",
-			Description = "A new green colorscheme by Qwert26, if there would have been a 4.Team, it would have used these.",
+			Description = "A new green colorscheme by Qwert26, if there would have been a Team 4, it would have used these.",
 			Main = new Color(0, 1, 0, 1),
 			Secondary = new Color(0, 0.55f, 0, 1),
 			Trim = new Color(0.15f, 0.7f, 0.15f, 1),
@@ -153,7 +153,7 @@ namespace TournamentMod
 		/// <summary>
 		/// Requested by Lucaya for "From the Planetside 2"
 		/// </summary>
-		public readonly static FleetColor naniteSystemsOps = new FleetColor()
+		public readonly static FleetColor naniteSystemsOperative = new FleetColor()
 		{
 			Name = "Nanite Systems Operative, Planetside",
 			Description = "Taken from the offical color palette of the NSO.",
@@ -176,7 +176,7 @@ namespace TournamentMod
 			terranRepublic,
 			newConglomerate,
 			vanuSovereignty,
-			naniteSystemsOps
+			naniteSystemsOperative
 		};
 	}
 }

@@ -18,7 +18,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(2, 6, 1, 67);
+		public Version version => new Version(2, 6, 1, 95);
 		internal static FactionManagement factionManagement;
 		public void OnLoad()
 		{
@@ -97,7 +97,7 @@ namespace TournamentMod
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
 			@is.Territory.SetAllUnowned();
-			@is.PostLoadInitiate();
+			@is.PostLoadInitiate(PostLoadInitiateType.New);
 			Planet.i.Designers.AddInstance(@is);
 		}
 	}
