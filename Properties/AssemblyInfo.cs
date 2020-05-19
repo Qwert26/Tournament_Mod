@@ -11,5 +11,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Tournament")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("Debug")]
-[assembly: AssemblyVersion("2.6.5.7")]
-[assembly: AssemblyFileVersion("2.6.5.7")]
+[assembly: AssemblyVersion("2.6.7.4")]
+[assembly: AssemblyFileVersion("2.6.7.4")]

@@ -18,7 +18,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(2, 6, 5, 7);
+		public Version version => new Version(2, 6, 7, 4);
 		internal static FactionManagement factionManagement;
 		public void OnLoad()
 		{
@@ -77,7 +77,8 @@ namespace TournamentMod
 					"And finally rotate the teams around the center point of it."
 				}, new HeaderAndParagraph() {
 					Header="I want a Rematch!",
-					Paragraph="Simply use two Buttons to cycle through Teams or swap orientations of a single Team. Deactivating a team excludes it from the rotation."
+					Paragraph="Simply use two Buttons to cycle through Teams or swap orientations of a single Team. Deactivating a team excludes it from the rotation, " +
+					"but it will not forget its entries."
 				}, new HeaderAndParagraph() {
 					Header="So many Colors!",
 					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the old ones for a team. They even get safed when you press the \"Safe\"-Button."
@@ -97,7 +98,7 @@ namespace TournamentMod
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
 			@is.Territory.SetAllUnowned();
-			@is.PostLoadInitiate(PostLoadInitiateType.New);
+			@is.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
 			Planet.i.Designers.AddInstance(@is);
 		}
 	}
