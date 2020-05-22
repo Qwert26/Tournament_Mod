@@ -28,7 +28,7 @@ namespace TournamentMod
 			else if (!added) {
 				foreach (FactionSpecificationFaction fsf in factions)
 				{
-					FactionSpecifications.i.AddNew(fsf);
+					FactionSpecifications.i.Factions.Add(fsf);
 					fsf.PostLoadInitiate();
 				}
 				added = true;
@@ -49,7 +49,7 @@ namespace TournamentMod
 				AbreviatedName=$"T{factions.Count+1}"
 			});
 			if (added) {
-				FactionSpecifications.i.AddNew(factions[factions.Count-1]);
+				FactionSpecifications.i.Factions.Add(factions[factions.Count-1]);
 				factions[factions.Count - 1].PostLoadInitiate();
 			}
 		}

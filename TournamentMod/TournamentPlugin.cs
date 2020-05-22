@@ -18,7 +18,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(2, 6, 7, 4);
+		public Version version => new Version(2, 6, 7, 18);
 		internal static FactionManagement factionManagement;
 		public void OnLoad()
 		{
@@ -57,7 +57,7 @@ namespace TournamentMod
 		public void OnPlanetChange()
 		{
 			@is = new InstanceSpecification();
-			@is.GenerateBlankInstance();
+			@is.GenerateBlankInstance(Planet.i);
 			@is.Header.Name = "Tournament Creator";
 			@is.Header.Summary = "Create custom tournament style matches.";
 			@is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {
@@ -97,7 +97,7 @@ namespace TournamentMod
 			@is.Header.CommonSettings.FogOfWarType = FogOfWarType.None;
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
-			@is.Territory.SetAllUnowned();
+			@is.Territory.SetAllUnowned(Planet.i.World.BoardLayout);
 			@is.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
 			Planet.i.Designers.AddInstance(@is);
 		}
