@@ -117,7 +117,7 @@ namespace TournamentMod
 			MainConstruct val = initialisation.Run(new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(Location(gapLeftRight, gapForwardBackward, count, index, distance)), Direction())
 			{
 				PositioningType = SpawnPositioning.OriginOrCentre
-			}, new Blueprint2Construct(bp, SpawnInstructions.IgnoreDamage | SpawnInstructions.Creative), Team_id);
+			}, new Blueprint2Construct(bp, SpawnInstructions.IgnoreDamage | SpawnInstructions.Creative | SpawnInstructions.PrepareForAction), Team_id);
 			//(val.Owner as ConstructableOwner).SetFleetColors(Team_id);
 			return val;
 		}
