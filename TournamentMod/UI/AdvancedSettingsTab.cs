@@ -99,7 +99,7 @@ namespace TournamentMod.UI
 			}
 			segment2.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(3),
 				M.m((Parameters tp) => tp.CleanUpMode), M.m<Parameters>(1), M.m<Parameters>(2),
-				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)(int)tp.CleanUpMode}"), delegate (Parameters tp, float f)
+				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)tp.CleanUpMode.Us}"), delegate (Parameters tp, float f)
 				{
 					tp.CleanUpMode.Us = (int)f;
 				}, null, M.m((Parameters tp) => new ToolTip(describeCleanupMode()))));
@@ -111,12 +111,12 @@ namespace TournamentMod.UI
 				M.m((Parameters tp) => tp.SinkingHealthFraction), "\"Below and Sinking\"-Healthfraction: {0}%", delegate (Parameters tp, float f)
 				{
 					tp.SinkingHealthFraction.Us = (int)f;
-				}, new ToolTip("Any construct below a certain altitude and below this healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+				}, new ToolTip("Any construct below a certain altitude and below this health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 0, 1, -10,
 				M.m((Parameters tp) => tp.SinkingAltitude), "\"Below and Sinking\"-Altitude: {0}m", delegate (Parameters tp, float f)
 				{
 					tp.SinkingAltitude.Us = (int)f;
-				}, new ToolTip("Any construct below this altitude and below a certain healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+				}, new ToolTip("Any construct below this altitude and below a certain health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip("Disable this function to allow entries to fight until they are considered \"dead\"."), delegate (Parameters tp, bool b) {
 				tp.CleanUpTooDamagedConstructs.Us = b;
 			}, (tp) => tp.CleanUpTooDamagedConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
