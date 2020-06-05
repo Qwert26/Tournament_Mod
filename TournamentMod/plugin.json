@@ -1,7 +1,7 @@
 ﻿{
 	"name": "Tournament",
-	"version": "2.6.8.17",
-	"gameversion": "2.6.8",
+	"version": "2.6.9.27",
+	"gameversion": "2.6.9",
 	"filename": "Tournament.dll",
 	"depends": [],
 	"conflicts": []
