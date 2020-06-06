@@ -58,6 +58,7 @@ namespace TournamentMod
 		{
 			@is = new InstanceSpecification();
 			@is.GenerateBlankInstance(Planet.i);
+			Planet.i.Designers.AddInstance(@is);
 			@is.Header.Name = "Tournament Creator";
 			@is.Header.Summary = "Create custom tournament style matches.";
 			@is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {
@@ -84,7 +85,7 @@ namespace TournamentMod
 					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the old ones for a team. They even get safed when you press the \"Safe\"-Button."
 				}
 			};
-			@is.Header.Type = InstanceType.None;
+			@is.Header.Type = InstanceType.Designer;
 			@is.Header.CommonSettings.AvatarAvailability = AvatarAvailability.None;
 			@is.Header.CommonSettings.AvatarDamage = AvatarDamage.Off;
 			@is.Header.CommonSettings.ConstructableCleanUp = ConstructableCleanUp.All;
@@ -99,7 +100,6 @@ namespace TournamentMod
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
 			@is.Territory.SetAllUnowned(Planet.i.World.BoardLayout);
 			@is.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
-			Planet.i.Designers.AddInstance(@is);
 		}
 	}
 }

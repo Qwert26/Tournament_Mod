@@ -57,6 +57,7 @@ namespace TournamentMod.UI
 			treeView.SpaceAbove = 20;
 			treeView.SpaceBelow = 20;
 			ScreenSegmentStandardHorizontal horizontal = screen.CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
 				M.m((Parameters tp) => tp.Direction), "Starting Direction: {0}°", delegate (Parameters tp, float f)
 				{
@@ -70,6 +71,7 @@ namespace TournamentMod.UI
 					tp.SpawnHeight.Us = (int)f;
 				}, new ToolTip("The starting height of the entry")));
 			horizontal = screen.CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveButton<TreeSelectorGuiElement<BlueprintFile,BlueprintFolder>>.Quick(treeSelector, "Add to all Teams", new ToolTip("Adds the currently selected Blueprint to all active Teams."), delegate (TreeSelectorGuiElement<BlueprintFile,BlueprintFolder> tree)
 			{
 				if (tree.HasSelection)

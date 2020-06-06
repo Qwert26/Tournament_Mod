@@ -38,6 +38,7 @@ namespace TournamentMod.UI
 		{
 			CreateHeader("Modify current Entries", new ToolTip("Modify current Entries from active Teams."));
 			ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Cycle Teams", new ToolTip("Cycles the entries through the currently active Teams. Non-active Teams will be excluded."), delegate (Tournament t)
 			{
 				List<Entry> temp = t.entries[0];
@@ -63,6 +64,7 @@ namespace TournamentMod.UI
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Clear all Teams", new ToolTip("Removes all entries from all Teams."), delegate (Tournament t)
 			{
 				foreach (var team in t.entries) {
@@ -80,6 +82,7 @@ namespace TournamentMod.UI
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Update all Teams", new ToolTip("Updates all entries from all Teams."), delegate (Tournament t)
 			{
 				foreach (var team in t.entries) {
@@ -124,6 +127,7 @@ namespace TournamentMod.UI
 					ScreenSegmentTable entryControl = CreateTableSegment(3, 2);
 					entryControl.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
 					entryControl.SqueezeTable = false;
+					entryControl.SpaceAbove = entryControl.SpaceBelow = 5;
 					entryControl.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
 					entryControl.AddInterpretter(new StringDisplay(M.m<string>(string.Format(
 						"{3}°@{2}m\n" +
@@ -171,6 +175,7 @@ namespace TournamentMod.UI
 				}
 			}
 			ScreenSegmentStandard posthead = CreateStandardSegment();
+			posthead.SpaceBelow = posthead.SpaceAbove = 5;
 			posthead.AddInterpretter(StringDisplay.Quick("During the fight you can use your key for the Charactersheet-GUI to bring up or hide the Extra-Info-Panel for an individual construct. When using the default keymap, it is 'Z'. " +
 				"With the Key for the EnemySpawn-GUI you can hide and show the Sidelist. Its default Key is 'X'."));
 			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START", new ToolTip("Start the fight."), delegate (Tournament t)

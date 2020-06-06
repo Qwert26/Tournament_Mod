@@ -62,6 +62,7 @@ namespace TournamentMod.UI
 				ScreenSegmentTable formationSegment = screen.CreateTableSegment(3, 3);
 				formationSegment.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
 				formationSegment.SqueezeTable = false;
+				formationSegment.SpaceBelow = formationSegment.SpaceAbove = 5;
 				DropDownMenuAlt<FormationType> formationOptions = new DropDownMenuAlt<FormationType>();
 				formationOptions.SetItems(items);
 				formationSegment.AddInterpretter(new DropDown<CombinedFormation, FormationType>(_focus, formationOptions, (CombinedFormation cf, FormationType ft) => cf.formationEntrycount[index].Item1 == ft, delegate (CombinedFormation cf, FormationType ft)
@@ -103,6 +104,7 @@ namespace TournamentMod.UI
 				formationSegment.AddInterpretter(new Empty(), 2, 2);
 			}
 			ScreenSegmentStandardHorizontal buttons = screen.CreateStandardHorizontalSegment();
+			buttons.SpaceAbove = buttons.SpaceBelow = 5;
 			buttons.AddInterpretter(SubjectiveButton<CombinedFormation>.Quick(_focus, "Add Formation", new ToolTip("Adds a new Formation at the end."), delegate (CombinedFormation cf)
 				{
 					cf.formationEntrycount.Add(new System.Tuple<FormationType, int>(FormationType.GuardLine, 0));

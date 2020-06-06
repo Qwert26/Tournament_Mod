@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
+using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.Factions;
+using BrilliantSkies.Ftd.Planets.Instances;
+
 namespace TournamentMod
 {
 	/// <summary>
@@ -28,10 +31,12 @@ namespace TournamentMod
 			else if (!added) {
 				foreach (FactionSpecificationFaction fsf in factions)
 				{
-					FactionSpecifications.i.Factions.Add(fsf);
-					fsf.PostLoadInitiate();
+					Planet.i.AddNewFactionSpecification(fsf);
 				}
 				added = true;
+				InstanceSpecification.i.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
+				InstanceSpecification.i.UpdateWithPotentialChangesToInstanceDefinition();
+				FactionSpecifications.i.PostLoadInitiate();
 			}
 		}
 		/// <summary>
@@ -44,13 +49,16 @@ namespace TournamentMod
 		/// Creates a new Faction and if needed also adds it to the Planet.
 		/// </summary>
 		public void CreateFaction() {
-			factions.Add(new FactionSpecificationFaction() {
-				Name=$"Team {factions.Count+1}",
-				AbreviatedName=$"T{factions.Count+1}"
+			factions.Add(new FactionSpecificationFaction()
+			{
+				Name = $"Team {factions.Count + 1}",
+				AbreviatedName = $"T{factions.Count + 1}"
 			});
 			if (added) {
-				FactionSpecifications.i.Factions.Add(factions[factions.Count-1]);
-				factions[factions.Count - 1].PostLoadInitiate();
+				Planet.i.AddNewFactionSpecification(factions[factions.Count-1]);
+				InstanceSpecification.i.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
+				InstanceSpecification.i.UpdateWithPotentialChangesToInstanceDefinition();
+				FactionSpecifications.i.PostLoadInitiate();
 			}
 		}
 		/// <summary>

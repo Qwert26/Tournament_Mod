@@ -32,6 +32,7 @@ namespace TournamentMod.UI
 			base.Build();
 			CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
 			ScreenSegmentStandard segment1 = CreateStandardSegment();
+			segment1.SpaceAbove = segment1.SpaceBelow = 5;
 			segment1.AddInterpretter(SubjectiveFloatClampedWithBar<Parameters>.Quick(_focus.Parameters, 2, 6, 1,
 				M.m((Parameters tp) => tp.ActiveFactions), "Active Teams: {0}", delegate (Parameters tp, float f)
 				{
@@ -74,6 +75,7 @@ namespace TournamentMod.UI
 				   }
 			   }, (tp) => tp.ShowAdvancedOptions.Us));
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
+			segment2.SpaceAbove = segment2.SpaceBelow = 5;
 			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
 				M.m((Parameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (Parameters tp, float f)
@@ -190,6 +192,7 @@ namespace TournamentMod.UI
 					tp.MinimumHealth.Us = (int)f;
 				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
+			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
 			{

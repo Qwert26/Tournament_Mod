@@ -25,6 +25,8 @@ namespace TournamentMod
 	using UI;
 	using Serialisation;
 	using Formations;
+	using BrilliantSkies.Core;
+
 	/// <summary>
 	/// GUI-Class for the Overlay and general Mangement.
 	/// </summary>
@@ -574,7 +576,7 @@ namespace TournamentMod
 							memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
 						}
 						Vector2 size = sidelist.CalcSize(memberContent);
-						if (size.x <= 150)
+						if (size.x <= 170)
 						{
 							GUILayout.Label(memberContent, sidelist);
 						}
@@ -1149,7 +1151,7 @@ namespace TournamentMod
 							}
 							break;
 						default:
-							Debug.LogError("Health calculation of newly spawned in Construct is not available!");
+							SafeLogging.LogError("Health calculation of newly spawned in Construct is not available!");
 							break;
 					}
 					HUDLog[tournamentParticipant.TeamId][val] = tournamentParticipant;
@@ -1171,7 +1173,7 @@ namespace TournamentMod
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
 							break;
 						default:
-							Debug.LogError("Health calculation of Construct is not available!");
+							SafeLogging.LogError("Health calculation of Construct is not available!");
 							break;
 					}
 					tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;
