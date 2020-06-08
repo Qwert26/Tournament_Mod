@@ -1,11 +1,9 @@
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
 using BrilliantSkies.Core.Id;
-using BrilliantSkies.Core.Returns.PositionAndRotation;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Core.Types;
 using BrilliantSkies.Core.UniverseRepresentation;
-using BrilliantSkies.Core.UniverseRepresentation.Positioning.Frames.Points;
 using BrilliantSkies.Effects.Cameras;
 using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
@@ -27,16 +25,36 @@ namespace TournamentMod
 	using UI;
 	using Serialisation;
 	using Formations;
+	using BrilliantSkies.Core;
+
+	/// <summary>
+	/// GUI-Class for the Overlay and general Mangement.
+	/// </summary>
 	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
 	{
+		/// <summary>
+		/// The Singleton-instance.
+		/// </summary>
 		public static Tournament _me;
+		/// <summary>
+		/// The Console-Window for setting things up.
+		/// </summary>
 		public TournamentConsole _GUI;
 		#region GUI-Stil
+		/// <summary>
+		/// Style for the Timer at the top of the screen
+		/// </summary>
 		private readonly GUIStyle timerStyle;
 		private readonly GUIStyle extrainfoLeft;
+		/// <summary>
+		/// Style for the Sidelist with the Teams and Participants.
+		/// </summary>
 		private readonly GUIStyle sidelist;
 		private readonly GUIStyle extrainfoRight;
 		private readonly GUIStyle extrainfoName;
+		/// <summary>
+		/// The Colorgradient for the Penaltytime for Participants.
+		/// </summary>
 		private static readonly Gradient penaltyTimeColor;
 		#endregion
 		#region Kamerakontrolle
@@ -48,34 +66,64 @@ namespace TournamentMod
 		private int orbitMothership;
 		private int orbitindex;
 		#endregion
-		private bool extraInfo;
+		private bool extraInfo = false;
 		private float timerTotal;
 		private float timerTotal2;
-		private byte overtimeCounter;
+		/// <summary>
+		/// Amount of Overtimes the battles had.
+		/// </summary>
+		private byte overtimeCounter = 0;
+		/// <summary>
+		/// Current scrollpostition of the Sidelist.
+		/// </summary>
 		private Vector2 scrollPos = Vector2.zero;
 		//Management
+		/// <summary>
+		/// A 2D-Table to Map Teams/Factions to their Mainconstructs which map to their Participant-Object.
+		/// </summary>
 		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, Participant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, Participant>>();
+		/// <summary>
+		/// When true, the Sidelist gets shown.
+		/// </summary>
 		private bool showLists = true;
+		/// <summary>
+		/// The Formation for each Team. For saving, the entire list gets converted into a list of Vector4Int.
+		/// </summary>
 		public List<CombinedFormation> teamFormations = new List<CombinedFormation>();
+		/// <summary>
+		/// The Parameters used for the fight.
+		/// </summary>
 		public Parameters Parameters { get; set; } = new Parameters(1u);
+		/// <summary>
+		/// The Blueprints to spawn in at the beginning.
+		/// </summary>
 		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
+		/// <summary>
+		/// For distributed Materials.
+		/// </summary>
 		private List<int> materials;
+		/// <summary>
+		/// Static initialiser.
+		/// </summary>
 		static Tournament()
 		{
+			//Erzeuge den Farbverlauf von YouTube: Weiß-Blau-Grün-Gelb-Orange-Rot(eigentlich Schwarz)
 			penaltyTimeColor = new Gradient
 			{
-				colorKeys = new GradientColorKey[] {
-				new GradientColorKey(Color.white, 0f),
-				new GradientColorKey(Color.blue, 0.25f),
-				new GradientColorKey(Color.green, 0.5f),
-				new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),
-				new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),
-				new GradientColorKey(Color.red, 1f)
-			},
-				alphaKeys = new GradientAlphaKey[] {
-				new GradientAlphaKey(1f, 0f),
-				new GradientAlphaKey(1f, 1f)
-			},
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(Color.white, 0f),
+					new GradientColorKey(Color.blue, 0.25f),
+					new GradientColorKey(Color.green, 0.5f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),//Yellow
+					new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),//Orange
+					new GradientColorKey(Color.red, 1f)
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
 				mode = GradientMode.Blend
 			};
 		}
@@ -134,7 +182,7 @@ namespace TournamentMod
 			LoadSettings();
 		}
 		/// <summary>
-		/// Loads in all selected crafts and sets their materialstorage or the storage of their team, depending if local resources are enabled.
+		/// Loads in all selected crafts and sets their materialstorage.
 		/// </summary>
 		public void LoadCraft()
 		{
@@ -143,91 +191,78 @@ namespace TournamentMod
 			materials?.Clear();
 			materials = null;
 			InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
-			InstanceSpecification.i.Header.CommonSettings.LocalisedResourceMode = Parameters.LocalResources ? LocalisedResourceMode.UseLocalisedStores : LocalisedResourceMode.UseCentralStore;
-			if (Parameters.LocalResources)
+			if (!Parameters.DistributeLocalResources)
 			{
-				if (!Parameters.DistributeLocalResources)
+				for (int i = 0; i < Parameters.ActiveFactions; i++)
 				{
-					for (int i = 0; i < Parameters.ActiveFactions; i++)
+					TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+				}
+				foreach (KeyValuePair<int, List<Entry>> team in entries)
+				{
+					if (team.Key >= Parameters.ActiveFactions)
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
+						break;
 					}
-					foreach (KeyValuePair<int, List<Entry>> team in entries)
+					for (int pos = 0; pos < team.Value.Count; pos++)
 					{
-						if (team.Key >= Parameters.ActiveFactions)
-						{
-							break;
-						}
-						for (int pos = 0; pos < team.Value.Count; pos++)
-						{
-							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-							mc.RawResource.Material.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
-						}
+						MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
+						mc.GetForce().ResourceStore.iMaterial.SetQuantity(Parameters.ResourcesPerTeam[team.Key]);
 					}
 				}
-				else
+			}
+			else
+			{
+				List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
+				Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
+				Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
+				foreach (KeyValuePair<int, List<Entry>> team in entries)
 				{
-					List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
-					Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
-					Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
-					foreach (KeyValuePair<int, List<Entry>> team in entries)
+					if (team.Key >= Parameters.ActiveFactions)
 					{
-						if (team.Key >= Parameters.ActiveFactions)
-						{
-							break;
-						}
+						break;
+					}
+					else
+					{
 						maxMaterials.Add(team.Key, 0);
 						constructs.Add(team.Key, new List<MainConstruct>());
 						for (int pos = 0; pos < team.Value.Count; pos++)
 						{
 							MainConstruct mc = team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
 							constructs[team.Key].Add(mc);
-							maxMaterials[team.Key] += (int)mc.RawResource.Material.Maximum;
-						}
-					}
-					for (int i = 0; i < Parameters.ActiveFactions; i++)
-					{
-						if (maxMaterials[i] <= materials[i])
-						{
-							foreach (MainConstruct mc in constructs[i])
+							if (Parameters.TeamEntryMaterials[team.Key])
 							{
-								mc.RawResource.Material.SetQuantity(materials[i]);
-								materials[i] -= (int)mc.RawResource.Material.Maximum;
+								mc.GetForce().ResourceStore.iMaterial.Quantity = team.Value[pos].CurrentMaterials;
 							}
-							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
-						}
-						else
-						{
-							double expectedFraction = ((double)materials[i]) / maxMaterials[i];
-							foreach (MainConstruct mc in constructs[i])
+							else
 							{
-								mc.RawResource.Material.SetQuantity(mc.RawResource.Material.Maximum * expectedFraction);
+								maxMaterials[team.Key] += (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
 							}
-							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
 						}
 					}
 				}
-			}
-			else //Global Store
-			{
-				materials = new List<int>(Parameters.ResourcesPerTeam.Us);
 				for (int i = 0; i < Parameters.ActiveFactions; i++)
 				{
-					if (Parameters.InfinteResourcesPerTeam[i])
+					if (Parameters.TeamEntryMaterials[i])
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResourcesInfinite();
+						continue;
+					}
+					else if (maxMaterials[i] <= materials[i])
+					{
+						foreach (MainConstruct mc in constructs[i])
+						{
+							mc.GetForce().ResourceStore.iMaterial.SetQuantity(materials[i]);
+							materials[i] -= (int) mc.GetForce().ResourceStore.iMaterial.Maximum;
+						}
+						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
 					}
 					else
 					{
-						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(Parameters.ResourcesPerTeam[i]);
-					}
-				}
-				foreach (KeyValuePair<int, List<Entry>> team in entries)
-				{
-					for (int pos = 0; pos < team.Value.Count; pos++)
-					{
-						team.Value[pos].Spawn(Parameters.StartingDistance, Parameters.SpawngapLR[team.Key], Parameters.SpawngapFB[team.Key], team.Value.Count, pos);
-						StaticConstructablesManager.constructables[StaticConstructablesManager.constructables.Count - 1].RawResource.Material.SetQuantity(0);
+						double expectedFraction = ((double) materials[i]) / maxMaterials[i];
+						foreach (MainConstruct mc in constructs[i])
+						{
+							mc.GetForce().ResourceStore.iMaterial.SetQuantity(mc.GetForce().ResourceStore.iMaterial.Maximum * expectedFraction);
+						}
+						TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(0);
 					}
 				}
 			}
@@ -259,7 +294,7 @@ namespace TournamentMod
 			}
 			orbitindex = 0;
 			orbittarget = 0;
-			flycam.transform.position = new Vector3(-500f, 50f, 0f);
+			flycam.transform.position = new Vector3(-500f, 50f, 0f) + LocalOffsetFromTerrainCenter();
 			flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
 			foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
 			{
@@ -382,20 +417,39 @@ namespace TournamentMod
 		{
 			cam.transform.position = FramePositionOfBoardSection() + new Vector3(0, 50, 0) + LocalOffsetFromTerrainCenter();
 		}
-		public Vector3 FramePositionOfBoardSection()
+		/// <summary>
+		/// Calculates the frame position and moves the frame when necessary.
+		/// </summary>
+		/// <returns></returns>
+		private Vector3 FramePositionOfBoardSection()
 		{
 			return PlanetList.MainFrame.UniversalPositionToFramePosition(UniversalPositionOfBoardSection()+LocalTerrainOffsetFromSectionCenter());
 		}
-		public Vector3d UniversalPositionOfBoardSection()
+		/// <summary>
+		/// Calculates the universal position of the selected map-sector.
+		/// </summary>
+		/// <returns></returns>
+		private Vector3d UniversalPositionOfBoardSection()
 		{
 			return StaticCoordTransforms.BoardSectionToUniversalPosition(WorldSpecification.i.BoardLayout.BoardSections[Parameters.EastWestBoard, Parameters.NorthSouthBoard].BoardSectionCoords);
 		}
-		public Vector3 LocalTerrainOffsetFromSectionCenter() {
+		/// <summary>
+		/// Uses the selected Terrain-tile and its size to get the offset from the center of a map-sector.
+		/// </summary>
+		/// <returns></returns>
+		private Vector3 LocalTerrainOffsetFromSectionCenter() {
 			return WorldSpecification.i.BoardLayout.TerrainSize * new Vector3(Parameters.EastWestTerrain, 0, Parameters.NorthSouthTerrain);
 		}
+		/// <summary>
+		/// Packs the terrain-based offsets into a Vector3.
+		/// </summary>
+		/// <returns></returns>
 		public Vector3 LocalOffsetFromTerrainCenter() {
 			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
+		/// <summary>
+		/// Uses the loaded list to reconstruct the combined formation.
+		/// </summary>
 		private void PopulateFormations() {
 			foreach (CombinedFormation cf in teamFormations) {
 				cf.formationEntrycount.Clear();
@@ -416,6 +470,9 @@ namespace TournamentMod
 				teamFormations[v4i.x].Import(v4i);
 			}
 		}
+		/// <summary>
+		/// Saves the combined formations into a list.
+		/// </summary>
 		private void PopulateParameters() {
 			Parameters.TeamFormations.Clear();
 			for (int team = 0; team < teamFormations.Count; team++)
@@ -428,7 +485,7 @@ namespace TournamentMod
 		/// </summary>
 		public void SaveSettings()
 		{
-			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
 			PopulateParameters();
 			settingsFile.SaveData(Parameters, Formatting.Indented);
@@ -438,7 +495,7 @@ namespace TournamentMod
 		/// </summary>
 		public void LoadSettings()
 		{
-			string modFolder = Get.PerminentPaths.GetSpecificModDir("Tournament").ToString();
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
 			if (settingsFile.Exists)
 			{
@@ -521,7 +578,7 @@ namespace TournamentMod
 							memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
 						}
 						Vector2 size = sidelist.CalcSize(memberContent);
-						if (size.x <= 150)
+						if (size.x <= 170)
 						{
 							GUILayout.Label(memberContent, sidelist);
 						}
@@ -546,11 +603,11 @@ namespace TournamentMod
 					MainConstruct targetConstruct = StaticConstructablesManager.constructables.Where(x => x.iMain == target).First();
 					string name = targetConstruct.blueprintName;
 					string team = targetConstruct.GetTeam().FactionSpec().Name;
-					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1).ToString()}%";
-					string resources = $"{Math.Round(targetConstruct.RawResource.Material.Quantity, 0)}/{Math.Round(targetConstruct.RawResource.Material.Maximum, 0)}";
-					string ammo = $"{Math.Round(targetConstruct.Ammo.Ammo.Quantity, 0)}/{Math.Round(targetConstruct.Ammo.Ammo.Maximum, 0)}";
-					string fuel = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Fuel.Maximum, 0)}";
-					string battery = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Quantity, 0)}/{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Energy.Maximum, 0)}";
+					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1)}%";
+					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum, 0)}";
+					string ammo = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Maximum, 0)}";
+					string fuel = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Maximum, 0)}";
+					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum, 0)}";
 					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power, 0)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower, 0)}";
 					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude, 1)}m/s";
 					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y, 0)}m";
@@ -632,8 +689,8 @@ namespace TournamentMod
 			bool orbitcamOn = false;
 			bool changeExtraInfo = false;
 			bool changeShowList = false;
-			int oldIndex = orbitindex;
-			if (Parameters.DefaultKeys.Us)
+			int oldIndex = orbitindex, oldTarget = orbittarget;
+			if (Parameters.DefaultKeys)
 			{
 				pause = Input.GetKeyDown(KeyCode.F11); // default f11
 				shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
@@ -685,9 +742,10 @@ namespace TournamentMod
 				if (orbitindex >= StaticConstructablesManager.constructables.Count)
 				{
 					orbitindex = 0;
+					orbittarget = 0;
 				}
 				if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != 0 ||
-					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID != orbitMothership))
+					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id != orbitMothership))
 				{
 					int index;
 					if (orbitMothership == -1)
@@ -696,7 +754,7 @@ namespace TournamentMod
 					}
 					else
 					{
-						index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.Drones.LoadedMothershipC.uniqueID == orbitMothership);
+						index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id == orbitMothership);
 					}
 					if (index >= 0) { orbitindex = index; }
 					else { orbitindex = 0; }
@@ -724,13 +782,13 @@ namespace TournamentMod
 					}
 				}
 				if (orbittarget != StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId ||
-					(StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null &&
-					 orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID))
+					(StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them != null &&
+					 orbitMothership != StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them.LinkedCorrectly?.OurForce.Id.Id))
 				{
 					orbittarget = StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId;
-					if (StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC != null)
+					if (StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them != null)
 					{
-						orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].Drones.LoadedMothershipC.uniqueID;
+						orbitMothership = StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them.LinkedCorrectly?.OurForce.Id.Id ?? -1;
 					}
 					else
 					{
@@ -804,7 +862,7 @@ namespace TournamentMod
 				}
 				else
 				{
-					if (oldIndex != orbitindex)
+					if (oldIndex != orbitindex || orbittarget != oldTarget)
 					{
 						orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
 					}
@@ -891,9 +949,12 @@ namespace TournamentMod
 						{
 							violatingRules = CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex]/100f, out bool noEnemies);
 							//Are there no more enemies?
-							if (noEnemies && Parameters.PauseOnVictory)
+							if (noEnemies)
 							{
-								GameSpeedManager.Instance.TogglePause();
+								if (Parameters.PauseOnVictory)
+								{
+									GameSpeedManager.Instance.TogglePause();
+								}
 								break;
 								//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
 							}
@@ -918,13 +979,13 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// 
+		/// Performs a distance-check for a given Construct against all its enemies to determine, if it is currently violating the distance-rule.
 		/// </summary>
-		/// <param name="current"></param>
-		/// <param name="teamIndex"></param>
-		/// <param name="percentage"></param>
-		/// <param name="noEnemiesFound"></param>
-		/// <returns></returns>
+		/// <param name="current">The current construct to check distances.</param>
+		/// <param name="teamIndex">Its team index</param>
+		/// <param name="percentage">The relative value for attacking.</param>
+		/// <param name="noEnemiesFound">Set to true, if no enemies were found this pass.</param>
+		/// <returns>True, if the current participant is considered as "fleeing from battle" and has to accumulate penalty time.</returns>
 		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
 		{
 			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
@@ -948,15 +1009,20 @@ namespace TournamentMod
 				float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
 				float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
 				//Too far away?
-				if(currentDistance>Parameters.DistanceLimit[teamIndex]){
+				if (currentDistance > Parameters.DistanceLimit[teamIndex])
+				{
 					if (Parameters.SoftLimits[teamIndex])
 					{
 						//Going away faster than DistanceReverse allows?
 						if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
-						{ rulebreaks++; }
+						{
+							rulebreaks++;
+						}
 					}
 					else
-					{ rulebreaks++; }
+					{
+						rulebreaks++;
+					}
 				}
 			}
 			return Mathf.Max(1, Mathf.RoundToInt((1 - percentage) * enemies.Count)) <= rulebreaks;
@@ -1007,7 +1073,7 @@ namespace TournamentMod
 							HUDLog[teamAndMembers.Key][member.Key].Scrapped = true;
 							Vector3 centreOfMass = member.Key.CentreOfMass;
 							UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
-							member.Key.DestroyCompletely(true);
+							member.Key.DestroyCompletely(DestroyReason.Wiped, true);
 							HUDLog[teamAndMembers.Key][member.Key].TimeOfDespawn = timerTotal;
 						}
 					}
@@ -1087,7 +1153,7 @@ namespace TournamentMod
 							}
 							break;
 						default:
-							Debug.LogError("Health calculation of newly spawned in Construct is not available!");
+							SafeLogging.LogError("Health calculation of newly spawned in Construct is not available!");
 							break;
 					}
 					HUDLog[tournamentParticipant.TeamId][val] = tournamentParticipant;
@@ -1107,6 +1173,9 @@ namespace TournamentMod
 							break;
 						case 3:
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
+							break;
+						default:
+							SafeLogging.LogError("Health calculation of Construct is not available!");
 							break;
 					}
 					tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;

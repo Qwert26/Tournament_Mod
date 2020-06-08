@@ -1,6 +1,8 @@
-﻿using System;
-namespace TournamentMod.Formations
+﻿namespace TournamentMod.Formations
 {
+	/// <summary>
+	/// The implemented and available formations.
+	/// </summary>
 	public enum FormationType
 	{
 		Line,
@@ -10,11 +12,20 @@ namespace TournamentMod.Formations
 		CommandedParallelColumns,
 		RomanManipelBase,
 		RomanManipelAttack,
-		GuardLine
+		GuardLine,
+		Triangle
 	}
+	/// <summary>
+	/// Extension-Methods for the FormationTypes.
+	/// </summary>
 	public static class FormationTypeExtensions
 	{
-		public static Formation getFormation(this FormationType type) {
+		/// <summary>
+		/// Gets a Formation-struct based on the value of the FormationType.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public static Formation GetFormation(this FormationType type) {
 			switch (type)
 			{
 				case FormationType.Line:
@@ -33,8 +44,10 @@ namespace TournamentMod.Formations
 					return Formation.RomanManipelAttack;
 				case FormationType.GuardLine:
 					return Formation.GuardLine;
+				case FormationType.Triangle:
+					return Formation.Triangle;
 				default:
-					throw new ArgumentOutOfRangeException("type","No known Formation for this type!");
+					return Formation.UnknownFormation;
 			}
 		}
 	}

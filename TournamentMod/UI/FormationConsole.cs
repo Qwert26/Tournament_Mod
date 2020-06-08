@@ -4,7 +4,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Tips;
-using UnityEngine;
 using BrilliantSkies.Ui.Consoles.Interpretters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 using BrilliantSkies.Ui.Layouts.DropDowns;
@@ -12,29 +11,44 @@ using System;
 namespace TournamentMod.UI
 {
     using Formations;
+	/// <summary>
+	/// GUI-Class for Formation-setting of a singular team.
+	/// </summary>
     public class FormationConsole : ConsoleUi<CombinedFormation>
 	{
 		private readonly int teamSize, teamIndex;
-		private readonly DropDownMenuAlt<FormationType> formationOptions;
+		/// <summary>
+		/// All the available formations.
+		/// </summary>
+		private readonly DropDownMenuAltItem<FormationType>[] items;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="focus">The Formation to modify</param>
+		/// <param name="teamIndex">The teamindex of the formation, used for the title</param>
+		/// <param name="currentTeamSize">The current teamsize, used for calculating maximums.</param>
 		public FormationConsole(CombinedFormation focus, int teamIndex, int currentTeamSize) : base(focus)
 		{
 			teamSize = currentTeamSize;
 			this.teamIndex = teamIndex;
-			formationOptions = new DropDownMenuAlt<FormationType>(TextAnchor.MiddleCenter);
 			FormationType[] types = (FormationType[]) Enum.GetValues(typeof(FormationType));
-			DropDownMenuAltItem<FormationType>[] items = new DropDownMenuAltItem<FormationType>[types.Length];
+			items = new DropDownMenuAltItem<FormationType>[types.Length];
 			for (int i = 0; i < types.Length; i++)
 			{
 				FormationType ft = types[i];
 				items[i] = new DropDownMenuAltItem<FormationType>()
 				{
-					Name = ft.getFormation().Name,
-					ToolTip = ft.getFormation().Description,
+					Name = ft.GetFormation().Name,
+					ToolTip = ft.GetFormation().Description,
 					ObjectForAction = ft
 				};
 			}
-			formationOptions.SetItems(items);
 		}
+		/// <summary>
+		/// Builds the Content.
+		/// </summary>
+		/// <param name="suggestedName"></param>
+		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
 			ConsoleWindow window = NewWindow("Manage Formation", WindowSizing.GetRhs());
@@ -48,6 +62,9 @@ namespace TournamentMod.UI
 				ScreenSegmentTable formationSegment = screen.CreateTableSegment(3, 3);
 				formationSegment.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
 				formationSegment.SqueezeTable = false;
+				formationSegment.SpaceBelow = formationSegment.SpaceAbove = 5;
+				DropDownMenuAlt<FormationType> formationOptions = new DropDownMenuAlt<FormationType>();
+				formationOptions.SetItems(items);
 				formationSegment.AddInterpretter(new DropDown<CombinedFormation, FormationType>(_focus, formationOptions, (CombinedFormation cf, FormationType ft) => cf.formationEntrycount[index].Item1 == ft, delegate (CombinedFormation cf, FormationType ft)
 					{
 						Tuple<FormationType, int> temp = cf.formationEntrycount[index];
@@ -87,6 +104,7 @@ namespace TournamentMod.UI
 				formationSegment.AddInterpretter(new Empty(), 2, 2);
 			}
 			ScreenSegmentStandardHorizontal buttons = screen.CreateStandardHorizontalSegment();
+			buttons.SpaceAbove = buttons.SpaceBelow = 5;
 			buttons.AddInterpretter(SubjectiveButton<CombinedFormation>.Quick(_focus, "Add Formation", new ToolTip("Adds a new Formation at the end."), delegate (CombinedFormation cf)
 				{
 					cf.formationEntrycount.Add(new System.Tuple<FormationType, int>(FormationType.GuardLine, 0));
@@ -100,6 +118,11 @@ namespace TournamentMod.UI
 				}));
 			return window;
 		}
+		/// <summary>
+		/// Determines the maximum amount of entries inside a formation depending on the set entries for all other formations.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		private float DetermineMaximum(int index)
 		{
 			int sum = 0;

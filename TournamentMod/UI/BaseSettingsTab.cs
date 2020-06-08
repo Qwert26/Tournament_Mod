@@ -10,19 +10,33 @@ using TournamentMod.Serialisation;
 using UnityEngine;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for basic settings such as starting distance, spawngaps, penalty- and match-time.
+	/// </summary>
 	public class BaseSettingsTab : AbstractTournamentTab
 	{
 		private int sectionsNorthSouth, sectionsEastWest, terrainsPerSection;
 		private int heightmapRange;
 		private float fullGravityHeight, terrainSize;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public BaseSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Base Settings", "Setup the basic Parameters of the Fight.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();
 			CreateHeader("Basic Parameters", new ToolTip("Customize the most basic Parameters here."));
 			ScreenSegmentStandard segment = CreateStandardSegment();
+			segment.SpaceBelow = 5;
+			segment.SpaceAbove = 5;
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 20000, 1, 1250,
 				M.m((Parameters tp)=>tp.StartingDistance), "Starting Distance from center: {0}m", delegate (Parameters tp, float f)
 				{
@@ -122,6 +136,7 @@ namespace TournamentMod.UI
 				}, new ToolTip("When determining if an entry is violating the distance limit, this percentage must be reached or it is considered fleeing from too many enemies."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			#region Puffer-Einstellungen
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
+			segment2.SpaceAbove = segment2.SpaceBelow = 5;
 			segment2.SetConditionalDisplay(() => _focus.Parameters.UniformRules&&_focus.Parameters.SoftLimits[0]);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
 				M.m((Parameters tp) => tp.MaximumBufferTime[0]), "Maximum Buffer Time: {0}s", delegate (Parameters tp, float f)
@@ -149,6 +164,7 @@ namespace TournamentMod.UI
 				}, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. Recommended is a negative value.")));
 			#endregion
 			ScreenSegmentStandard segment3 = CreateStandardSegment();
+			segment3.SpaceBelow = segment3.SpaceAbove = 5;
 			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 900,
 				M.m((Parameters tp) => tp.MaximumTime), "Maximum Time: {0}s", delegate (Parameters tp, float f)
 				{
@@ -159,69 +175,58 @@ namespace TournamentMod.UI
 				{
 					tp.Overtime.Us = (int)f;
 				}, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
-			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Local Resources", new ToolTip("Enable or Disable local Resources. When enabled, teams can not have infinte Materials!"), delegate (Parameters tp, bool b)
-			   {
-				   tp.LocalResources.Us = b;
-				   if (b)
-				   {
-					   for (int i = 0; i < 6; i++)
-					   {
-						   tp.InfinteResourcesPerTeam.Us[i] = false;
-					   }
-				   }
-			   }, (tp) => tp.LocalResources.Us));
-			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute local Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
+			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
 			{
 				tp.DistributeLocalResources.Us = b;
-			}, (Parameters tp) => tp.DistributeLocalResources)).SetConditionalDisplayFunction(() => _focus.Parameters.LocalResources);
+			}, (Parameters tp) => tp.DistributeLocalResources));
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (Parameters tp, bool b)
 			{
 				tp.SameMaterials.Us = b;
 			}, (tp) => tp.SameMaterials.Us));
 			#region Resourcen-Einstellungen
 			ScreenSegmentStandard segmentIdenticalMaterials = CreateStandardSegment();
+			segmentIdenticalMaterials.SpaceAbove = segmentIdenticalMaterials.SpaceBelow = 5;
 			segmentIdenticalMaterials.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
 			_focus.Parameters.EnsureEnoughData();
-			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Infinte Resources", new ToolTip("Give all Teams infinte Materials"), delegate (Parameters tp, bool b)
+			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Entry-specific Resources", new ToolTip("All entries on all teams get individualised materials, look at the Participant-Tab."), delegate (Parameters tp, bool b)
 			{
 				for (int i = 0; i < 6; i++)
 				{
-					tp.InfinteResourcesPerTeam.Us[i] = b;
+					tp.TeamEntryMaterials.Us[i] = b;
 				}
 			}, (tp) =>
 			{
-				return tp.InfinteResourcesPerTeam[0];
-			})).SetConditionalDisplayFunction(() => !_focus.Parameters.LocalResources);
+				return tp.TeamEntryMaterials[0];
+			})).SetConditionalDisplayFunction(() => _focus.Parameters.DistributeLocalResources);
 			segmentIdenticalMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 				M.m((Parameters tp) => tp.ResourcesPerTeam[0]), "{0} Materials for all Teams", delegate (Parameters tp, float f)
 				{
 					for (int i = 0; i < 6; i++)
 					{
-						tp.ResourcesPerTeam.Us[i] = (int)f;
+						tp.ResourcesPerTeam.Us[i] = (int) f;
 					}
-				}, new ToolTip("For local Resources, this determines with how much Materials a participant can spawn at maximum, for global resources, it determines the amount of Materials in storage."))).SetConditionalDisplayFunction(() => _focus.Parameters.SameMaterials && !_focus.Parameters.InfinteResourcesPerTeam[0]);
+				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => !_focus.Parameters.TeamEntryMaterials[0]);
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
+			segmentIndividualMaterials.SpaceBelow = segmentIndividualMaterials.SpaceAbove = 5;
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
 			for (int i = 0; i < 6; i++)
 			{
 				int index = i;
-				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Infinte Resources for Team {index + 1}", new ToolTip($"Give Team {index + 1} infinte Materials."), delegate (Parameters tp, bool b)
-					{
-						tp.InfinteResourcesPerTeam.Us[index] = b;
-					}, (tp) =>
-					{
-						return tp.InfinteResourcesPerTeam[index];
-					})).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.LocalResources);
+				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Entry-specific Resources for Team {index + 1}", new ToolTip($"Give the entries on Team {index + 1} individualised Materials. See the Participant-Tab."), delegate (Parameters tp, bool b)
+					   {
+						   tp.TeamEntryMaterials.Us[index] = b;
+					   }, (tp) => tp.TeamEntryMaterials[index])).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && _focus.Parameters.DistributeLocalResources);
 				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 					M.m((Parameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (Parameters tp, float f)
 					  {
 						  tp.ResourcesPerTeam.Us[index] = (int) f;
-					  }, new ToolTip("For local Resources, this determines with how much Materials a participant of this team can spawn at maximum, for global resources, it determines the amount of Materials in storage for this team."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.InfinteResourcesPerTeam[index]);
+					  }, new ToolTip("This determines with how much Materials a participant of this team can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.TeamEntryMaterials[index]);
 			}
 			#endregion
 			sectionsNorthSouth = WorldSpecification.i.BoardLayout.NorthSouthBoardSectionCount - 1;
 			sectionsEastWest = WorldSpecification.i.BoardLayout.EastWestBoardSectionCount - 1;
 			ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, sectionsEastWest, 1, sectionsEastWest / 2,
 				M.m((Parameters tp) => tp.EastWestBoard), "East-West Board {0}", delegate (Parameters tp, float f)
 				{
@@ -241,6 +246,7 @@ namespace TournamentMod.UI
 					tp.Rotation.Us = (int)f;
 				}, null, M.m<Parameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
 			horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
 			terrainsPerSection = WorldSpecification.i.BoardLayout.TerrainsPerBoard;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -terrainsPerSection / 2, terrainsPerSection / 2, 1, 0,
 			M.m((Parameters tp) => tp.EastWestTerrain), "East-West Terrain {0}", delegate (Parameters tp, float f)
@@ -267,11 +273,14 @@ namespace TournamentMod.UI
 					tp.NorthSouthOffset.Us = f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the offset on the north-south axis, measured in meters. 0 is the center of a terrain.")));
-			CreateStandardSegment().AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Pause on Victory", new ToolTip("When active, the game will be paused once a winner has been determined."), delegate (Parameters tp, bool b)
+			ScreenSegmentStandard segment4 = CreateStandardSegment();
+			segment4.SpaceBelow = segment4.SpaceAbove = 5;
+			segment4.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Pause on Victory", new ToolTip("When active, the game will be paused once a winner has been determined."), delegate (Parameters tp, bool b)
 			{
 				tp.PauseOnVictory.Us = b;
 			}, (tp) => tp.PauseOnVictory));
 			horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
 			{

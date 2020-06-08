@@ -10,17 +10,36 @@ using UnityEngine;
 using BrilliantSkies.Ftd.Planets.World;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for splitting spawn and penalty rules across teams.
+	/// </summary>
 	public class TeamSplittedRules : AbstractTournamentTab
 	{
+		/// <summary>
+		/// Used as minimal value for height-limits.
+		/// </summary>
 		private int heightmapRange;
+		/// <summary>
+		/// Used as maximal value for height-limits.
+		/// </summary>
 		private float fullGravityHeight;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public TeamSplittedRules(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Team-splitted Rules", "You can set team-specific rules for spawning and penaltytime-pickup here.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			CreateHeader("Uniform Rules are active", new ToolTip("Team-based Spawn- and Penalty-Rules are not currently active.")).SetConditionalDisplay(() => _focus.Parameters.UniformRules);
 			ScreenSegmentStandard segment = CreateStandardSegment();
+			segment.SpaceAbove = segment.SpaceBelow = 5;
 			segment.SetConditionalDisplay(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Use Team-based Spawn- and Penalty-Rules", new ToolTip("Activate the usage of Team-based Spawn- and Penalty-Rules."),
 				delegate (Parameters tp)
@@ -33,6 +52,7 @@ namespace TournamentMod.UI
 				int index = i;
 				CreateHeader($"Rules for Team {index + 1}", new ToolTip($"These are the DQ-Rules specific to Members of Team {index + 1}.")).SetConditionalDisplay(() => !_focus.Parameters.UniformRules && index < _focus.Parameters.ActiveFactions);
 				segment = CreateStandardSegment();
+				segment.SpaceAbove = segment.SpaceBelow = 5;
 				segment.SetConditionalDisplay(() => !_focus.Parameters.UniformRules && index < _focus.Parameters.ActiveFactions);
 				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
 					M.m((Parameters tp) => tp.SpawngapFB[index]), "Spawngap Forward-Backward: {0}m", delegate (Parameters tp, float f)
@@ -115,6 +135,46 @@ namespace TournamentMod.UI
 					}, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. Recommended is a negative value."))).
 					SetConditionalDisplayFunction(() => _focus.Parameters.SoftLimits[index]);
 			}
+			ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
+			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
+			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
+			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
+			{
+				GuiPopUp.Instance.Add(new PopupTreeViewSave<TournamentParameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+				{
+					if (b) {
+						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+						tpf.Save(_focus.Parameters);
+					}
+				}, _focus.Parameters));
+			}));*/
+			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) =>
+			{
+				t.LoadSettings();
+				t.MoveCam();
+				TriggerScreenRebuild();
+			}));
+			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
+				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+				{
+					if (b)
+					{
+						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
+						_focus.Parameters = tpf.Load();
+						TriggerRebuild();
+					}
+				}));
+			}));*/
+			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) =>
+			{
+				t.LoadDefaults();
+				t.MoveCam();
+				TriggerScreenRebuild();
+			}));
+			horizontal.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (Parameters tp, bool b)
+			{
+				tp.DefaultKeys.Us = b;
+			}, (tp) => tp.DefaultKeys.Us));
 		}
 	}
 }

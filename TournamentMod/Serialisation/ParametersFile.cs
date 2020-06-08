@@ -1,8 +1,8 @@
-﻿using BrilliantSkies.Core.CSharp;
+﻿using BrilliantSkies.Core;
+using BrilliantSkies.Core.CSharp;
 using BrilliantSkies.Core.FilesAndFolders;
 using Newtonsoft.Json;
 using System.Linq;
-using UnityEngine;
 namespace TournamentMod.Serialisation
 {
 	internal class ParametersFile : BaseFile
@@ -20,7 +20,7 @@ namespace TournamentMod.Serialisation
 			}
 			else
 			{
-				Debug.Log("The given File doesn't exist! Path is " + _fileSource.FilePath);
+				SafeLogging.LogError("The given File doesn't exist! Path is " + _fileSource.FilePath);
 			}
 		}
 		public void Save(Parameters parameters) {

@@ -12,16 +12,41 @@ using BrilliantSkies.Ui.TreeSelection;
 using TournamentMod.Serialisation;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for adding new participants to Teams.
+	/// </summary>
 	public class ParticipantConsole : ConsoleUi<Tournament>
 	{
-		private ConsoleUiScreen _parentTab;
-		private TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> treeSelector;
+		/// <summary>
+		/// The ParticipantManagementTab.
+		/// </summary>
+		private readonly ConsoleUiScreen _parentTab;
+		/// <summary>
+		/// The TreeSelector
+		/// </summary>
+		private readonly TreeSelectorGuiElement<BlueprintFile, BlueprintFolder> treeSelector;
+		/// <summary>
+		/// Used as minimum spawn height.
+		/// </summary>
 		private int heightmapRange;
+		/// <summary>
+		/// Used as maximum spawn height.
+		/// </summary>
 		private float fullGravityHeight;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="focus"></param>
+		/// <param name="parentTab"></param>
 		public ParticipantConsole(Tournament focus, ConsoleUiScreen parentTab) : base(focus) {
 			_parentTab = parentTab;
 			treeSelector = FtdGuiUtils.GetFileBrowserFor(GameFolders.GetCombinedBlueprintFolder(false));
 		}
+		/// <summary>
+		/// Builds the Content.
+		/// </summary>
+		/// <param name="suggestedName"></param>
+		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
 			ConsoleWindow window = NewWindow("Add Participants", WindowSizing.GetRhs());
@@ -32,6 +57,7 @@ namespace TournamentMod.UI
 			treeView.SpaceAbove = 20;
 			treeView.SpaceBelow = 20;
 			ScreenSegmentStandardHorizontal horizontal = screen.CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
 				M.m((Parameters tp) => tp.Direction), "Starting Direction: {0}°", delegate (Parameters tp, float f)
 				{
@@ -45,6 +71,7 @@ namespace TournamentMod.UI
 					tp.SpawnHeight.Us = (int)f;
 				}, new ToolTip("The starting height of the entry")));
 			horizontal = screen.CreateStandardHorizontalSegment();
+			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveButton<TreeSelectorGuiElement<BlueprintFile,BlueprintFolder>>.Quick(treeSelector, "Add to all Teams", new ToolTip("Adds the currently selected Blueprint to all active Teams."), delegate (TreeSelectorGuiElement<BlueprintFile,BlueprintFolder> tree)
 			{
 				if (tree.HasSelection)

@@ -30,24 +30,33 @@ namespace TournamentMod
 		/// The description of the colorscheme.
 		/// </summary>
 		public string Description { get; set; }
+		/// <summary>
+		/// The old yellow scheme, also called "KING".
+		/// </summary>
 		public readonly static FleetColor classicYellow = new FleetColor()
 		{
 			Name = "Classic Yellow",
-			Description = "The classic yellow colorscheme by Wo0tness, usually used for the Team 1-Faction.",
+			Description = "The classic yellow colorscheme by W0otness, usually used for the Team 1-Faction.",
 			Main = new Color(1f, 0.84f, 0f, 1f),
 			Secondary = new Color(0.85f, 0.65f, 0.13f, 1f),
 			Trim = new Color(1f, 0.65f, 0f, 1f),
 			Detail = new Color(0.85f, 0.55f, 0f, 1f)
 		};
+		/// <summary>
+		/// The old red scheme, also called "CHALLENGER"
+		/// </summary>
 		public readonly static FleetColor classicRed = new FleetColor()
 		{
 			Name = "Classic Red",
-			Description = "The classic red colorscheme by Wo0tness, usually used for the Team 2-Faction.",
+			Description = "The classic red colorscheme by W0otness, usually used for the Team 2-Faction.",
 			Main = new Color(1f, 0f, 0f, 1f),
 			Secondary = new Color(0.55f, 0f, 0f, 1f),
 			Trim = new Color(0.7f, 0.15f, 0.15f, 1f),
 			Detail = new Color(1f, 0.35f, 0.35f, 1f)
 		};
+		/// <summary>
+		/// A new color scheme for the third team.
+		/// </summary>
 		public readonly static FleetColor neoBlue = new FleetColor()
 		{
 			Name = "Neo Blue",
@@ -57,15 +66,21 @@ namespace TournamentMod
 			Trim = new Color(0.15f, 0.15f, 0.7f, 1f),
 			Detail = new Color(0.35f, 0.35f, 1f, 1f)
 		};
+		/// <summary>
+		/// A new color scheme for the never implemented fourth team, because we went from only 2 to max 3 to max 6.
+		/// </summary>
 		public readonly static FleetColor neoGreen = new FleetColor()
 		{
 			Name = "Neo Green",
-			Description = "A new green colorscheme by Qwert26, if there would have been a 4.Team, it would have used these.",
+			Description = "A new green colorscheme by Qwert26, usually used for the Team 4-Faction.",
 			Main = new Color(0, 1, 0, 1),
 			Secondary = new Color(0, 0.55f, 0, 1),
 			Trim = new Color(0.15f, 0.7f, 0.15f, 1),
 			Detail = new Color(0.35f, 1, 0.35f, 1)
 		};
+		/// <summary>
+		/// Purpur goes through multiple colors before reaching its final state, this scheme is for a long peroid.
+		/// </summary>
 		public readonly static FleetColor medievalOldRoyal = new FleetColor()
 		{
 			Name = "Medieval Old Royal",
@@ -75,6 +90,9 @@ namespace TournamentMod
 			Trim = new Color(0f, 0f, 1f, 1f), //Blue
 			Detail = new Color(0.5f, 0f, 0f, 1f) //Darkred
 		};
+		/// <summary>
+		/// Purpur goes through multiple colors before reaching its final state, this scheme is for a medium peroid.
+		/// </summary>
 		public readonly static FleetColor medievalMiddleRoyal = new FleetColor()
 		{
 			Name = "Medieval Middle Royal",
@@ -84,6 +102,9 @@ namespace TournamentMod
 			Trim = new Color(0.5f, 0f, 0f, 1f), //Darkred
 			Detail = new Color(1f, 0.5f, 0.5f, 1f) //Hotpink
 		};
+		/// <summary>
+		/// Purpur goes through multiple colors before reaching its final state, this scheme is for a short peroid.
+		/// </summary>
 		public readonly static FleetColor medievalYoungRoyal = new FleetColor()
 		{
 			Name = "Medieval Young Royal",
@@ -93,6 +114,9 @@ namespace TournamentMod
 			Trim = new Color(1f, 0.5f, 0.5f, 1f), //Hotpink
 			Detail = new Color(0f, 0.5f, 0f, 1f) //Green
 		};
+		/// <summary>
+		/// Requested by Lucaya for "From the Planetside"
+		/// </summary>
 		public readonly static FleetColor terranRepublic = new FleetColor()
 		{
 			Name = "Terran Republic, Planetside",
@@ -102,6 +126,9 @@ namespace TournamentMod
 			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
 			Detail = new Color(0f, 0f, 0f, 1f) //Black
 		};
+		/// <summary>
+		/// Requested by Lucaya for "From the Planetside"
+		/// </summary>
 		public readonly static FleetColor newConglomerate = new FleetColor()
 		{
 			Name = "New Conglomerate, Planetside",
@@ -111,6 +138,9 @@ namespace TournamentMod
 			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
 			Detail = new Color(0.61f, 0.56f, 0.47f, 1f) //Tan
 		};
+		/// <summary>
+		/// Requested by Lucaya for "From the Planetside"
+		/// </summary>
 		public readonly static FleetColor vanuSovereignty = new FleetColor()
 		{
 			Name = "Vanu Sovereignty, Planetside",
@@ -120,7 +150,10 @@ namespace TournamentMod
 			Trim = new Color(0.61f, 0.61f, 0.64f, 1f), //Grey
 			Detail = new Color(0f, 0f, 0f, 1f) //Black
 		};
-		public readonly static FleetColor naniteSystemsOps = new FleetColor()
+		/// <summary>
+		/// Requested by Lucaya for "From the Planetside 2"
+		/// </summary>
+		public readonly static FleetColor naniteSystemsOperative = new FleetColor()
 		{
 			Name = "Nanite Systems Operative, Planetside",
 			Description = "Taken from the offical color palette of the NSO.",
@@ -129,6 +162,9 @@ namespace TournamentMod
 			Trim = new Color(0.83f, 0.83f, 0.83f, 1f), //Light Grey
 			Detail = new Color(0.18f, 0.18f, 0.18f, 1f) //Light Black
 		};
+		/// <summary>
+		/// All available color schemes.
+		/// </summary>
 		public readonly static FleetColor[] colorSchemes = {
 			classicYellow,
 			classicRed,
@@ -140,7 +176,7 @@ namespace TournamentMod
 			terranRepublic,
 			newConglomerate,
 			vanuSovereignty,
-			naniteSystemsOps
+			naniteSystemsOperative
 		};
 	}
 }

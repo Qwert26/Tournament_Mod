@@ -28,7 +28,7 @@ namespace TournamentMod.Serialisation
 		/// <returns>The current size of the list.</returns>
 		public override uint EntriesAndBytesPerEntry(out uint entryBytes)
 		{
-			entryBytes = 4 * 4;
+			entryBytes = 16;
 			return (uint)Us.Count;
 		}
 		/// <summary>

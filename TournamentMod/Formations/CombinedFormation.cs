@@ -56,16 +56,16 @@ namespace TournamentMod.Formations
 				{
 					formationSpecificCount -= indexAndCount.Item2;
 					formationSpecificIndex -= indexAndCount.Item2;
-					distance += indexAndCount.Item1.getFormation().DetermineSize(gapLeftRight, gapForwardBackward, indexAndCount.Item2).y + gapForwardBackward;
+					distance += indexAndCount.Item1.GetFormation().DetermineSize(gapLeftRight, gapForwardBackward, indexAndCount.Item2).y + gapForwardBackward;
 				}
 				else
 				{
-					return indexAndCount.Item1.getFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, indexAndCount.Item2, formationSpecificIndex, distance, height);
+					return indexAndCount.Item1.GetFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, indexAndCount.Item2, formationSpecificIndex, distance, height);
 				}
 			}
 			//Die letzte Formation gilt als Fänger.
 			Tuple<FormationType, int> last = formationEntrycount.Last();
-			return last.Item1.getFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex, distance, height);
+			return last.Item1.GetFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex, distance, height);
 		}
 		/// <summary>
 		/// Determines the role of an entry inside the formation it will fall into.
@@ -87,12 +87,12 @@ namespace TournamentMod.Formations
 				}
 				else
 				{
-					return indexAndCount.Item1.getFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, indexAndCount.Item2, formationSpecificIndex);
+					return indexAndCount.Item1.GetFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, indexAndCount.Item2, formationSpecificIndex);
 				}
 			}
 			//Die letzte Formation gilt als Fänger.
 			Tuple<FormationType, int> last = formationEntrycount.Last();
-			return last.Item1.getFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex);
+			return last.Item1.GetFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex);
 		}
 	}
 }

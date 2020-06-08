@@ -9,14 +9,20 @@ using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
 namespace TournamentMod
 {
+	/// <summary>
+	/// The Plugin, necessary to hook up the Mod into the Game.
+	/// </summary>
 	public class TournamentPlugin : GamePlugin
 	{
 		private static Tournament _t;
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(2, 5, 2, 19);
+		public Version version => new Version(2, 6, 9, 27);
 		internal static FactionManagement factionManagement;
+		/// <summary>
+		/// Only gets called once during a game session.
+		/// </summary>
 		public void OnLoad()
 		{
 			_t = new Tournament();
@@ -26,6 +32,9 @@ namespace TournamentMod
 			GameEvents.UniverseChange += OnPlanetChange;
 			GameEvents.UniverseChange += factionManagement.OnUniverseChange;
 		}
+		/// <summary>
+		/// Doesn't get called by the game yet, when it shuts down.
+		/// </summary>
 		public void OnSave() { }
 		/// <summary>
 		/// Adds and removes the instance based on the gametype.
@@ -54,7 +63,8 @@ namespace TournamentMod
 		public void OnPlanetChange()
 		{
 			@is = new InstanceSpecification();
-			@is.GenerateBlankInstance();
+			@is.GenerateBlankInstance(Planet.i);
+			Planet.i.Designers.AddInstance(@is);
 			@is.Header.Name = "Tournament Creator";
 			@is.Header.Summary = "Create custom tournament style matches.";
 			@is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {
@@ -65,22 +75,23 @@ namespace TournamentMod
 					Header="A ton of Options",
 					Paragraph="Determine the starting Distance, Offsets from teammates, Start-Materials, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
 					"tolerated Fleeing-Speed and maximum Match-Time for the fights. For Battles with a lot of vertical Freedom, its better to use the ground-projected Distance. "+
-					"Decide to use local or centralised Resources, give each entry the set amount or distribute a total amount, give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
+					"Give each entry the same amount or distribute a total amount, give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
 					"Set the Lifesteal-Percentage, use a naval march formation, change how Vehicles are despawned, how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
 				}, new HeaderAndParagraph() {
 					Header="You go there and we fight here",
 					Paragraph="Each Vehicle can be spawned in any orientation and at any altitude. If you don't like the spawn order, you can also change it." +
-					"Use the Location sliders to select the perfect Map-Sector for the fight. The background-camera can be rotated around by either holding 'e' or pressing the middle mousebutton. " +
+					"Use the Location sliders to select the perfect Map-Sector and Terrain-piece for the fight. The background-camera can be rotated around by either holding 'e' or pressing the middle mousebutton. " +
 					"And finally rotate the teams around the center point of it."
 				}, new HeaderAndParagraph() {
 					Header="I want a Rematch!",
-					Paragraph="Simply use two Buttons to cycle through Teams or swap orientations of a single Team. Deactivating a team excludes it from the rotation."
+					Paragraph="Simply use two Buttons to cycle through Teams or swap orientations of a single Team. Deactivating a team excludes it from the rotation, " +
+					"but it will not forget its entries."
 				}, new HeaderAndParagraph() {
 					Header="So many Colors!",
-					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the old ones for a team. They even get safed when you press the \"Safe\"-Button."
+					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the pre-made ones for a team. They even get safed when you press the \"Safe\"-Button."
 				}
 			};
-			@is.Header.Type = InstanceType.None;
+			@is.Header.Type = InstanceType.Designer;
 			@is.Header.CommonSettings.AvatarAvailability = AvatarAvailability.None;
 			@is.Header.CommonSettings.AvatarDamage = AvatarDamage.Off;
 			@is.Header.CommonSettings.ConstructableCleanUp = ConstructableCleanUp.All;
@@ -89,13 +100,12 @@ namespace TournamentMod
 			@is.Header.CommonSettings.SavingOptions = SavingOptions.None;
 			@is.Header.CommonSettings.BlueprintSpawningOptions = BlueprintSpawningOptions.NoNewVehicles;
 			@is.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = 0f;
-			@is.Header.CommonSettings.LocalisedResourceMode = LocalisedResourceMode.UseCentralStore;
+			//@is.Header.CommonSettings.LocalisedResourceMode = LocalisedResourceMode.UseCentralStore;
 			@is.Header.CommonSettings.FogOfWarType = FogOfWarType.None;
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
-			@is.Territory.SetAllUnowned();
-			@is.PostLoadInitiate();
-			Planet.i.Designers.AddInstance(@is);
+			@is.Territory.SetAllUnowned(Planet.i.World.BoardLayout);
+			@is.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
 		}
 	}
 }

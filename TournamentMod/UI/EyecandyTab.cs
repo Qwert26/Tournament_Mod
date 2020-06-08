@@ -10,14 +10,25 @@ using TournamentMod.Serialisation;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective;
 namespace TournamentMod.UI
 {
+	/// <summary>
+	/// GUI-Class for Eyecandy, currently only fleetcolors of active teams.
+	/// </summary>
 	public class EyecandyTab : AbstractTournamentTab
 	{
 		private int currentTeam = 0;
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public EyecandyTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus)
 		{
 			Name = new Content("Eyecandy", "Change the fleet appearence of a Team.");
 		}
-		public override Action OnSelectTab => base.OnSelectTab;
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();
@@ -26,6 +37,7 @@ namespace TournamentMod.UI
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
 				ScreenSegmentStandardHorizontal table = CreateStandardHorizontalSegment();
+				table.SpaceBelow = table.SpaceAbove = 5;
 				table.SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
 				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Main Color"),
 					M.m<Parameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((Parameters tp) => tp.MainColorsPerTeam[index]), delegate (Parameters tp, Color c)
@@ -49,6 +61,7 @@ namespace TournamentMod.UI
 					  }));
 			}
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
+			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
 			{
@@ -93,6 +106,7 @@ namespace TournamentMod.UI
 			foreach (FleetColor tfc in FleetColor.colorSchemes) {
 				FleetColor current = tfc;
 				ScreenSegmentStandard standard = CreateStandardSegment();
+				standard.SpaceBelow = standard.SpaceAbove = 5;
 				standard.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, current.Name, new ToolTip(current.Description), delegate (Parameters tp)
 				{
 					tp.MainColorsPerTeam.Us[currentTeam] = current.Main;
@@ -101,6 +115,7 @@ namespace TournamentMod.UI
 					tp.TrimColorsPerTeam.Us[currentTeam] = current.Trim;
 				}));
 				ScreenSegmentTable table = CreateTableSegment(4, 1);
+				table.SpaceAbove = table.SpaceBelow = 5;
 				table.SqueezeTable = false;
 				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Main Color"), M.m<FleetColor>(new ToolTip($"The Main Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Main)));
 				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Secondary Color"), M.m<FleetColor>(new ToolTip($"The Secondary Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Secondary)));

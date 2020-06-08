@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "title": "JSON Schema for FTD-Plugins",
+
+  "type": "object",
+
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the mod"
+    },
+    "version": {
+        "type": "string",
+        "description": "The Version number of the Plugin itself."
+    },
+    "gameversion": {
+        "type": "string",
+        "description": "The Version number of the Game, which the Plugin targets."
+    },
+    "filename": {
+        "type": "string",
+        "description": "The DLL to load."
+    },
+    "depends": {
+        "type": "array",
+        "description": "A list of plugins which needs to be loaded before this one.",
+        "items": {
+            "type": "string"
+        },
+        "minItems": 0
+    },
+    "conflicts": {
+        "type": "array",
+        "description": "A list of mods which can not be loaded together with this one.",
+        "items": {
+            "type": "string"
+        },
+        "minItems": 0
+    }
+  }
+}

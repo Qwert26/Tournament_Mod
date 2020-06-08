@@ -1,5 +1,4 @@
-﻿using System;
-using BrilliantSkies.Ui.Consoles;
+﻿using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Tips;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
@@ -11,16 +10,29 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace TournamentMod.UI
 {
 	using Serialisation;
+	/// <summary>
+	/// GUI-Class for advanced settings such as active teams, formations and cleanup-functions.
+	/// </summary>
 	public class AdvancedSettingsTab : AbstractTournamentTab
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public AdvancedSettingsTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus) {
 			Name = new Content("Advanced Settings", "Setup advanced Parameters for the fight.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			base.Build();
 			CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
 			ScreenSegmentStandard segment1 = CreateStandardSegment();
+			segment1.SpaceAbove = segment1.SpaceBelow = 5;
 			segment1.AddInterpretter(SubjectiveFloatClampedWithBar<Parameters>.Quick(_focus.Parameters, 2, 6, 1,
 				M.m((Parameters tp) => tp.ActiveFactions), "Active Teams: {0}", delegate (Parameters tp, float f)
 				{
@@ -63,6 +75,7 @@ namespace TournamentMod.UI
 				   }
 			   }, (tp) => tp.ShowAdvancedOptions.Us));
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
+			segment2.SpaceAbove = segment2.SpaceBelow = 5;
 			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
 				M.m((Parameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (Parameters tp, float f)
@@ -88,7 +101,7 @@ namespace TournamentMod.UI
 			}
 			segment2.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(3),
 				M.m((Parameters tp) => tp.CleanUpMode), M.m<Parameters>(1), M.m<Parameters>(2),
-				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)(int)tp.CleanUpMode}"), delegate (Parameters tp, float f)
+				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)tp.CleanUpMode.Us}"), delegate (Parameters tp, float f)
 				{
 					tp.CleanUpMode.Us = (int)f;
 				}, null, M.m((Parameters tp) => new ToolTip(describeCleanupMode()))));
@@ -100,12 +113,12 @@ namespace TournamentMod.UI
 				M.m((Parameters tp) => tp.SinkingHealthFraction), "\"Below and Sinking\"-Healthfraction: {0}%", delegate (Parameters tp, float f)
 				{
 					tp.SinkingHealthFraction.Us = (int)f;
-				}, new ToolTip("Any construct below a certain altitude and below this healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+				}, new ToolTip("Any construct below a certain altitude and below this health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 0, 1, -10,
 				M.m((Parameters tp) => tp.SinkingAltitude), "\"Below and Sinking\"-Altitude: {0}m", delegate (Parameters tp, float f)
 				{
 					tp.SinkingAltitude.Us = (int)f;
-				}, new ToolTip("Any construct below this altitude and below a certain healthfraction will be scrapped after 10s"))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
+				}, new ToolTip("Any construct below this altitude and below a certain health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip("Disable this function to allow entries to fight until they are considered \"dead\"."), delegate (Parameters tp, bool b) {
 				tp.CleanUpTooDamagedConstructs.Us = b;
 			}, (tp) => tp.CleanUpTooDamagedConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
@@ -179,6 +192,7 @@ namespace TournamentMod.UI
 					tp.MinimumHealth.Us = (int)f;
 				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
+			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
 			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
 			{
@@ -215,6 +229,5 @@ namespace TournamentMod.UI
 				TriggerScreenRebuild();
 			}));
 		}
-		public override Action OnSelectTab => base.OnSelectTab;
 	}
 }

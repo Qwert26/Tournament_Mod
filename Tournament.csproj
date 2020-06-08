@@ -310,9 +310,15 @@
     <Compile Include="TournamentMod\UI\AdvancedSettingsTab.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Plugin-schema.json" />
     <None Include="TournamentMod\plugin.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties tournamentmod_4plugin_1json__JsonSchema="..\Plugin-schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
