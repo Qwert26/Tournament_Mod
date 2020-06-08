@@ -110,18 +110,20 @@ namespace TournamentMod
 			//Erzeuge den Farbverlauf von YouTube: Weiß-Blau-Grün-Gelb-Orange-Rot(eigentlich Schwarz)
 			penaltyTimeColor = new Gradient
 			{
-				colorKeys = new GradientColorKey[] {
-				new GradientColorKey(Color.white, 0f),
-				new GradientColorKey(Color.blue, 0.25f),
-				new GradientColorKey(Color.green, 0.5f),
-				new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),//Yellow
-				new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),//Orange
-				new GradientColorKey(Color.red, 1f)
-			},
-				alphaKeys = new GradientAlphaKey[] {
-				new GradientAlphaKey(1f, 0f),
-				new GradientAlphaKey(1f, 1f)
-			},
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(Color.white, 0f),
+					new GradientColorKey(Color.blue, 0.25f),
+					new GradientColorKey(Color.green, 0.5f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),//Yellow
+					new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),//Orange
+					new GradientColorKey(Color.red, 1f)
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
 				mode = GradientMode.Blend
 			};
 		}

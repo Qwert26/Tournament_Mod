@@ -12,7 +12,22 @@ namespace TournamentMod.Serialisation
 		/// <param name="bytes">The byte array to be converted. It must contain at least 1 byte.</param>
 		public override void ByteToEntry(byte[] bytes)
 		{
-			Us.Add(bytes[0] != 0);
+			Us.Add(CountBits(bytes[0]) > 4);
+		}
+		/// <summary>
+		/// Counts the set bits in a byte
+		/// </summary>
+		/// <param name="b"></param>
+		/// <returns>a number between 0 and 8.</returns>
+		private static byte CountBits(byte b)
+		{
+			byte count = 0;
+			while (b != 0)
+			{
+				count++;
+				b &= (byte)(b - 1);
+			}
+			return count;
 		}
 		/// <summary>
 		/// Determines the size of a single, generic entry in bytes as well as the size of the entire list.
@@ -31,7 +46,7 @@ namespace TournamentMod.Serialisation
 		/// <param name="byteArray">The byte array which should store the converted entry.</param>
 		public override void EntryToByte(uint keyIndex, ref byte[] byteArray)
 		{
-			byteArray = new byte[1] { (byte)(Us[(int)keyIndex] ? 255 : 0) };
+			byteArray = new byte[1] { Us[(int) keyIndex] ? byte.MaxValue : byte.MinValue };
 		}
 	}
 }

@@ -20,6 +20,9 @@ namespace TournamentMod
 		public static string Name => "Tournament";
 		public Version version => new Version(2, 6, 9, 27);
 		internal static FactionManagement factionManagement;
+		/// <summary>
+		/// Only gets called once during a game session.
+		/// </summary>
 		public void OnLoad()
 		{
 			_t = new Tournament();
@@ -29,6 +32,9 @@ namespace TournamentMod
 			GameEvents.UniverseChange += OnPlanetChange;
 			GameEvents.UniverseChange += factionManagement.OnUniverseChange;
 		}
+		/// <summary>
+		/// Doesn't get called by the game yet, when it shuts down.
+		/// </summary>
 		public void OnSave() { }
 		/// <summary>
 		/// Adds and removes the instance based on the gametype.
@@ -69,12 +75,12 @@ namespace TournamentMod
 					Header="A ton of Options",
 					Paragraph="Determine the starting Distance, Offsets from teammates, Start-Materials, maximum fighting Distance, maximum and minimum fighting Height, Penalty-Time, " +
 					"tolerated Fleeing-Speed and maximum Match-Time for the fights. For Battles with a lot of vertical Freedom, its better to use the ground-projected Distance. "+
-					"Decide to use local or centralised Resources, give each entry the set amount or distribute a total amount, give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
+					"Give each entry the same amount or distribute a total amount, give both Teams equal Amounts or make it unbalanced and even enable the advanced Battle Options. " +
 					"Set the Lifesteal-Percentage, use a naval march formation, change how Vehicles are despawned, how Health is calculated and even set a minimum Health-Percentage under which Penalty-Time is picked up."
 				}, new HeaderAndParagraph() {
 					Header="You go there and we fight here",
 					Paragraph="Each Vehicle can be spawned in any orientation and at any altitude. If you don't like the spawn order, you can also change it." +
-					"Use the Location sliders to select the perfect Map-Sector for the fight. The background-camera can be rotated around by either holding 'e' or pressing the middle mousebutton. " +
+					"Use the Location sliders to select the perfect Map-Sector and Terrain-piece for the fight. The background-camera can be rotated around by either holding 'e' or pressing the middle mousebutton. " +
 					"And finally rotate the teams around the center point of it."
 				}, new HeaderAndParagraph() {
 					Header="I want a Rematch!",
@@ -82,7 +88,7 @@ namespace TournamentMod
 					"but it will not forget its entries."
 				}, new HeaderAndParagraph() {
 					Header="So many Colors!",
-					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the old ones for a team. They even get safed when you press the \"Safe\"-Button."
+					Paragraph="Control the fleet colors of every single team, create your own schema or use one of the pre-made ones for a team. They even get safed when you press the \"Safe\"-Button."
 				}
 			};
 			@is.Header.Type = InstanceType.Designer;

@@ -36,7 +36,7 @@ namespace TournamentMod
 		public readonly static FleetColor classicYellow = new FleetColor()
 		{
 			Name = "Classic Yellow",
-			Description = "The classic yellow colorscheme by Wo0tness, usually used for the Team 1-Faction.",
+			Description = "The classic yellow colorscheme by W0otness, usually used for the Team 1-Faction.",
 			Main = new Color(1f, 0.84f, 0f, 1f),
 			Secondary = new Color(0.85f, 0.65f, 0.13f, 1f),
 			Trim = new Color(1f, 0.65f, 0f, 1f),
@@ -48,7 +48,7 @@ namespace TournamentMod
 		public readonly static FleetColor classicRed = new FleetColor()
 		{
 			Name = "Classic Red",
-			Description = "The classic red colorscheme by Wo0tness, usually used for the Team 2-Faction.",
+			Description = "The classic red colorscheme by W0otness, usually used for the Team 2-Faction.",
 			Main = new Color(1f, 0f, 0f, 1f),
 			Secondary = new Color(0.55f, 0f, 0f, 1f),
 			Trim = new Color(0.7f, 0.15f, 0.15f, 1f),
@@ -67,12 +67,12 @@ namespace TournamentMod
 			Detail = new Color(0.35f, 0.35f, 1f, 1f)
 		};
 		/// <summary>
-		/// A new color scheme for the never implemented fourth team.
+		/// A new color scheme for the never implemented fourth team, because we went from only 2 to max 3 to max 6.
 		/// </summary>
 		public readonly static FleetColor neoGreen = new FleetColor()
 		{
 			Name = "Neo Green",
-			Description = "A new green colorscheme by Qwert26, if there would have been a Team 4, it would have used these.",
+			Description = "A new green colorscheme by Qwert26, usually used for the Team 4-Faction.",
 			Main = new Color(0, 1, 0, 1),
 			Secondary = new Color(0, 0.55f, 0, 1),
 			Trim = new Color(0.15f, 0.7f, 0.15f, 1),

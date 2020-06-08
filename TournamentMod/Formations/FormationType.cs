@@ -1,5 +1,4 @@
-﻿using System;
-namespace TournamentMod.Formations
+﻿namespace TournamentMod.Formations
 {
 	/// <summary>
 	/// The implemented and available formations.

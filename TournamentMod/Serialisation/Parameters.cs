@@ -11,7 +11,7 @@ namespace TournamentMod.Serialisation
 	public class Parameters : PrototypeSystem
 	{
 		/// <summary>
-		/// 
+		/// Container for all revelevant Parameters of a Tournament-grade Battle.
 		/// </summary>
 		/// <param name="uniqueId"></param>
 		public Parameters(uint uniqueId) : base(uniqueId) { }
