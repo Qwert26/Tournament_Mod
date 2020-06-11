@@ -137,7 +137,7 @@ namespace TournamentMod.UI
 						"~---FORMATION-ROLE---~\n" +
 						"{5}",
 						entry.Bpf.Name,
-						entry.bp.CalculateResourceCost(false, true, false).Material,
+						entry.bp.CalculateResourceCost(false, true, false).Material+entry.bp.ContainedMaterialCost,
 						entry.Spawn_height,
 						entry.Spawn_direction,
 						text,
