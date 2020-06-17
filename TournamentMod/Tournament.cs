@@ -329,8 +329,8 @@ namespace TournamentMod
 								BlueprintName = constructable.GetName(),
 								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
 								HP = 100,
-								HPCUR = constructable.AllBasics.GetResourceCost(false, true, false).Material,
-								HPMAX = constructable.AllBasics.GetResourceCost(false, true, false).Material
+								HPCUR = constructable.AllBasics.GetResourceCost(false, true, false, true).Material,
+								HPMAX = constructable.AllBasics.GetResourceCost(false, true, false, true).Material
 							});
 							break;
 						case 2:
@@ -566,7 +566,7 @@ namespace TournamentMod
 						string percentHP = $"{Mathf.RoundToInt(member.Value.HP)}%";
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
 						Color32 timeColor = penaltyTimeColor.Evaluate(penaltyFraction);
-						string penaltyTime = $"<color=#{string.Format("{0:X2}{1:X2}{2:X2}", timeColor.r, timeColor.g, timeColor.b)}>{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s</color>";
+						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s</color>";
 						bool disqualified = member.Value.Disqual || member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)
@@ -611,7 +611,6 @@ namespace TournamentMod
 					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power, 0)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower, 0)}";
 					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude, 1)}m/s";
 					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y, 0)}m";
-
 					float closest = -1f;
 					foreach (MainConstruct construct in StaticConstructablesManager.constructables.ToArray())
 					{
@@ -756,8 +755,14 @@ namespace TournamentMod
 					{
 						index = StaticConstructablesManager.constructables.FindIndex(0, m => m.UniqueId == orbittarget && m.GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id == orbitMothership);
 					}
-					if (index >= 0) { orbitindex = index; }
-					else { orbitindex = 0; }
+					if (index >= 0)
+					{
+						orbitindex = index;
+					}
+					else
+					{
+						orbitindex = 0;
+					}
 				}
 				if (next)
 				{
@@ -867,6 +872,10 @@ namespace TournamentMod
 						orbitcam.OrbitTarget = new PositionAndRotationReturnConstruct(StaticConstructablesManager.constructables[orbitindex], BrilliantSkies.Core.Returns.PositionReturnConstructReferenceSelection.CenterOfMass);
 					}
 				}
+			}
+			else
+			{
+				SafeLogging.LogError("How can both Monobehaviors be disabled?");
 			}
 		}
 		/// <summary>
@@ -1125,7 +1134,7 @@ namespace TournamentMod
 							tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
 							break;
 						case 1:
-							tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false, true, false).Material;
+							tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false, true, false, true).Material;
 							break;
 						case 2:
 						case 3:
@@ -1166,7 +1175,7 @@ namespace TournamentMod
 							tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
 							break;
 						case 1:
-							tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true, true, false).Material;
+							tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true, true, false, true).Material;
 							break;
 						case 2:
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
