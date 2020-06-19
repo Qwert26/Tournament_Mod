@@ -175,6 +175,7 @@ namespace TournamentMod.UI
 				{
 					tp.Overtime.Us = (int)f;
 				}, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
+			#region Resourcen-Einstellungen
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
 			{
 				tp.DistributeLocalResources.Us = b;
@@ -182,8 +183,14 @@ namespace TournamentMod.UI
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (Parameters tp, bool b)
 			{
 				tp.SameMaterials.Us = b;
+				if (b)
+				{
+					for (int i = 1; i < 6; i++)
+					{
+						tp.TeamEntryMaterials.Us[i] = tp.TeamEntryMaterials[0];
+					}
+				}
 			}, (tp) => tp.SameMaterials.Us));
-			#region Resourcen-Einstellungen
 			ScreenSegmentStandard segmentIdenticalMaterials = CreateStandardSegment();
 			segmentIdenticalMaterials.SpaceAbove = segmentIdenticalMaterials.SpaceBelow = 5;
 			segmentIdenticalMaterials.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
@@ -206,6 +213,7 @@ namespace TournamentMod.UI
 						tp.ResourcesPerTeam.Us[i] = (int) f;
 					}
 				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => !_focus.Parameters.TeamEntryMaterials[0]);
+			
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
 			segmentIndividualMaterials.SpaceBelow = segmentIndividualMaterials.SpaceAbove = 5;
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);

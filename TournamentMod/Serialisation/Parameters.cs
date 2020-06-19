@@ -394,7 +394,6 @@ namespace TournamentMod.Serialisation
 				AltitudeReverse.Us[i] = AltitudeReverse[0];
 				MaximumSpeed.Us[i] = MaximumSpeed[0];
 				EnemyAttackPercentage.Us[i] = EnemyAttackPercentage[0];
-				TeamEntryMaterials.Us[i] = TeamEntryMaterials[0];
 			}
 		}
 	}
