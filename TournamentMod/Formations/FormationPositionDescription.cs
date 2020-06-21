@@ -146,12 +146,13 @@ namespace TournamentMod.Formations
 			float currentGapRatio = Mathf.Abs(gapLeftRight / (1 + Mathf.Abs(gapForwardBackward)));
 			int shipsPerLine = Math.Max(1, Mathf.RoundToInt(2f * currentGapRatio * FormationCalculation.factorFor1To1GapRatio)); //Schiffe sind doppel so weit voneinander entfernt.
 			int groups = Math.Max(1, Mathf.CeilToInt(count / (1f + 2f * shipsPerLine)));
+			int lines = (int) Math.Ceiling((double) (count - groups) / shipsPerLine);
 			if (index < groups)
 			{
 				return $"Commandship {index + 1}";
 			}
 			else
-				return "None";
+				return $"Column {((index - groups) % lines) + 1}, Row {((index - groups) / lines) + 1}";
 		}
 		/// <summary>
 		/// Gives each entry a column and row position.

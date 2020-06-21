@@ -52,7 +52,7 @@ namespace TournamentMod.Formations
 		/// </summary>
 		public PositionDescription DeterminePositionDescription { get; set; }
 		/// <summary>
-		/// Executes the function for a size
+		/// Executes the function for a size-estimate of the formation.
 		/// </summary>
 		public Size DetermineSize { get; set; }
 		/// <summary>
