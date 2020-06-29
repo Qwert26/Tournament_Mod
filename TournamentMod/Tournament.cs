@@ -405,8 +405,8 @@ namespace TournamentMod
 			orbitcam.distance = 100f;
 			orbitcam.enabled = false;
 			//orbittarget = StaticConstructablesManager.constructables[0].UniqueId;
-			orbittarget = 0;
-			orbitindex = 0;
+			orbittarget = -1;
+			orbitindex = -1;
 			orbitMothership = -1;
 			extraInfo = false;
 		}
@@ -721,24 +721,9 @@ namespace TournamentMod
 			{
 				showLists = !showLists;
 			}
-			if (Input.GetAxis("Mouse ScrollWheel") != 0f)
-			{
-				if (shift)
-				{
-					orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 100f) : 0f;
-				}
-				else if (strg)
-				{
-					orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 25f) : 0f;
-				}
-				else
-				{
-					orbitcam.distance = (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") > 0f) ? (orbitcam.distance - Input.GetAxis("Mouse ScrollWheel") * 50f) : 0f;
-				}
-			}
 			if (StaticConstructablesManager.constructables.Count > 0)
 			{
-				if (orbitindex >= StaticConstructablesManager.constructables.Count)
+				if (orbitindex >= StaticConstructablesManager.constructables.Count || oldIndex == -1)
 				{
 					orbitindex = 0;
 					orbittarget = 0;
