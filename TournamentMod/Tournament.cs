@@ -486,7 +486,7 @@ namespace TournamentMod
 		public void SaveSettings()
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
 			PopulateParameters();
 			settingsFile.SaveData(Parameters, Formatting.Indented);
 		}
@@ -496,7 +496,7 @@ namespace TournamentMod
 		public void LoadSettings()
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
 			if (settingsFile.Exists)
 			{
 				try
@@ -515,7 +515,32 @@ namespace TournamentMod
 			}
 			else
 			{
-				LoadDefaults();
+				settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+				if (settingsFile.Exists)
+				{
+					try
+					{
+						Parameters = settingsFile.LoadData<Parameters>();
+						Parameters.EnsureEnoughData();
+						PopulateFormations();
+						FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
+						newSettingsFile.SaveData(Parameters, Formatting.Indented);
+						settingsFile.Delete();
+						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated to different File! This is done as a preparation for being able to save entire teams, " +
+						"including formation-info, spawn- and penalty-rules into a single file for easy transfer and quick loading into you battle."));
+					}
+					catch (Exception)
+					{
+						LoadDefaults();
+						SaveSettings();
+						GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
+							"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
+					}
+				}
+				else
+				{
+					LoadDefaults();
+				}
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
 			{

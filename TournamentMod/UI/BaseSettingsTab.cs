@@ -8,6 +8,13 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.World;
 using TournamentMod.Serialisation;
 using UnityEngine;
+using BrilliantSkies.Ui.Special.PopUps;
+using Assets.Scripts.Gui;
+using Assets.Scripts.Persistence;
+using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.FilesAndFolders;
+using BrilliantSkies.Ui.Displayer;
+
 namespace TournamentMod.UI
 {
 	/// <summary>
@@ -289,34 +296,33 @@ namespace TournamentMod.UI
 			}, (tp) => tp.PauseOnVictory));
 			horizontal = CreateStandardHorizontalSegment();
 			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
+			ParametersFolder folder = new ParametersFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
-			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
+			horizontal.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (Parameters tp)
 			{
-				GuiPopUp.Instance.Add(new PopupTreeViewSave<TournamentParameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+				GuiPopUp.Instance.Add(new PopupTreeViewSave<Parameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<ParametersFile, ParametersFolder>(folder), delegate (string s, bool b)
 				{
-					if (b) {
-						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
-						tpf.Save(_focus.Parameters);
-					}
-				}, _focus.Parameters));
-			}));*/
+				}, (s) => _focus.Parameters, "Settings"));
+			}));
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) =>
 				{
 					t.LoadSettings();
 					t.MoveCam();
 					TriggerScreenRebuild();
 				}));
-			/*horizontal.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
-				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+			horizontal.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (Parameters tp) {
+				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<ParametersFile, ParametersFolder>(folder), delegate (string s, bool b)
 				{
 					if (b)
 					{
-						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
-						_focus.Parameters = tpf.Load();
-						TriggerRebuild();
+						Parameters parameters = folder.GetFile(s, true).Load();
+						_focus.Parameters = parameters;
+						DeactivatePopup();
+						GuiDisplayer.GetSingleton().CloseAllUis();
+						new TournamentConsole(_focus).ActivateGui(GuiActivateType.Stack);
 					}
 				}));
-			}));*/
+			}));
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) =>
 			{
 				t.LoadDefaults();

@@ -9,6 +9,11 @@ using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 namespace TournamentMod.UI
 {
+	using Assets.Scripts.Gui;
+	using BrilliantSkies.Core.Constants;
+	using BrilliantSkies.Core.FilesAndFolders;
+	using BrilliantSkies.Ui.Displayer;
+	using BrilliantSkies.Ui.Special.PopUps;
 	using Serialisation;
 	/// <summary>
 	/// GUI-Class for advanced settings such as active teams, formations and cleanup-functions.
@@ -193,35 +198,33 @@ namespace TournamentMod.UI
 				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
 			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
+			ParametersFolder folder = new ParametersFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quicksave Settings", new ToolTip("Saves the current Parameters into the Mod-Folder."), (t) => t.SaveSettings()));
-			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (TournamentParameters tp)
+			saveAndLoad.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Save Settings", new ToolTip("Saves the current Parameters into a file of your chosing."), delegate (Parameters tp)
 			{
-				GuiPopUp.Instance.Add(new PopupTreeViewSave<TournamentParameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+				GuiPopUp.Instance.Add(new PopupTreeViewSave<Parameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<ParametersFile, ParametersFolder>(folder), delegate (string s, bool b)
 				{
-					if (b)
-					{
-						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
-						tpf.Save(_focus.Parameters);
-					}
-				}, _focus.Parameters));
-			}));*/
+				}, (s) => _focus.Parameters, "Settings"));
+			}));
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) =>
 			{
 				t.LoadSettings();
 				t.MoveCam();
 				TriggerScreenRebuild();
 			}));
-			/*saveAndLoad.AddInterpretter(SubjectiveButton<TournamentParameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (TournamentParameters tp) {
-				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<TournamentParametersFile, TournamentParametersFolder>(new TournamentParametersFolder(new FilesystemFolderSource(Get.PerminentPaths.GetSpecificModDir("Tournament").ToString()))), delegate (string s, bool b)
+			saveAndLoad.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Load Parameters", new ToolTip("Loads new Parameters from a file of your choosing."), delegate (Parameters tp) {
+				GuiPopUp.Instance.Add(new PopupTreeView("Load Parameters", FtdGuiUtils.GetFileBrowserFor<ParametersFile, ParametersFolder>(folder), delegate (string s, bool b)
 				{
 					if (b)
 					{
-						TournamentParametersFile tpf = new TournamentParametersFile(new FilesystemFileSource(s + ".json"));
-						_focus.Parameters = tpf.Load();
-						TriggerRebuild();
+						Parameters parameters = folder.GetFile(s, true).Load();
+						_focus.Parameters = parameters;
+						DeactivatePopup();
+						GuiDisplayer.GetSingleton().CloseAllUis();
+						new TournamentConsole(_focus).ActivateGui(GuiActivateType.Stack);
 					}
 				}));
-			}));*/
+			}));
 			saveAndLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Load Defaults", new ToolTip("Reloads all default settings"), (t) =>
 			{
 				t.LoadDefaults();
