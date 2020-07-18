@@ -28,7 +28,7 @@ namespace TournamentMod.UI
 		/// <param name="focus"></param>
 		public EyecandyTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus)
 		{
-			Name = new Content("Eyecandy", "Change the fleet appearence of a Team.");
+			Name = new Content("Eyecandy", "Change the appearence of a Team or the used color gradient for the penalty timer.");
 		}
 		/// <summary>
 		/// Builds the Tab.
@@ -37,6 +37,34 @@ namespace TournamentMod.UI
 		{
 			base.Build();
 			_focus.Parameters.EnsureEnoughData();
+			CreateHeader("General Appearence", new ToolTip("General Apearences"));
+			ScreenSegmentStandard general = CreateStandardSegment();
+			general.SpaceAbove = general.SpaceBelow = 5;
+			string describeGradient()
+			{
+				switch (_focus.Parameters.PenaltyTimeGradient)
+				{
+					case 0:
+						return "Based on the Health of the Buffer from YouTube-Videos.";
+					case 1:
+						return "The same Gradient also found in the Custom Battle Mode.";
+					case 2:
+						return "Based on the mapping used for correlation matricies.";
+					case 3:
+						return "Based on the color of a star relative to Vega. This one is based on a linear interpolation of the temperatur. Critical accumulated time is near the 95%-Mark.";
+					case 4:
+						return "Based on the color of a star relative to Vega. This one is based on a logarithmic interpolation of the temperatur. Critical accumulated time is near the 35%-Mark.";
+					case 5:
+						return "Based on the color of a star relative to Vega. This one is based on a ordinal interpolation of the spectral class. Critical accumulated time is near the 80%-Mark.";
+					default:
+						return "How did you manage to go out of bounds here?";
+				}
+			}
+			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(5), M.m((Parameters p) => p.PenaltyTimeGradient),
+				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient.Us}"), delegate (Parameters p, float f)
+					   {
+						   p.PenaltyTimeGradient.Us = (int) f;
+					   }, null, M.m((Parameters p) => new ToolTip(describeGradient()))));
 			for (int i = 0; i < 6; i++) {
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
@@ -64,6 +92,7 @@ namespace TournamentMod.UI
 						  tp.DetailColorsPerTeam.Us[index] = c;
 					  }));
 			}
+			CreateHeader("Saving and Loading", new ToolTip("Save you visual settings here or restore them."));
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
 			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
 			ParametersFolder folder = new ParametersFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);

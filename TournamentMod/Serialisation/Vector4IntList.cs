@@ -4,12 +4,12 @@ using BrilliantSkies.Core.Types;
 namespace TournamentMod.Serialisation
 {
 	/// <summary>
-	/// Stores a list of Vector4i for the prototype system.
+	/// Stores a list of Vector4I for the prototype system.
 	/// </summary>
 	public class Vector4IntList : VarList<Vector4i>
 	{
 		/// <summary>
-		/// Converts a byte into a Vector4i and adds it to the list.
+		/// Converts a byte-array into a Vector4i and adds it to the list.
 		/// </summary>
 		/// <param name="bytes">The byte-array which must contain at least 16 bytes.</param>
 		public override void ByteToEntry(byte[] bytes)

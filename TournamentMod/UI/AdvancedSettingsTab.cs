@@ -90,7 +90,7 @@ namespace TournamentMod.UI
 				"In the case of friendly fire, a team will not get any materials back!")));
 			string describeCleanupMode()
 			{
-				switch (_focus.Parameters.CleanUpMode.Us)
+				switch (_focus.Parameters.CleanUpMode)
 				{
 					case 0:
 						return "Entries will not be auto-removed: They will only be removed by disqualification.";

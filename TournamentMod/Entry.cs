@@ -63,7 +63,7 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Get the material capacity from the ConstrcutableSpecialInfo, will be used for Entry-specific materials.
+		/// Get the material capacity from the ConstructableSpecialInfo, will be used for Entry-specific materials.
 		/// </summary>
 		public float MaxMaterials => bp.CSI.MaterialCapacity;
 		/// <summary>

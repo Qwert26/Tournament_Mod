@@ -52,10 +52,6 @@ namespace TournamentMod
 		private readonly GUIStyle sidelist;
 		private readonly GUIStyle extrainfoRight;
 		private readonly GUIStyle extrainfoName;
-		/// <summary>
-		/// The Colorgradient for the Penaltytime for Participants.
-		/// </summary>
-		private static readonly Gradient penaltyTimeColor;
 		#endregion
 		#region Kamerakontrolle
 		private GameObject cam;
@@ -103,30 +99,9 @@ namespace TournamentMod
 		/// </summary>
 		private List<int> materials;
 		/// <summary>
-		/// Static initialiser.
+		/// 
 		/// </summary>
-		static Tournament()
-		{
-			//Erzeuge den Farbverlauf von YouTube: Weiß-Blau-Grün-Gelb-Orange-Rot(eigentlich Schwarz)
-			penaltyTimeColor = new Gradient
-			{
-				colorKeys = new GradientColorKey[]
-				{
-					new GradientColorKey(Color.white, 0f),
-					new GradientColorKey(Color.blue, 0.25f),
-					new GradientColorKey(Color.green, 0.5f),
-					new GradientColorKey(new Color(1f, 1f, 0f), 0.75f),//Yellow
-					new GradientColorKey(new Color(1f, 0.5f, 0f), 0.875f),//Orange
-					new GradientColorKey(Color.red, 1f)
-				},
-				alphaKeys = new GradientAlphaKey[]
-				{
-					new GradientAlphaKey(1f, 0f),
-					new GradientAlphaKey(1f, 1f)
-				},
-				mode = GradientMode.Blend
-			};
-		}
+		public Gradient penaltyTimeGradient = null;
 		public Tournament()
 		{
 			_me = this;
@@ -272,6 +247,7 @@ namespace TournamentMod
 		/// </summary>
 		public void StartMatch()
 		{
+			penaltyTimeGradient = ((GradientType) Parameters.PenaltyTimeGradient.Us).GetGradient();
 			overtimeCounter = 0;
 			timerTotal = 0f;
 			timerTotal2 = Time.timeSinceLevelLoad;
@@ -590,7 +566,7 @@ namespace TournamentMod
 						string name = member.Value.BlueprintName;
 						string percentHP = $"{Mathf.RoundToInt(member.Value.HP)}%";
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
-						Color32 timeColor = penaltyTimeColor.Evaluate(penaltyFraction);
+						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
 						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s</color>";
 						bool disqualified = member.Value.Disqual || member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
 						GUIContent memberContent;

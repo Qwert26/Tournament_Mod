@@ -286,6 +286,11 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		[Variable(204, "Main Color of a given Team-index")]
 		public VarList<Color> DetailColorsPerTeam { get; set; } = new ColorList();
+		/// <summary>
+		/// Stores the last used color-gradient for the accumulated penalty time.
+		/// </summary>
+		[Variable(205, "Color-Gradient for accumulated Penalty-Time")]
+		public Var<int> PenaltyTimeGradient { get; set; } = new VarIntClamp(0, 0, 5);
 		#endregion
 		/// <summary>
 		/// Computes the rotation around the center for a given team, factoring in the current amount of active teams.
