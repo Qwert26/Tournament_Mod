@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Gui;
 using Assets.Scripts.Persistence;
+using BrilliantSkies.Core.FilesAndFolders;
 using BrilliantSkies.Ftd.Planets.World;
 using BrilliantSkies.Ui.Consoles;
 using BrilliantSkies.Ui.Consoles.Getters;
@@ -54,8 +55,8 @@ namespace TournamentMod.UI
 			ConsoleUiScreen screen = window.Screen;
 			screen.CreateHeader("Add Entries", new ToolTip("Select and Add Entries into active Teams."));
 			ScreenSegmentTreeViewPopUp treeView = screen.AddSegment(new ScreenSegmentTreeViewPopUp(screen, treeSelector));
-			treeView.SpaceAbove = 20;
-			treeView.SpaceBelow = 20;
+			treeView.SpaceAbove = 5;
+			treeView.SpaceBelow = 5;
 			ScreenSegmentStandardHorizontal horizontal = screen.CreateStandardHorizontalSegment();
 			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
@@ -83,7 +84,8 @@ namespace TournamentMod.UI
 							FactionIndex = i,
 							Spawn_direction = _focus.Parameters.Direction,
 							Spawn_height = _focus.Parameters.SpawnHeight,
-							Bpf = tree.CurrentData
+							Bpf = tree.CurrentData,
+							FilePath = tree.GetLocationFromRootFolder((IData data) => string.IsNullOrEmpty(data.Name) ? "" : (data.Name + "/")) + tree.SelectionName
 						});
 					}
 					_parentTab.TriggerRebuild();
@@ -101,7 +103,8 @@ namespace TournamentMod.UI
 							FactionIndex = factionIndex,
 							Spawn_direction = _focus.Parameters.Direction,
 							Spawn_height = _focus.Parameters.SpawnHeight,
-							Bpf = tree.CurrentData
+							Bpf = tree.CurrentData,
+							FilePath = tree.GetLocationFromRootFolder((IData data) => string.IsNullOrEmpty(data.Name) ? "" : (data.Name + "/")) + tree.SelectionName
 						});
 						_parentTab.TriggerRebuild();
 					}

@@ -131,7 +131,7 @@ namespace TournamentMod.Serialisation
 		[Variable(25, "Distribute local Materials", "When active, the materials get distributed along the entries of a team, any excess goes into faction storage.")]
 		public Var<bool> DistributeLocalResources { get; set; } = new VarBool(false);
 		/// <summary>
-		/// When active all teams have uniform penalty rules.
+		/// When active all teams have uniform spawning- and penalty-rules.
 		/// </summary>
 		[Variable(26, "Uniform Rules", "When active, all teams will have the same Ruleset.")]
 		public Var<bool> UniformRules { get; set; } = new VarBool(true);

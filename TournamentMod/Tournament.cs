@@ -26,6 +26,7 @@ namespace TournamentMod
 	using Serialisation;
 	using Formations;
 	using BrilliantSkies.Core;
+	using BrilliantSkies.Ui.Displayer;
 
 	/// <summary>
 	/// GUI-Class for the Overlay and general Mangement.
@@ -467,6 +468,47 @@ namespace TournamentMod
 			settingsFile.SaveData(Parameters, Formatting.Indented);
 		}
 		/// <summary>
+		/// Saves a team given by its index.
+		/// </summary>
+		/// <param name="index"></param>
+		public void QuicksaveTeam(int index) {
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.tournament.teamsettings"));
+			settingsFile.SaveData(CreateSavefileForTeam(index), Formatting.Indented);
+		}
+		public TeamCompositionConfiguration CreateSavefileForTeam(int index) {
+			TeamCompositionConfiguration tcc = new TeamCompositionConfiguration(0);
+			tcc.AltitudeLimits.Us = Parameters.AltitudeLimits[index];
+			tcc.AltitudeReversal.Us = Parameters.AltitudeReverse[index];
+			tcc.DistanceLimit.Us = Parameters.DistanceLimit[index];
+			tcc.DistanceReversal.Us = Parameters.DistanceReverse[index];
+			tcc.EnemyAttackPercentage.Us = Parameters.EnemyAttackPercentage[index];
+			int i = 0;
+			foreach (Tuple<FormationType, int> f in teamFormations[index].formationEntrycount)
+			{
+				tcc.Formation.Add(new Vector3Int(i++, (int) f.Item1, f.Item2));
+			}
+			tcc.IndividualEntryMaterials.Us = Parameters.TeamEntryMaterials[index];
+			tcc.Resources.Us = Parameters.ResourcesPerTeam[index];
+			tcc.SpawngapFB.Us = Parameters.SpawngapFB[index];
+			tcc.SpawngapLR.Us = Parameters.SpawngapLR[index];
+			tcc.TeamColors.Add(Parameters.MainColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.SecondaryColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.TrimColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.DetailColorsPerTeam[index]);
+			tcc.UsesProjectedDistance.Us = Parameters.ProjectedDistance[index];
+			tcc.UsesSoftLimits.Us = Parameters.SoftLimits[index];
+			tcc.MaximumBufferTime.Us = Parameters.MaximumBufferTime[index];
+			tcc.MaximumPenaltyTime.Us = Parameters.MaximumPenaltyTime[index];
+			tcc.MaximumSpeed.Us = Parameters.MaximumSpeed[index];
+			foreach (Entry entry in entries[index])
+			{
+				tcc.EntryInformation.Add(new Vector3(entry.Spawn_direction, entry.Spawn_height, entry.CurrentMaterials));
+				tcc.EntryFiles.Add(entry.FilePath);
+			}
+			return tcc;
+		}
+		/// <summary>
 		/// Loads the Parameters-File.
 		/// </summary>
 		public void LoadSettings()
@@ -525,6 +567,87 @@ namespace TournamentMod
 					entries.Add(i, new List<Entry>());
 				}
 			}
+		}
+		public void QuickloadTeam(int index)
+		{
+			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.tournament.battlesettings"));
+			if (settingsFile.Exists)
+			{
+				try
+				{
+					LoadTeam(index, settingsFile.LoadData<TeamCompositionConfiguration>());
+				}
+				catch (Exception)
+				{
+					settingsFile.Delete();
+					GuiPopUp.Instance.Add(new PopupError($"Default Savefile for Team {index + 1} corrupted", "The default savefile for the given team got corrputed. This could be because of manual edits " +
+					"or some variables changed their type and can no longer be loaded. In order to prevent future errors, the savefile has been deleted."));
+				}
+			}
+		}
+		public void LoadTeam(int index, TeamCompositionConfiguration tcc)
+		{
+			if (Parameters.UniformRules)
+			{
+				GuiPopUp.Instance.Add(new PopupConfirmation("Uniform rules are active", "Currently uniform spawning and penalty rules are active. Do you want to turn them off, " +
+				"so that the team can have its own rules, or do you want to keep them on and skip the loading of those?", delegate (bool b)
+				 {
+					 Parameters.UniformRules.Us = b;
+				 }, "Yes, turn them off.", "No, skip loading these."));
+			}
+			if (!Parameters.UniformRules)
+			{
+				Parameters.SpawngapFB.Us[index] = tcc.SpawngapFB;
+				Parameters.SpawngapLR.Us[index] = tcc.SpawngapLR;
+				Parameters.AltitudeLimits.Us[index] = tcc.AltitudeLimits;
+				Parameters.AltitudeReverse.Us[index] = tcc.AltitudeReversal;
+				Parameters.DistanceLimit.Us[index] = tcc.DistanceLimit;
+				Parameters.DistanceReverse.Us[index] = tcc.DistanceReversal;
+				Parameters.ProjectedDistance.Us[index] = tcc.UsesProjectedDistance;
+				Parameters.SoftLimits.Us[index] = tcc.UsesSoftLimits;
+				Parameters.TeamEntryMaterials.Us[index] = tcc.IndividualEntryMaterials;
+				Parameters.MaximumBufferTime.Us[index] = tcc.MaximumBufferTime;
+				Parameters.MaximumPenaltyTime.Us[index] = tcc.MaximumPenaltyTime;
+				Parameters.MaximumSpeed.Us[index] = tcc.MaximumSpeed;
+				Parameters.EnemyAttackPercentage.Us[index] = tcc.EnemyAttackPercentage;
+			}
+			if (Parameters.SameMaterials)
+			{
+				GuiPopUp.Instance.Add(new PopupConfirmation("Same Materials for each Team", "Currently all teams have the same Material-settings. Do you want to turn them off, " +
+				"so that the team can have its own rules, or do you want to keep them on and skip the loading of those?", delegate (bool b)
+				{
+					Parameters.SameMaterials.Us = b;
+				}, "Yes, turn them off.", "No, skip loading these."));
+			}
+			if (!Parameters.SameMaterials)
+			{
+				Parameters.ResourcesPerTeam.Us[index] = tcc.Resources;
+				Parameters.TeamEntryMaterials.Us[index] = tcc.IndividualEntryMaterials;
+			}
+			entries[index].Clear();
+			for (int i = 0; i < tcc.EntryInformation.Count; i++)
+			{
+				Vector3 info = tcc.EntryInformation[i];
+				Entry entry = new Entry()
+				{
+					Spawn_direction = info.x,
+					Spawn_height = info.y,
+					CurrentMaterials = info.z,
+					FilePath = tcc.EntryFiles[i],
+					FactionIndex = index
+				};
+				entry.LoadBlueprintFile();
+				entries[index].Add(entry);
+			}
+			teamFormations[index].formationEntrycount.Clear();
+			for (int i = 0; i < tcc.Formation.Count; i++)
+			{
+				Vector3Int info = tcc.Formation[i];
+				teamFormations[index].formationEntrycount.Add(new Tuple<FormationType, int>((FormationType) info.y, info.z));
+			}
+			GuiDisplayer.GetSingleton().CloseAllUis();
+			_GUI.ActivateGui(this, GuiActivateType.Stack);
 		}
 		/// <summary>
 		/// Resets the Parameters and makes sure that there is enough data for the GUI.

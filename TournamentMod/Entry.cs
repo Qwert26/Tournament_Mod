@@ -39,14 +39,7 @@ namespace TournamentMod
 		/// <summary>
 		/// The height of the initial spawn.
 		/// </summary>
-		public int Spawn_height {
-			get;
-			set;
-		}
-		/// <summary>
-		/// The ID of the Team.
-		/// </summary>
-		public ObjectId Team_id {
+		public float Spawn_height {
 			get;
 			set;
 		}
@@ -63,11 +56,15 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
+		/// The Path
+		/// </summary>
+		public string FilePath { get; set; }
+		/// <summary>
 		/// Get the material capacity from the ConstructableSpecialInfo, will be used for Entry-specific materials.
 		/// </summary>
 		public float MaxMaterials => bp.CSI.MaterialCapacity;
 		/// <summary>
-		/// 
+		/// Amount of Materials this entry should be spawning in.
 		/// </summary>
 		public float CurrentMaterials { get; set; } = 0;
 		/// <summary>
@@ -100,6 +97,13 @@ namespace TournamentMod
 				return null;
 			}
 		}
+		public void LoadBlueprintFile()
+		{
+			if (FilePath != null)
+			{
+				Bpf = GameFolders.GetCombinedBlueprintFolder(false).GetFile(FilePath, true);
+			}
+		}
 		/// <summary>
 		/// Converts the Blueprint into a MainConstruct and places it at the position provided by the Formation-Setting of the Team.
 		/// </summary>
@@ -112,7 +116,6 @@ namespace TournamentMod
 		public MainConstruct Spawn(float distance, float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			FactionSpecificationFaction faction = TournamentPlugin.factionManagement.factions[FactionIndex];
-			Team_id = faction.Id;
 			BlueprintInitialisation initialisation = new BlueprintInitialisation();
 			MainConstruct val = initialisation.Run(new BlueprintPositioning(PlanetList.MainFrame.FramePositionToUniversalPosition(Location(gapLeftRight, gapForwardBackward, count, index, distance)), Direction())
 			{
@@ -120,7 +123,7 @@ namespace TournamentMod
 			}, new Blueprint2Construct(bp, SpawnInstructions.IgnoreDamage | SpawnInstructions.Creative | SpawnInstructions.PrepareForAction)
 			{
 				AssignNameToForce = true
-			}, Team_id);
+			}, faction.Id);
 			return val;
 		}
 		/// <summary>

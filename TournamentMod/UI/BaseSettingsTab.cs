@@ -302,7 +302,7 @@ namespace TournamentMod.UI
 			{
 				GuiPopUp.Instance.Add(new PopupTreeViewSave<Parameters>("Save Parameters", FtdGuiUtils.GetFileBrowserFor<ParametersFile, ParametersFolder>(folder), delegate (string s, bool b)
 				{
-				}, (s) => _focus.Parameters, "Settings"));
+				}, _focus.Parameters, "Settings"));
 			}));
 			horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Quickload Settings", new ToolTip("Loads the last saved Parameters from the Mod-Folder."), (t) =>
 				{

@@ -4,14 +4,17 @@ using BrilliantSkies.Ui.Tips;
 using BrilliantSkies.Ui.Consoles.Segments;
 using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 using System.Collections.Generic;
-using BrilliantSkies.Ui.Consoles.Interpretters;
 using System;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
-
+using BrilliantSkies.Core.FilesAndFolders;
 namespace TournamentMod.UI
 {
+	using Assets.Scripts.Gui;
+	using BrilliantSkies.Core.Constants;
+	using BrilliantSkies.Ui.Special.PopUps;
+	using Serialisation;
 	/// <summary>
 	/// GUI-Class for managing participants.
 	/// </summary>
@@ -98,7 +101,8 @@ namespace TournamentMod.UI
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Update Team {factionIndex + 1}", new ToolTip($"Updates all entries for Team {factionIndex + 1}."), delegate (Tournament t)
 				{
-					foreach (var member in t.entries[factionIndex]) {
+					foreach (var member in t.entries[factionIndex])
+					{
 						member.Spawn_direction = t.Parameters.Direction;
 						member.Spawn_height = t.Parameters.SpawnHeight;
 					}
@@ -114,7 +118,36 @@ namespace TournamentMod.UI
 					teamSize = _focus.entries[factionIndex].Count;
 				}
 				ready &= teamSize > 0 || factionIndex >= _focus.Parameters.ActiveFactions;
-				CreateHeader("Team " + (factionIndex + 1), new ToolTip($"Current Entries for Team{factionIndex + 1}. The list goes from top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
+				CreateHeader("Team " + (factionIndex + 1), new ToolTip($"Current Entries for Team {factionIndex + 1}. The list goes from top to bottom.")).SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
+				ScreenSegmentStandardHorizontal saveLoad = CreateStandardHorizontalSegment();
+				saveLoad.SpaceAbove = saveLoad.SpaceBelow = 5;
+				saveLoad.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
+				TCCFolder folder = new TCCFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);
+				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Quicksave Team {factionIndex + 1}", new ToolTip("Saves this team into a predetermined file inside the mod-folder."), delegate (Tournament t)
+					 {
+						 t.QuicksaveTeam(factionIndex);
+					 }));
+				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Save Team{factionIndex + 1}", new ToolTip("Save this team into a file or your choosing."), delegate (Tournament t)
+					{
+						GuiPopUp.Instance.Add(new PopupTreeViewSave<TeamCompositionConfiguration>("Save Team", FtdGuiUtils.GetFileBrowserFor<TCCFile, TCCFolder>(folder), delegate (string s, bool b)
+						  { }, _focus.CreateSavefileForTeam(factionIndex), $"Team{factionIndex + 1}"));
+					}));
+				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Quickload Team {factionIndex + 1}", new ToolTip("Loads a team from a predetermined file inside the mod-folder."), delegate (Tournament t)
+					{
+						t.QuickloadTeam(factionIndex);
+					}));
+				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Load Team {factionIndex + 1}", new ToolTip("Load a team from a file of your choosing."), delegate (Tournament t)
+					{
+						GuiPopUp.Instance.Add(new PopupTreeView("Load Team", FtdGuiUtils.GetFileBrowserFor<TCCFile, TCCFolder>(folder), delegate (string s, bool b)
+						{
+							if (b)
+							{
+								TeamCompositionConfiguration tcc = folder.GetFile(s, true).Load();
+								_focus.LoadTeam(factionIndex, tcc);
+								DeactivatePopup();
+							}
+						}));
+					}));
 				for (int j = 0; j < teamSize; j++) {
 					int indexInFaction = j;
 					Entry entry = _focus.entries[factionIndex][indexInFaction];
