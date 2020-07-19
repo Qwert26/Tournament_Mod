@@ -38,7 +38,7 @@ namespace TournamentMod.UI
 			CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
 			ScreenSegmentStandard segment1 = CreateStandardSegment();
 			segment1.SpaceAbove = segment1.SpaceBelow = 5;
-			segment1.AddInterpretter(SubjectiveFloatClampedWithBar<Parameters>.Quick(_focus.Parameters, 2, 6, 1,
+			segment1.AddInterpretter(SubjectiveFloatClampedWithBar<Parameters>.Quick(_focus.Parameters, 2, StaticConstants.MAX_TEAMS, 1,
 				M.m((Parameters tp) => tp.ActiveFactions), "Active Teams: {0}", delegate (Parameters tp, float f)
 				{
 					tp.ActiveFactions.Us = (int)f;
@@ -50,7 +50,7 @@ namespace TournamentMod.UI
 						}
 					}
 				}, new ToolTip("The amount of active Teams.")));
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int index = i;
 				segment1.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Open Formation-Console for Team {index + 1}.", new ToolTip($"Manage the Formation of Team {index + 1}."), delegate (Tournament t)

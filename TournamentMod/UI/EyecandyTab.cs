@@ -12,6 +12,8 @@ using BrilliantSkies.Ui.Special.PopUps;
 using Assets.Scripts.Gui;
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Ui.Displayer;
+using System;
+
 namespace TournamentMod.UI
 {
 	/// <summary>
@@ -56,16 +58,18 @@ namespace TournamentMod.UI
 						return "Based on the color of a star relative to Vega. This one is based on a logarithmic interpolation of the temperatur. Critical accumulated time is near the 35%-Mark.";
 					case 5:
 						return "Based on the color of a star relative to Vega. This one is based on a ordinal interpolation of the spectral class. Critical accumulated time is near the 80%-Mark.";
+					case 6:
+						return "Based on the colors of a traffic light. Simple yet informative.";
 					default:
-						return "How did you manage to go out of bounds here?";
+						return "This Gradient is already implemented, but has not yet recieved a description.";
 				}
 			}
-			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(5), M.m((Parameters p) => p.PenaltyTimeGradient),
+			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Enum.GetValues(typeof(GradientType)).Length), M.m((Parameters p) => p.PenaltyTimeGradient),
 				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient.Us}"), delegate (Parameters p, float f)
 					   {
 						   p.PenaltyTimeGradient.Us = (int) f;
 					   }, null, M.m((Parameters p) => new ToolTip(describeGradient()))));
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
 				ScreenSegmentStandardHorizontal table = CreateStandardHorizontalSegment();

@@ -14,17 +14,21 @@ namespace TournamentMod {
 		/// </summary>
 		public static readonly Gradient CORRELATION_MAP;
 		/// <summary>
-		/// The Gradient extracted from Spectral classes of stars with linear interploation. Long Blue-Phase
+		/// The Gradient extracted from Spectral classes of stars with linear interploation. Long Blue-Phase.
 		/// </summary>
 		public static readonly Gradient TEMPERATUR_COLOR_LINEAR;
 		/// <summary>
-		/// The Gradient extracted from Spectral classes of stars with logarithmic interpolation. Long Red-Phase
+		/// The Gradient extracted from Spectral classes of stars with logarithmic interpolation. Long Red-Phase.
 		/// </summary>
 		public static readonly Gradient TEMPERATUR_COLOR_LOGARITHMIC;
 		/// <summary>
 		/// The Gradient extracted from Spectral classes of stars with ordinal interpolation.
 		/// </summary>
 		public static readonly Gradient TEMPERATUR_COLOR_ORDINAL;
+		/// <summary>
+		/// A Traffic light inspired gradient.
+		/// </summary>
+		public static readonly Gradient TRAFFIC_LIGHT;
 		static PenaltyTimeGradient() {
 			YOUTUBE_BUFFER_HEALTH = new Gradient
 			{
@@ -122,6 +126,21 @@ namespace TournamentMod {
 					new GradientColorKey(new Color(1f, 1f, 0f), 35/55f), //6000K: Yellow
 					new GradientColorKey(new Color(1f, 0.5f, 0f), 45/55f), //5100K: Orange
 					new GradientColorKey(Color.red, 55/55f) //3700K
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
+				mode = GradientMode.Blend
+			};
+			TRAFFIC_LIGHT = new Gradient()
+			{
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(Color.green, 0f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.5f),
+					new GradientColorKey(Color.red, 1f)
 				},
 				alphaKeys = new GradientAlphaKey[]
 				{

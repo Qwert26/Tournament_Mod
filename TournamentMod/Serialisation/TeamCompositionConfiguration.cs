@@ -12,12 +12,12 @@ namespace TournamentMod.Serialisation
 		/// 
 		/// </summary>
 		[Variable(0)]
-		public Var<int> SpawngapLR { get; set; } = new VarIntClamp(0, -1000, 1000);
+		public Var<int> SpawngapLR { get; set; } = new VarIntClamp(0, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE);
 		/// <summary>
 		/// 
 		/// </summary>
 		[Variable(1)]
-		public Var<int> SpawngapFB { get; set; } = new VarIntClamp(0, -1000, 1000);
+		public Var<int> SpawngapFB { get; set; } = new VarIntClamp(0, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE);
 		/// <summary>
 		/// Hard limits are -1000 to 100000. The Planet decides over the real limits.
 		/// </summary>
@@ -37,7 +37,7 @@ namespace TournamentMod.Serialisation
 		/// After accumulating this time, a participant will despawn.
 		/// </summary>
 		[Variable(5)]
-		public Var<int> MaximumPenaltyTime { get; set; } = new VarIntClamp(90, 0, 3600);
+		public Var<int> MaximumPenaltyTime { get; set; } = new VarIntClamp(90, 0, StaticConstants.MAX_TIME);
 		/// <summary>
 		/// Going over this speed will add penalty time
 		/// </summary>
@@ -52,11 +52,11 @@ namespace TournamentMod.Serialisation
 		/// Before penalty time get added, a time buffer must be consumed first. It will reset once a participant is considered to be back in bounds.
 		/// </summary>
 		[Variable(8)]
-		public Var<int> MaximumBufferTime { get; set; } = new VarIntClamp(0, 0, 3600);
+		public Var<int> MaximumBufferTime { get; set; } = new VarIntClamp(0, 0, StaticConstants.MAX_TIME);
 		[Variable(9)]
-		public Var<int> DistanceReversal { get; set; } = new VarIntClamp(3, -500, 500);
+		public Var<int> DistanceReversal { get; set; } = new VarIntClamp(3, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE);
 		[Variable(10)]
-		public Var<int> AltitudeReversal { get; set; } = new VarIntClamp(-3, -500, 500);
+		public Var<int> AltitudeReversal { get; set; } = new VarIntClamp(-3, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE);
 		[Variable(11)]
 		public Var<int> Resources { get; set; } = new VarIntClamp(10000, 0, 1000000);
 		[Variable(12)]

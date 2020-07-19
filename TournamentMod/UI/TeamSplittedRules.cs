@@ -54,18 +54,18 @@ namespace TournamentMod.UI
 				}));
 			heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
 			fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int index = i;
 				CreateHeader($"Rules for Team {index + 1}", new ToolTip($"These are the DQ-Rules specific to Members of Team {index + 1}.")).SetConditionalDisplay(() => !_focus.Parameters.UniformRules && index < _focus.Parameters.ActiveFactions);
 				segment = CreateStandardSegment();
 				segment.SpaceAbove = segment.SpaceBelow = 5;
 				segment.SetConditionalDisplay(() => !_focus.Parameters.UniformRules && index < _focus.Parameters.ActiveFactions);
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
 					M.m((Parameters tp) => tp.SpawngapFB[index]), "Spawngap Forward-Backward: {0}m", delegate (Parameters tp, float f)
 					{
 						tp.SpawngapFB.Us[index] = (int)f;
 					}, new ToolTip("How many meters should the entries on this team be apart on the z-axis?")));
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
 					M.m((Parameters tp) => tp.SpawngapLR[index]), "Spawngap Left-Right: {0}m", delegate (Parameters tp, float f)
 					{
 						tp.SpawngapLR.Us[index] = (int)f;
@@ -103,11 +103,11 @@ namespace TournamentMod.UI
 				{
 					tp.ProjectedDistance.Us[index] = b;
 				}, (Parameters tp) => tp.ProjectedDistance[index]));
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 90,
 					M.m((Parameters tp) => tp.MaximumPenaltyTime[index]), "Maximum Penaltytime: {0}s", delegate (Parameters tp, float f)
 					{
 						tp.MaximumPenaltyTime.Us[index] = (int)f;
-					}, new ToolTip("How many seconds of penaltytime is an entry permitted to collect, before it gets removed from the fight?")));
+					}, new ToolTip("How many seconds of penalty-time is an entry permitted to collect, before it gets removed from the fight?")));
 				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
 					M.m((Parameters tp) => tp.MaximumSpeed[index]), "Maximum Speed: {0}m/s", delegate (Parameters tp, float f)
 					{
@@ -122,19 +122,19 @@ namespace TournamentMod.UI
 					{
 						tp.EnemyAttackPercentage.Us[index] = (int) f;
 					}, new ToolTip("When determining if an entry is violating the distance limit, this percentage must be reached or it is considered fleeing from too many enemies.")));
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 0,
 					M.m((Parameters tp) => tp.MaximumBufferTime[index]), "Maximum Buffertime: {0}s", delegate (Parameters tp, float f)
 					{
 						tp.MaximumBufferTime.Us[index] = (int)f;
 					}, new ToolTip("When an entry is considered out of bounds, a timebuffer will be depleted first. It will reset once an entry is considered back in bounds."))).
 					SetConditionalDisplayFunction(() => _focus.Parameters.SoftLimits[index]);
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, 3,
 					M.m((Parameters tp) => tp.DistanceReverse[index]), "Distance Reversal: {0}m/s", delegate (Parameters tp, float f)
 					{
 						tp.DistanceReverse.Us[index] = (int)f;
 					}, new ToolTip("A positive value permits a certain fleeing speed, while a negative value requires a certain closing speed. It assumes, that the nearest enemy is stationary."))).
 					SetConditionalDisplayFunction(() => _focus.Parameters.SoftLimits[index]);
-				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 500, 1, -3,
+				segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, -3,
 					M.m((Parameters tp) => tp.AltitudeReverse[index]), "Altitude Reversal: {0}m/s", delegate (Parameters tp, float f)
 					{
 						tp.AltitudeReverse.Us[index] = (int)f;

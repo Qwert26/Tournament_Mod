@@ -55,18 +55,18 @@ namespace TournamentMod.UI
 					tp.UniformRules.Us = true;
 					tp.MakeUniform();
 				})).SetConditionalDisplayFunction(() => !_focus.Parameters.UniformRules);
-			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
 				M.m((Parameters tp) => tp.SpawngapLR[0]), "Spawngaps Left-Right: {0}m", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.SpawngapLR.Us[i] = (int)f;
 					}
 				}, new ToolTip("How many meters should entries on the same team be apart in the left-right direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
-			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1000, 1000, 1, 0,
+			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
 				M.m((Parameters tp) => tp.SpawngapFB[0]), "Spawngaps Forward-Backward: {0}m", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.SpawngapFB.Us[i] = (int)f;
 					}
@@ -77,7 +77,7 @@ namespace TournamentMod.UI
 				M.m((Parameters tp) => tp.AltitudeLimits[0].x), M.m<Parameters>(1), M.m((Parameters tp) => tp.AltitudeLimits[0].y),
 				_focus.Parameters, M.m((Parameters tp)=>$"Lower Altitude Limit: {tp.AltitudeLimits[0].x}m"), delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						Vector2 v = tp.AltitudeLimits[i];
 						v.x = f;
@@ -88,7 +88,7 @@ namespace TournamentMod.UI
 				M.m((Parameters tp) => tp.AltitudeLimits[0].y), M.m<Parameters>(1), M.m((Parameters tp) => tp.AltitudeLimits[0].x),
 				_focus.Parameters, M.m((Parameters tp)=>$"Upper Altitude Limit: {tp.AltitudeLimits[0].y}m"), delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						Vector2 v = tp.AltitudeLimits[i];
 						v.y = f;
@@ -98,22 +98,22 @@ namespace TournamentMod.UI
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 10000, 1, 1500,
 				M.m((Parameters tp) => tp.DistanceLimit[0]), "Distance Limit: {0}m", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.DistanceLimit.Us[i] = (int)f;
 					}
 				}, new ToolTip("What is the maximum distance for all entries towards the nearest enemy?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use projected Distance", new ToolTip("When turned on, a ground projected distance will be used. This is better for fights with a lot of vertical freedom."), delegate (Parameters tp, bool b)
 			{
-				for (int i = 0; i < 6; i++)
+				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
 					tp.ProjectedDistance.Us[i] = b;
 				}
 			}, (tp) => tp.ProjectedDistance[0])).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
-			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 90,
+			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 90,
 				M.m((Parameters tp) => tp.MaximumPenaltyTime[0]), "Maximum Penalty Time: {0}s", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.MaximumPenaltyTime.Us[i] = (int)f;
 					}
@@ -121,14 +121,14 @@ namespace TournamentMod.UI
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
 				M.m((Parameters tp) => tp.MaximumSpeed[0]), "Maximum Speed: {0}m/s", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.MaximumSpeed.Us[i] = (int)f;
 					}
 				}, new ToolTip("Going over the maximum Speed will add penalty time. If soft limits are active, it will deplete the buffer first."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use soft Limits", new ToolTip("When turned on, entries are given the chance to be considered in bounds under certain conditions. Turned off, entries will pickup penalty time as long as they are outside the bounds."), delegate (Parameters tp, bool b)
 			{
-				for (int i = 0; i < 6; i++)
+				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
 					tp.SoftLimits.Us[i] = b;
 				}
@@ -136,7 +136,7 @@ namespace TournamentMod.UI
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 50,
 			M.m((Parameters tp) => tp.EnemyAttackPercentage[0]), "Enemy Attack Percentage: {0}%", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.EnemyAttackPercentage.Us[i] = (int) f;
 					}
@@ -145,26 +145,26 @@ namespace TournamentMod.UI
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
 			segment2.SpaceAbove = segment2.SpaceBelow = 5;
 			segment2.SetConditionalDisplay(() => _focus.Parameters.UniformRules&&_focus.Parameters.SoftLimits[0]);
-			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 0,
+			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 0,
 				M.m((Parameters tp) => tp.MaximumBufferTime[0]), "Maximum Buffer Time: {0}s", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.MaximumBufferTime.Us[i] = (int)f;
 					}
 				}, new ToolTip("How much buffer time can a participant have, before it gains penalty time? This Buffer will reset, once a participant is considered to be back in bounds.")));
-			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
+			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, 3,
 				M.m((Parameters tp) => tp.DistanceReverse[0]), "Distance Reversal: {0}m/s", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.DistanceReverse.Us[i] = (int)f;
 					}
 				}, new ToolTip("A positive value permits a certain fleeing speed, while a negative value requires a certain closing speed. It assumes, that the nearest enemy is stationary.")));
-			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 500, 1, 3,
+			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, 3,
 				M.m((Parameters tp) => tp.AltitudeReverse[0]), "Altitude Reversal: {0}m/s", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.AltitudeReverse.Us[i] = (int)f;
 					}
@@ -172,12 +172,12 @@ namespace TournamentMod.UI
 			#endregion
 			ScreenSegmentStandard segment3 = CreateStandardSegment();
 			segment3.SpaceBelow = segment3.SpaceAbove = 5;
-			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 900,
+			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 900,
 				M.m((Parameters tp) => tp.MaximumTime), "Maximum Time: {0}s", delegate (Parameters tp, float f)
 				{
 					tp.MaximumTime.Us = (int)f;
 				}, new ToolTip("What is the maximum battle time? Once reached, the game will be paused. Unpausing it will activate \"Overtime\".")));
-			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 3600, 1, 60,
+			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 60,
 				M.m((Parameters tp) => tp.Overtime), "Overtime: {0}s", delegate (Parameters tp, float f)
 				{
 					tp.Overtime.Us = (int)f;
@@ -192,7 +192,7 @@ namespace TournamentMod.UI
 				tp.SameMaterials.Us = b;
 				if (b)
 				{
-					for (int i = 1; i < 6; i++)
+					for (int i = 1; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.TeamEntryMaterials.Us[i] = tp.TeamEntryMaterials[0];
 					}
@@ -204,7 +204,7 @@ namespace TournamentMod.UI
 			_focus.Parameters.EnsureEnoughData();
 			segmentIdenticalMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Entry-specific Resources", new ToolTip("All entries on all teams get individualised materials, look at the Participant-Tab."), delegate (Parameters tp, bool b)
 			{
-				for (int i = 0; i < 6; i++)
+				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
 					tp.TeamEntryMaterials.Us[i] = b;
 				}
@@ -215,7 +215,7 @@ namespace TournamentMod.UI
 			segmentIdenticalMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 				M.m((Parameters tp) => tp.ResourcesPerTeam[0]), "{0} Materials for all Teams", delegate (Parameters tp, float f)
 				{
-					for (int i = 0; i < 6; i++)
+					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
 						tp.ResourcesPerTeam.Us[i] = (int) f;
 					}
@@ -224,7 +224,7 @@ namespace TournamentMod.UI
 			ScreenSegmentStandard segmentIndividualMaterials = CreateStandardSegment();
 			segmentIndividualMaterials.SpaceBelow = segmentIndividualMaterials.SpaceAbove = 5;
 			segmentIndividualMaterials.SetConditionalDisplay(() => !_focus.Parameters.SameMaterials);
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int index = i;
 				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Entry-specific Resources for Team {index + 1}", new ToolTip($"Give the entries on Team {index + 1} individualised Materials. See the Participant-Tab."), delegate (Parameters tp, bool b)

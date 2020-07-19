@@ -12,7 +12,7 @@ namespace TournamentMod
 	internal class FactionManagement
 	{
 		public FactionManagement() {
-			factions=new List<FactionSpecificationFaction>(6);
+			factions=new List<FactionSpecificationFaction>(StaticConstants.MAX_TEAMS);
 		}
 		public readonly List<FactionSpecificationFaction> factions;
 		private bool added = false;

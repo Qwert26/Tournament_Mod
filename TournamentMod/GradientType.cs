@@ -4,12 +4,13 @@ namespace TournamentMod
 {
 	public enum GradientType : int
 	{
-		YouTubeBufferHealth = 0,
-		CustomBattleMode = 1,
-		CorrelationMap = 2,
-		TemperaturColorLinear = 3,
-		TemperaturColorLogarithmic = 4,
-		TemperaturColorOrdinal = 5
+		YouTubeBufferHealth,
+		CustomBattleMode,
+		CorrelationMap,
+		TemperaturColorLinear,
+		TemperaturColorLogarithmic,
+		TemperaturColorOrdinal,
+		TrafficLight
 	}
 	public static class GradientTypeExtensions
 	{
@@ -29,6 +30,8 @@ namespace TournamentMod
 					return PenaltyTimeGradient.TEMPERATUR_COLOR_LOGARITHMIC;
 				case GradientType.TemperaturColorOrdinal:
 					return PenaltyTimeGradient.TEMPERATUR_COLOR_ORDINAL;
+				case GradientType.TrafficLight:
+					return PenaltyTimeGradient.TRAFFIC_LIGHT;
 				default:
 					throw new ArgumentOutOfRangeException("type", type, "This Gradient has not yet defined!");
 			}

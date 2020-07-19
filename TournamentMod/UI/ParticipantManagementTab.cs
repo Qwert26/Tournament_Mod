@@ -57,7 +57,7 @@ namespace TournamentMod.UI
 				}
 				TriggerScreenRebuild();
 			}));
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Invert Direction\nfor Team {factionIndex + 1}", new ToolTip($"Inverts the direction for Team {factionIndex + 1}, by turning each entry 180°."), delegate (Tournament t)
@@ -75,7 +75,7 @@ namespace TournamentMod.UI
 				}
 				TriggerScreenRebuild();
 			}));
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Clear Team {factionIndex + 1}", new ToolTip($"Removes all entries for Team {factionIndex + 1}."), delegate (Tournament t)
@@ -96,7 +96,7 @@ namespace TournamentMod.UI
 				}
 				TriggerScreenRebuild();
 			}));
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Update Team {factionIndex + 1}", new ToolTip($"Updates all entries for Team {factionIndex + 1}."), delegate (Tournament t)
@@ -110,7 +110,7 @@ namespace TournamentMod.UI
 				})).SetConditionalDisplayFunction(() => factionIndex < _focus.Parameters.ActiveFactions);
 			}
 			bool ready = true;
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int factionIndex = i;
 				int teamSize = 0;
 				if (_focus.entries.ContainsKey(i))

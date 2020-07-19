@@ -91,7 +91,7 @@ namespace TournamentMod.UI
 					_parentTab.TriggerRebuild();
 				}
 			}));
-			for (int i = 0; i < 6; i++)
+			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				int factionIndex = i;
 				horizontal.AddInterpretter(SubjectiveButton<TreeSelectorGuiElement<BlueprintFile,BlueprintFolder>>.Quick(treeSelector, $"Add to Team {i + 1}", new ToolTip($"Add the currently selected Blueprint only to Team {i + 1}."), delegate (TreeSelectorGuiElement<BlueprintFile,BlueprintFolder> tree)

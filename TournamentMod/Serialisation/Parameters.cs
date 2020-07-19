@@ -78,12 +78,12 @@ namespace TournamentMod.Serialisation
 		/// Maximum battle time, the game will be paused once reaching it.
 		/// </summary>
 		[Variable(11, "Maximum time(s)")]
-		public Var<int> MaximumTime { get; set; } = new VarIntClamp(900, 0, 3600);
+		public Var<int> MaximumTime { get; set; } = new VarIntClamp(900, 0, StaticConstants.MAX_TIME);
 		/// <summary>
 		/// Unpausing after reaching the maximum time will activate "Overtime". after each section the game will be paused again.
 		/// </summary>
 		[Variable(12, "Overtime(s)")]
-		public Var<int> Overtime { get; set; } = new VarIntClamp(0, 0, 3600);
+		public Var<int> Overtime { get; set; } = new VarIntClamp(0, 0, StaticConstants.MAX_TIME);
 		/// <summary>
 		/// Every team has the same material settings if this is active.
 		/// </summary>
@@ -105,7 +105,7 @@ namespace TournamentMod.Serialisation
 		[Variable(20, "Default Keymapping", "When true the Tournament-Mod uses a static keymap, otherwise it uses your currently configured Keymap.")]
 		public VarBool DefaultKeys { get; set; } = new VarBool(false);
 		/// <summary>
-		/// Last used spawnheight. The real borders depend on the used map.
+		/// Last used spawnheight. The real borders depend on the used map but the editor has absolute borders at -1000m and 100000m.
 		/// </summary>
 		[Variable(21, "Location")]
 		public Var<int> SpawnHeight { get; set; } = new VarIntClamp(0, -1000, 100000);
@@ -201,7 +201,7 @@ namespace TournamentMod.Serialisation
 		/// How many teams are currently active.
 		/// </summary>
 		[Variable(107, "Active Factions")]
-		public Var<int> ActiveFactions { get; set; } = new VarIntClamp(2, 2, 6);
+		public Var<int> ActiveFactions { get; set; } = new VarIntClamp(2, 2, StaticConstants.MAX_TEAMS);
 		#region Cleanup Einstellungen
 		/// <summary>
 		/// When turned on, cleanup functions will despawn all constructs which are considered sinking
@@ -290,7 +290,7 @@ namespace TournamentMod.Serialisation
 		/// Stores the last used color-gradient for the accumulated penalty time.
 		/// </summary>
 		[Variable(205, "Color-Gradient for accumulated Penalty-Time")]
-		public Var<int> PenaltyTimeGradient { get; set; } = new VarIntClamp(0, 0, 5);
+		public Var<int> PenaltyTimeGradient { get; set; } = new VarIntClamp(0, 0, Enum.GetValues(typeof(GradientType)).Length - 1);
 		#endregion
 		/// <summary>
 		/// Computes the rotation around the center for a given team, factoring in the current amount of active teams.
@@ -306,75 +306,75 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		public void EnsureEnoughData()
 		{
-			while (ResourcesPerTeam.Count < 6)
+			while (ResourcesPerTeam.Count < StaticConstants.MAX_TEAMS)
 			{
 				ResourcesPerTeam.Add(10000);
 			}
-			while (MainColorsPerTeam.Count < 6)
+			while (MainColorsPerTeam.Count < StaticConstants.MAX_TEAMS)
 			{
 				MainColorsPerTeam.Add(new Color(0, 0, 0, 0));
 			}
-			while (SecondaryColorsPerTeam.Count < 6)
+			while (SecondaryColorsPerTeam.Count < StaticConstants.MAX_TEAMS)
 			{
 				SecondaryColorsPerTeam.Add(new Color(0, 0, 0, 0));
 			}
-			while (TrimColorsPerTeam.Count < 6)
+			while (TrimColorsPerTeam.Count < StaticConstants.MAX_TEAMS)
 			{
 				TrimColorsPerTeam.Add(new Color(0, 0, 0, 0));
 			}
-			while (DetailColorsPerTeam.Count < 6)
+			while (DetailColorsPerTeam.Count < StaticConstants.MAX_TEAMS)
 			{
 				DetailColorsPerTeam.Add(new Color(0, 0, 0, 0));
 			}
-			while (AltitudeLimits.Count < 6)
+			while (AltitudeLimits.Count < StaticConstants.MAX_TEAMS)
 			{
 				AltitudeLimits.Add(new Vector2(-50, 500));
 			}
-			while (DistanceLimit.Count < 6)
+			while (DistanceLimit.Count < StaticConstants.MAX_TEAMS)
 			{
 				DistanceLimit.Add(1500);
 			}
-			while (SpawngapFB.Count < 6)
+			while (SpawngapFB.Count < StaticConstants.MAX_TEAMS)
 			{
 				SpawngapFB.Add(0);
 			}
-			while (SpawngapLR.Count < 6)
+			while (SpawngapLR.Count < StaticConstants.MAX_TEAMS)
 			{
 				SpawngapLR.Add(100);
 			}
-			while (ProjectedDistance.Count < 6)
+			while (ProjectedDistance.Count < StaticConstants.MAX_TEAMS)
 			{
 				ProjectedDistance.Add(false);
 			}
-			while (MaximumPenaltyTime.Count < 6)
+			while (MaximumPenaltyTime.Count < StaticConstants.MAX_TEAMS)
 			{
 				MaximumPenaltyTime.Add(90);
 			}
-			while (MaximumBufferTime.Count < 6)
+			while (MaximumBufferTime.Count < StaticConstants.MAX_TEAMS)
 			{
 				MaximumBufferTime.Add(0);
 			}
-			while (SoftLimits.Count < 6)
+			while (SoftLimits.Count < StaticConstants.MAX_TEAMS)
 			{
 				SoftLimits.Add(true);
 			}
-			while (DistanceReverse.Count < 6)
+			while (DistanceReverse.Count < StaticConstants.MAX_TEAMS)
 			{
 				DistanceReverse.Add(3);
 			}
-			while (AltitudeReverse.Count < 6)
+			while (AltitudeReverse.Count < StaticConstants.MAX_TEAMS)
 			{
 				AltitudeReverse.Add(-3);
 			}
-			while (MaximumSpeed.Count < 6)
+			while (MaximumSpeed.Count < StaticConstants.MAX_TEAMS)
 			{
 				MaximumSpeed.Add(10000);
 			}
-			while (EnemyAttackPercentage.Count < 6)
+			while (EnemyAttackPercentage.Count < StaticConstants.MAX_TEAMS)
 			{
 				EnemyAttackPercentage.Add(50);
 			}
-			while (TeamEntryMaterials.Count < 6)
+			while (TeamEntryMaterials.Count < StaticConstants.MAX_TEAMS)
 			{
 				TeamEntryMaterials.Add(false);
 			}
@@ -384,7 +384,7 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		public void MakeUniform()
 		{
-			for (int i = 1; i < 6; i++)
+			for (int i = 1; i < StaticConstants.MAX_TEAMS; i++)
 			{
 				ResourcesPerTeam.Us[i] = ResourcesPerTeam[0];
 				AltitudeLimits.Us[i] = AltitudeLimits[0];
