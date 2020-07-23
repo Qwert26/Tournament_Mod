@@ -9,12 +9,12 @@ namespace TournamentMod.Serialisation
 	{
 		public TeamCompositionConfiguration(uint uniqueID) : base(uniqueID) { }
 		/// <summary>
-		/// 
+		/// The distance between two entries on the team along the left-right axis.
 		/// </summary>
 		[Variable(0)]
 		public Var<int> SpawngapLR { get; set; } = new VarIntClamp(0, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE);
 		/// <summary>
-		/// 
+		/// The distance between two entries on the team along the forward-backward axis.
 		/// </summary>
 		[Variable(1)]
 		public Var<int> SpawngapFB { get; set; } = new VarIntClamp(0, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE);
@@ -53,12 +53,24 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		[Variable(8)]
 		public Var<int> MaximumBufferTime { get; set; } = new VarIntClamp(0, 0, StaticConstants.MAX_TIME);
+		/// <summary>
+		/// When an entry goes out-of-bounds with soft limits enabled, if they are not moving away from enemies faster than this value, penalty time will not be given.
+		/// </summary>
 		[Variable(9)]
 		public Var<int> DistanceReversal { get; set; } = new VarIntClamp(3, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE);
+		/// <summary>
+		/// When an entry goes out-of-bounds with soft limits enabled, if they are not moving away from the altitude bracket faster than this value, penalty time will not be given.
+		/// </summary>
 		[Variable(10)]
 		public Var<int> AltitudeReversal { get; set; } = new VarIntClamp(-3, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE);
+		/// <summary>
+		/// The amount of materials this team should have. Without distribution, each entry will be given this amount.
+		/// </summary>
 		[Variable(11)]
 		public Var<int> Resources { get; set; } = new VarIntClamp(10000, 0, 1000000);
+		/// <summary>
+		/// When an entry is considered fleeing from the given percentage of enemies, penalty time will be given.
+		/// </summary>
 		[Variable(12)]
 		public Var<int> EnemyAttackPercentage { get; set; } = new VarIntClamp(50, 0, 100);
 		/// <summary>
@@ -66,6 +78,9 @@ namespace TournamentMod.Serialisation
 		/// </summary>
 		[Variable(13)]
 		public Vector3IntList Formation { get; set; } = new Vector3IntList();
+		/// <summary>
+		/// When active, entries will have individual Materials.
+		/// </summary>
 		[Variable(14)]
 		public Var<bool> IndividualEntryMaterials { get; set; } = new VarBool(false);
 		/// <summary>

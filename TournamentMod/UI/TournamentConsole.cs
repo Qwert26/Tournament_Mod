@@ -15,7 +15,10 @@ namespace TournamentMod.UI
 		/// 
 		/// </summary>
 		/// <param name="focus"></param>
-		public TournamentConsole(Tournament focus) : base(focus) { }
+		public TournamentConsole(Tournament focus) : base(focus)
+		{
+			_focus._GUI = this;
+		}
 		/// <summary>
 		/// GUI-Settings of this Console.
 		/// </summary>

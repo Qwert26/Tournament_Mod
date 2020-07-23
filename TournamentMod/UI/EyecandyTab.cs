@@ -42,33 +42,11 @@ namespace TournamentMod.UI
 			CreateHeader("General Appearence", new ToolTip("General Apearences"));
 			ScreenSegmentStandard general = CreateStandardSegment();
 			general.SpaceAbove = general.SpaceBelow = 5;
-			string describeGradient()
-			{
-				switch (_focus.Parameters.PenaltyTimeGradient)
-				{
-					case 0:
-						return "Based on the Health of the Buffer from YouTube-Videos.";
-					case 1:
-						return "The same Gradient also found in the Custom Battle Mode.";
-					case 2:
-						return "Based on the mapping used for correlation matricies.";
-					case 3:
-						return "Based on the color of a star relative to Vega. This one is based on a linear interpolation of the temperatur. Critical accumulated time is near the 95%-Mark.";
-					case 4:
-						return "Based on the color of a star relative to Vega. This one is based on a logarithmic interpolation of the temperatur. Critical accumulated time is near the 35%-Mark.";
-					case 5:
-						return "Based on the color of a star relative to Vega. This one is based on a ordinal interpolation of the spectral class. Critical accumulated time is near the 80%-Mark.";
-					case 6:
-						return "Based on the colors of a traffic light. Simple yet informative.";
-					default:
-						return "This Gradient is already implemented, but has not yet recieved a description.";
-				}
-			}
 			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Enum.GetValues(typeof(GradientType)).Length), M.m((Parameters p) => p.PenaltyTimeGradient),
 				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient.Us}"), delegate (Parameters p, float f)
 					   {
 						   p.PenaltyTimeGradient.Us = (int) f;
-					   }, null, M.m((Parameters p) => new ToolTip(describeGradient()))));
+					   }, null, M.m((Parameters p) => new ToolTip(((GradientType)p.PenaltyTimeGradient.Us).GetDescription()))));
 			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);

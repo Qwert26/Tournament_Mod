@@ -31,7 +31,7 @@
     },
     "conflicts": {
         "type": "array",
-        "description": "A list of mods which can not be loaded together with this one.",
+        "description": "A list of plugins which can not be loaded together with this one.",
         "items": {
             "type": "string"
         },

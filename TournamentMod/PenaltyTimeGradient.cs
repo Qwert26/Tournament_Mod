@@ -29,6 +29,10 @@ namespace TournamentMod {
 		/// A Traffic light inspired gradient.
 		/// </summary>
 		public static readonly Gradient TRAFFIC_LIGHT;
+		/// <summary>
+		/// The Gradient constructed by the colors used in Wintergatan's Project Management Masterplan for the MMX.
+		/// </summary>
+		public static readonly Gradient WINTERGATAN_PROJECT_MASTER_PLAN;
 		static PenaltyTimeGradient() {
 			YOUTUBE_BUFFER_HEALTH = new Gradient
 			{
@@ -140,6 +144,24 @@ namespace TournamentMod {
 				{
 					new GradientColorKey(Color.green, 0f),
 					new GradientColorKey(new Color(1f, 1f, 0f), 0.5f),
+					new GradientColorKey(Color.red, 1f)
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
+				mode = GradientMode.Blend
+			};
+			WINTERGATAN_PROJECT_MASTER_PLAN = new Gradient()
+			{
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(Color.white, 0f),
+					new GradientColorKey(Color.magenta, 0.2f),
+					new GradientColorKey(Color.cyan, 0.4f),
+					new GradientColorKey(Color.green, 0.6f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.8f),//Yellow
 					new GradientColorKey(Color.red, 1f)
 				},
 				alphaKeys = new GradientAlphaKey[]
