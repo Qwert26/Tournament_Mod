@@ -682,27 +682,27 @@ namespace TournamentMod
 					teamMaxHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPMAX);
 					teamCurHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPCUR);
 					string teamHP = $"{Mathf.RoundToInt(100 * teamCurHP / teamMaxHP)}%";
-					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name} @ {teamHP}, {teamMaterials}</color>", sidelist);
+					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name}</color> @ {teamHP}, <color=orange>{teamMaterials}</color>", sidelist);
 					int maxTimeForTeam = Parameters.MaximumPenaltyTime[TournamentPlugin.factionManagement.TeamIndexFromObjectID(team.Key)];
 					foreach (KeyValuePair<MainConstruct, Participant> member in team.Value)
 					{
 						string name = member.Value.BlueprintName;
-						string percentHP = $"{Mathf.RoundToInt(member.Value.HP)}%";
+						string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
 						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
-						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.Floor(member.Value.OoBTime / 60)}m{Mathf.Floor(member.Value.OoBTime) % 60}s</color>";
-						bool disqualified = member.Value.Disqual || member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
+						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Mathf.FloorToInt(member.Value.OoBTime % 60f)}s</color>";
+						bool disqualified = member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)
 						{
-							memberContent = new GUIContent($"<color=red>{name} DQ @{Math.Floor(member.Value.TimeOfDespawn / 60f)}m {Math.Floor(member.Value.TimeOfDespawn % 60f)}s</color>");
+							memberContent = new GUIContent($"<color=red>{name} DQ @{Mathf.FloorToInt(member.Value.TimeOfDespawn / 60f)}m {Mathf.FloorToInt(member.Value.TimeOfDespawn % 60f)}s</color>");
 						}
 						else
 						{
 							memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
 						}
 						Vector2 size = sidelist.CalcSize(memberContent);
-						if (size.x <= 170)
+						if (size.x <= 175)
 						{
 							GUILayout.Label(memberContent, sidelist);
 						}
@@ -728,13 +728,13 @@ namespace TournamentMod
 					string name = targetConstruct.blueprintName;
 					string team = targetConstruct.GetTeam().FactionSpec().Name;
 					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1)}%";
-					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum, 0)}";
-					string ammo = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Maximum, 0)}";
-					string fuel = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Maximum, 0)}";
-					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity, 0)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum, 0)}";
-					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power, 0)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower, 0)}";
-					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude, 1)}m/s";
-					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y, 0)}m";
+					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum)}";
+					string ammo = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Maximum)}";
+					string fuel = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Maximum)}";
+					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum)}";
+					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower)}";
+					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude)}m/s";
+					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y)}m";
 					float closest = -1f;
 					foreach (MainConstruct construct in StaticConstructablesManager.constructables.ToArray())
 					{
