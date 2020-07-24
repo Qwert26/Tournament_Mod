@@ -7,7 +7,6 @@ namespace TournamentMod.Serialisation
 	/// <summary>
 	/// Stores each and every Parameter of the Fight.
 	/// </summary>
-	[Serializable]
 	public class Parameters : PrototypeSystem
 	{
 		/// <summary>

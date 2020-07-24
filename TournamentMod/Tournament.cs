@@ -463,7 +463,7 @@ namespace TournamentMod
 		public void SaveSettings()
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
 			PopulateParameters();
 			settingsFile.SaveData(Parameters, Formatting.Indented);
 		}
@@ -514,7 +514,7 @@ namespace TournamentMod
 		public void LoadSettings()
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
 			if (settingsFile.Exists)
 			{
 				try
@@ -533,19 +533,17 @@ namespace TournamentMod
 			}
 			else
 			{
-				settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
-				if (settingsFile.Exists)
-				{
+				settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
+				if (settingsFile.Exists) {
 					try
 					{
 						Parameters = settingsFile.LoadData<Parameters>();
 						Parameters.EnsureEnoughData();
 						PopulateFormations();
-						FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
+						FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
 						newSettingsFile.SaveData(Parameters, Formatting.Indented);
 						settingsFile.Delete();
-						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated to different File! This is done as a preparation for being able to save entire teams, " +
-						"including formation-info, spawn- and penalty-rules into a single file for easy transfer and quick loading into you battle."));
+						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated again to different File! Turns out FTD is not able to handle files with more than one ending..."));
 					}
 					catch (Exception)
 					{
@@ -555,9 +553,33 @@ namespace TournamentMod
 							"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
 					}
 				}
-				else
-				{
-					LoadDefaults();
+				else {
+					settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
+					if (settingsFile.Exists)
+					{
+						try
+						{
+							Parameters = settingsFile.LoadData<Parameters>();
+							Parameters.EnsureEnoughData();
+							PopulateFormations();
+							FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
+							newSettingsFile.SaveData(Parameters, Formatting.Indented);
+							settingsFile.Delete();
+							GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated to different File! This is done as a preparation for being able to save entire teams, " +
+							"including formation-info, spawn- and penalty-rules into a single file for easy transfer and quick loading into your battle."));
+						}
+						catch (Exception)
+						{
+							LoadDefaults();
+							SaveSettings();
+							GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
+								"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
+						}
+					}
+					else
+					{
+						LoadDefaults();
+					}
 				}
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
@@ -588,14 +610,6 @@ namespace TournamentMod
 		}
 		public void LoadTeam(int index, TeamCompositionConfiguration tcc)
 		{
-			if (Parameters.UniformRules)
-			{
-				GuiPopUp.Instance.Add(new PopupConfirmation("Uniform rules are active", "Currently uniform spawning and penalty rules are active. Do you want to turn them off, " +
-				"so that the team can have its own rules, or do you want to keep them on and skip the loading of those?", delegate (bool b)
-				 {
-					 Parameters.UniformRules.Us = b;
-				 }, "Yes, turn them off.", "No, skip loading these."));
-			}
 			if (!Parameters.UniformRules)
 			{
 				Parameters.SpawngapFB.Us[index] = tcc.SpawngapFB;
@@ -611,14 +625,6 @@ namespace TournamentMod
 				Parameters.MaximumPenaltyTime.Us[index] = tcc.MaximumPenaltyTime;
 				Parameters.MaximumSpeed.Us[index] = tcc.MaximumSpeed;
 				Parameters.EnemyAttackPercentage.Us[index] = tcc.EnemyAttackPercentage;
-			}
-			if (Parameters.SameMaterials)
-			{
-				GuiPopUp.Instance.Add(new PopupConfirmation("Same Materials for each Team", "Currently all teams have the same Material-settings. Do you want to turn them off, " +
-				"so that the team can have its own rules, or do you want to keep them on and skip the loading of those?", delegate (bool b)
-				{
-					Parameters.SameMaterials.Us = b;
-				}, "Yes, turn them off.", "No, skip loading these."));
 			}
 			if (!Parameters.SameMaterials)
 			{
@@ -637,8 +643,15 @@ namespace TournamentMod
 					FilePath = tcc.EntryFiles[i],
 					FactionIndex = index
 				};
-				entry.LoadBlueprintFile();
-				entries[index].Add(entry);
+				SafeLogging.Log($"Filepath of entry is {entry.FilePath}");
+				if (entry.LoadBlueprintFile())
+				{
+					entries[index].Add(entry);
+				}
+				else
+				{
+					GuiPopUp.Instance.Add(new PopupInfo("Entry did not load Blueprint", $"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team."));
+				}
 			}
 			teamFormations[index].formationEntrycount.Clear();
 			for (int i = 0; i < tcc.Formation.Count; i++)

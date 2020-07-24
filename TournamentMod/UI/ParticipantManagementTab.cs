@@ -122,7 +122,7 @@ namespace TournamentMod.UI
 				ScreenSegmentStandardHorizontal saveLoad = CreateStandardHorizontalSegment();
 				saveLoad.SpaceAbove = saveLoad.SpaceBelow = 5;
 				saveLoad.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
-				TCCFolder folder = new TCCFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);
+				TCCFolder folder = new TCCFolder(new FilesystemFolderSource(Get.ProfilePaths.ConstructsDir().ToString()), false);
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Quicksave Team {factionIndex + 1}", new ToolTip("Saves this team into a predetermined file inside the mod-folder."), delegate (Tournament t)
 					 {
 						 t.QuicksaveTeam(factionIndex);
@@ -135,6 +135,7 @@ namespace TournamentMod.UI
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Quickload Team {factionIndex + 1}", new ToolTip("Loads a team from a predetermined file inside the mod-folder."), delegate (Tournament t)
 					{
 						t.QuickloadTeam(factionIndex);
+						TriggerScreenRebuild();
 					}));
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Load Team {factionIndex + 1}", new ToolTip("Load a team from a file of your choosing."), delegate (Tournament t)
 					{

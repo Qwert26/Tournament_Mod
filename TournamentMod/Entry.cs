@@ -1,6 +1,5 @@
 using Assets.Scripts;
 using Assets.Scripts.Persistence;
-using BrilliantSkies.Core.Id;
 using System.Collections.Generic;
 using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
@@ -97,12 +96,17 @@ namespace TournamentMod
 				return null;
 			}
 		}
-		public void LoadBlueprintFile()
+		public bool LoadBlueprintFile()
 		{
 			if (FilePath != null)
 			{
-				Bpf = GameFolders.GetCombinedBlueprintFolder(false).GetFile(FilePath, true);
+				Bpf = GameFolders.GetCombinedBlueprintFolder(false).GetFile(FilePath + ".blueprint", false);
+				if (Bpf != null)
+				{
+					return true;
+				}
 			}
+			return false;
 		}
 		/// <summary>
 		/// Converts the Blueprint into a MainConstruct and places it at the position provided by the Formation-Setting of the Team.

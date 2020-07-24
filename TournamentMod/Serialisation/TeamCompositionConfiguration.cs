@@ -1,10 +1,8 @@
-﻿using System;
-using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
+﻿using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
 using BrilliantSkies.Core.Widgets;
 using UnityEngine;
 namespace TournamentMod.Serialisation
 {
-	[Serializable]
 	public class TeamCompositionConfiguration : PrototypeSystem
 	{
 		public TeamCompositionConfiguration(uint uniqueID) : base(uniqueID) { }

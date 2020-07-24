@@ -14,7 +14,7 @@ namespace TournamentMod.Serialisation
 			Vector3 entry;
 			entry.x = BitConverter.ToSingle(bytes, 0);
 			entry.y = BitConverter.ToSingle(bytes, 4);
-			entry.z = BitConverter.ToSingle(bytes, 12);
+			entry.z = BitConverter.ToSingle(bytes, 8);
 			Add(entry);
 		}
 		/// <summary>
