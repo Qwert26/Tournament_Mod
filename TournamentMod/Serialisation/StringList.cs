@@ -6,19 +6,20 @@ namespace TournamentMod.Serialisation
 	public class StringList : VarList<string>
 	{
 		/// <summary>
-		/// Converts a byte-array with UTF8-Encoding back into a string. The first index is a length indicator.
+		/// Converts a byte-array with UTF8-Encoding back into a string. The first index is a length indicator, so the string starts at the second index.
 		/// </summary>
-		/// <param name="bytes"></param>
+		/// <param name="bytes">The length of the string is in the first byte, afterwards the string itself in UTF8-encoding.</param>
 		public override void ByteToEntry(byte[] bytes)
 		{
 			byte run = bytes[0];
-			Add(Encoding.UTF8.GetString(bytes, 0, run));
+			Add(Encoding.UTF8.GetString(bytes, 1, run));
 		}
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="entryBytes">Will be 255 after the call. A longer Filepath can not be saved without exlcuding its length in an UTF8-Format.</param>
-		/// <returns></returns>
+		/// <param name="entryBytes">Will be 255 after the call, which is one byte for the length and 254 data-bytes.
+		/// A longer Filepath can not be saved without exlcuding its length in an UTF8-Format.</param>
+		/// <returns>Amount of strings in the list.</returns>
 		public override uint EntriesAndBytesPerEntry(out uint entryBytes)
 		{
 			entryBytes = 255;
@@ -27,8 +28,8 @@ namespace TournamentMod.Serialisation
 		/// <summary>
 		/// Saves the selected entry into the given byte array. If the string in UTF-Encoding is too long, it will be shortened in order to fit inside 254 bytes.
 		/// </summary>
-		/// <param name="keyIndex"></param>
-		/// <param name="byteArray"></param>
+		/// <param name="keyIndex">The indes of the string to save</param>
+		/// <param name="byteArray">The array to write the string to.</param>
 		public override void EntryToByte(uint keyIndex, ref byte[] byteArray)
 		{
 			string toSave = Us[(int)keyIndex];

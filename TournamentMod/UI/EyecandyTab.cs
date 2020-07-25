@@ -42,11 +42,11 @@ namespace TournamentMod.UI
 			CreateHeader("General Appearence", new ToolTip("General Apearences"));
 			ScreenSegmentStandard general = CreateStandardSegment();
 			general.SpaceAbove = general.SpaceBelow = 5;
-			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Enum.GetValues(typeof(GradientType)).Length), M.m((Parameters p) => p.PenaltyTimeGradient),
+			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Enum.GetValues(typeof(GradientType)).Length - 1), M.m((Parameters p) => p.PenaltyTimeGradient),
 				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient.Us}"), delegate (Parameters p, float f)
 					   {
 						   p.PenaltyTimeGradient.Us = (int) f;
-					   }, null, M.m((Parameters p) => new ToolTip(((GradientType)p.PenaltyTimeGradient.Us).GetDescription()))));
+					   }, null, M.m((Parameters p) => new ToolTip(((GradientType) p.PenaltyTimeGradient.Us).GetDescription()))));
 			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);

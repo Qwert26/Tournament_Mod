@@ -36,7 +36,7 @@ namespace TournamentMod
 				case GradientType.Wintergatan_MMX_PMMP:
 					return PenaltyTimeGradient.WINTERGATAN_PROJECT_MASTER_PLAN;
 				default:
-					throw new ArgumentOutOfRangeException("type", type, "This Gradient has not yet defined!");
+					throw new ArgumentOutOfRangeException("type", type, "This Gradient is not yet defined!");
 			}
 		}
 		public static string GetDescription(this GradientType type)
@@ -60,7 +60,7 @@ namespace TournamentMod
 				case GradientType.Wintergatan_MMX_PMMP:
 					return "Based on the colors used in Wintergatan's Project Management Masterplan for the Marble Machine X.";
 				default:
-					throw new ArgumentOutOfRangeException("type", type, "This Gradient has not yet defined!");
+					throw new ArgumentOutOfRangeException("type", type, "This Gradient is not yet defined!");
 			}
 		}
 	}

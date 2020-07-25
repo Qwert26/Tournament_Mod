@@ -9,11 +9,11 @@ using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Numbers;
 using BrilliantSkies.Core.FilesAndFolders;
+using Assets.Scripts.Gui;
+using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Ui.Special.PopUps;
 namespace TournamentMod.UI
 {
-	using Assets.Scripts.Gui;
-	using BrilliantSkies.Core.Constants;
-	using BrilliantSkies.Ui.Special.PopUps;
 	using Serialisation;
 	/// <summary>
 	/// GUI-Class for managing participants.
@@ -130,12 +130,12 @@ namespace TournamentMod.UI
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Save Team{factionIndex + 1}", new ToolTip("Save this team into a file or your choosing."), delegate (Tournament t)
 					{
 						GuiPopUp.Instance.Add(new PopupTreeViewSave<TeamCompositionConfiguration>("Save Team", FtdGuiUtils.GetFileBrowserFor<TCCFile, TCCFolder>(folder), delegate (string s, bool b)
-						  { }, _focus.CreateSavefileForTeam(factionIndex), $"Team{factionIndex + 1}"));
+						{ }, _focus.CreateSavefileForTeam(factionIndex), $"Team{factionIndex + 1}"));
 					}));
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Quickload Team {factionIndex + 1}", new ToolTip("Loads a team from a predetermined file inside the mod-folder."), delegate (Tournament t)
 					{
 						t.QuickloadTeam(factionIndex);
-						TriggerScreenRebuild();
+						RebuildScreenAndPopup();
 					}));
 				saveLoad.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, $"Load Team {factionIndex + 1}", new ToolTip("Load a team from a file of your choosing."), delegate (Tournament t)
 					{
@@ -145,7 +145,7 @@ namespace TournamentMod.UI
 							{
 								TeamCompositionConfiguration tcc = folder.GetFile(s, true).Load();
 								_focus.LoadTeam(factionIndex, tcc);
-								DeactivatePopup();
+								RebuildScreenAndPopup();
 							}
 						}));
 					}));
@@ -164,14 +164,14 @@ namespace TournamentMod.UI
 					entryControl.SpaceAbove = entryControl.SpaceBelow = 5;
 					entryControl.SetConditionalDisplay(() => factionIndex < _focus.Parameters.ActiveFactions);
 					entryControl.AddInterpretter(new StringDisplay(M.m<string>(string.Format(
-						"{3}°@{2}m\n" +
-						"{0} <color=cyan>{1}</color>\n" +
+						"Facing {3}° @ {2}m is the\n" +
+						"{0} - <color=cyan>{1} Materials</color>\n" +
 						"~-------SPAWNS-------~{4}\n" +
 						"~--------------------~\n" +
 						"~---FORMATION-ROLE---~\n" +
 						"{5}",
 						entry.Bpf.Name,
-						entry.bp.CalculateResourceCost(false, true, false).Material+entry.bp.ContainedMaterialCost,
+						entry.bp.CalculateResourceCost(false, true, true).Material + entry.bp.ContainedMaterialCost,
 						entry.Spawn_height,
 						entry.Spawn_direction,
 						text,
@@ -188,7 +188,7 @@ namespace TournamentMod.UI
 						t.entries[factionIndex].Remove(entry);
 						TriggerScreenRebuild();
 					}), 0, 1);
-					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Update", new ToolTip("Updates this entry with new values for its direction and height."), delegate (Tournament t)
+					entryControl.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Update", new ToolTip("Updates this entry with new values for its direction and height. Make sure to de-focus the corresponding slider to update the internal value!"), delegate (Tournament t)
 					{
 						entry.Spawn_direction = t.Parameters.Direction;
 						entry.Spawn_height = t.Parameters.SpawnHeight;

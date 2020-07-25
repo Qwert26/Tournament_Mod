@@ -143,7 +143,7 @@ namespace TournamentMod {
 				colorKeys = new GradientColorKey[]
 				{
 					new GradientColorKey(Color.green, 0f),
-					new GradientColorKey(new Color(1f, 1f, 0f), 0.5f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.5f), //Yellow
 					new GradientColorKey(Color.red, 1f)
 				},
 				alphaKeys = new GradientAlphaKey[]
@@ -158,11 +158,11 @@ namespace TournamentMod {
 				colorKeys = new GradientColorKey[]
 				{
 					new GradientColorKey(Color.white, 0f),
-					new GradientColorKey(Color.magenta, 0.2f),
-					new GradientColorKey(Color.cyan, 0.4f),
-					new GradientColorKey(Color.green, 0.6f),
-					new GradientColorKey(new Color(1f, 1f, 0f), 0.8f),//Yellow
-					new GradientColorKey(Color.red, 1f)
+					new GradientColorKey(Color.cyan, 0.2f),
+					new GradientColorKey(Color.green, 0.4f),
+					new GradientColorKey(new Color(1f, 1f, 0f), 0.6f),//Yellow
+					new GradientColorKey(Color.red, 0.8f),
+					new GradientColorKey(Color.magenta, 1f)
 				},
 				alphaKeys = new GradientAlphaKey[]
 				{

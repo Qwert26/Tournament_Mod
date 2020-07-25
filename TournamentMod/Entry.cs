@@ -5,6 +5,7 @@ using UnityEngine;
 using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Ftd.Planets.Factions;
 using BrilliantSkies.Ftd.Persistence.Inits;
+using System;
 namespace TournamentMod
 {
 	using Formations;
@@ -81,16 +82,16 @@ namespace TournamentMod
 						float num = 0f;
 						for (int i = 0; i < count; i++)
 						{
-							float material = list[i].CalculateResourceCost(false, true, false).Material;
-							array[i + 1] = $"{list[i].blueprintName} <color=cyan>{material}</color>";
+							float material = list[i].CalculateResourceCost(false, true, false).Material+list[i].ContainedMaterialCost;
+							array[i + 1] = $"{list[i].blueprintName} - <color=cyan>{material} Materials</color>";
 							num += material;
 						}
-						array[0] = $"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true, false).Material - num}</color>";
+						array[0] = $"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(false, true, false).Material + bp.ContainedMaterialCost} Materials</color>";
 						return array;
 					}
 					return new string[1]
 					{
-						$"{bp.blueprintName} <color=cyan>{bp.CalculateResourceCost(false, true, false).Material}</color>"
+						$"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(false, true, false).Material + bp.ContainedMaterialCost} Materials</color>"
 					};
 				}
 				return null;
@@ -100,9 +101,18 @@ namespace TournamentMod
 		{
 			if (FilePath != null)
 			{
-				Bpf = GameFolders.GetCombinedBlueprintFolder(false).GetFile(FilePath + ".blueprint", false);
+				_bpf = null;
+				try
+				{
+					_bpf = GameFolders.GetCombinedBlueprintFolder(false).GetFile(FilePath, true);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
 				if (Bpf != null)
 				{
+					bp = Bpf.Load(true);
 					return true;
 				}
 			}

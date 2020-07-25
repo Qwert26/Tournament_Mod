@@ -20,14 +20,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
+using BrilliantSkies.Core;
 namespace TournamentMod
 {
 	using UI;
 	using Serialisation;
 	using Formations;
-	using BrilliantSkies.Core;
-	using BrilliantSkies.Ui.Displayer;
-
 	/// <summary>
 	/// GUI-Class for the Overlay and general Mangement.
 	/// </summary>
@@ -100,7 +98,7 @@ namespace TournamentMod
 		/// </summary>
 		private List<int> materials;
 		/// <summary>
-		/// 
+		/// The currently used gradient for the penalty timer.
 		/// </summary>
 		public Gradient penaltyTimeGradient = null;
 		public Tournament()
@@ -473,38 +471,41 @@ namespace TournamentMod
 		/// <param name="index"></param>
 		public void QuicksaveTeam(int index) {
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.tournament.teamsettings"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.teamsettings"));
 			settingsFile.SaveData(CreateSavefileForTeam(index), Formatting.Indented);
 		}
-		public TeamCompositionConfiguration CreateSavefileForTeam(int index) {
-			TeamCompositionConfiguration tcc = new TeamCompositionConfiguration(0);
-			tcc.AltitudeLimits.Us = Parameters.AltitudeLimits[index];
-			tcc.AltitudeReversal.Us = Parameters.AltitudeReverse[index];
-			tcc.DistanceLimit.Us = Parameters.DistanceLimit[index];
-			tcc.DistanceReversal.Us = Parameters.DistanceReverse[index];
-			tcc.EnemyAttackPercentage.Us = Parameters.EnemyAttackPercentage[index];
+		public TeamCompositionConfiguration CreateSavefileForTeam(int index)
+		{
+			TeamCompositionConfiguration tcc = new TeamCompositionConfiguration
+			{
+				AltitudeLimits = Parameters.AltitudeLimits[index],
+				AltitudeReversal = Parameters.AltitudeReverse[index],
+				DistanceLimit = Parameters.DistanceLimit[index],
+				DistanceReversal = Parameters.DistanceReverse[index],
+				EnemyAttackPercentage = Parameters.EnemyAttackPercentage[index],
+				IndividualEntryMaterials = Parameters.TeamEntryMaterials[index],
+				Resources = Parameters.ResourcesPerTeam[index],
+				SpawngapFB = Parameters.SpawngapFB[index],
+				SpawngapLR = Parameters.SpawngapLR[index],
+				UsesProjectedDistance = Parameters.ProjectedDistance[index],
+				UsesSoftLimits = Parameters.SoftLimits[index],
+				MaximumBufferTime = Parameters.MaximumBufferTime[index],
+				MaximumPenaltyTime = Parameters.MaximumPenaltyTime[index],
+				MaximumSpeed = Parameters.MaximumSpeed[index]
+			};
+			tcc.TeamColors.Add(Parameters.MainColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.SecondaryColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.TrimColorsPerTeam[index]);
+			tcc.TeamColors.Add(Parameters.DetailColorsPerTeam[index]);
 			int i = 0;
 			foreach (Tuple<FormationType, int> f in teamFormations[index].formationEntrycount)
 			{
 				tcc.Formation.Add(new Vector3Int(i++, (int) f.Item1, f.Item2));
 			}
-			tcc.IndividualEntryMaterials.Us = Parameters.TeamEntryMaterials[index];
-			tcc.Resources.Us = Parameters.ResourcesPerTeam[index];
-			tcc.SpawngapFB.Us = Parameters.SpawngapFB[index];
-			tcc.SpawngapLR.Us = Parameters.SpawngapLR[index];
-			tcc.TeamColors.Add(Parameters.MainColorsPerTeam[index]);
-			tcc.TeamColors.Add(Parameters.SecondaryColorsPerTeam[index]);
-			tcc.TeamColors.Add(Parameters.TrimColorsPerTeam[index]);
-			tcc.TeamColors.Add(Parameters.DetailColorsPerTeam[index]);
-			tcc.UsesProjectedDistance.Us = Parameters.ProjectedDistance[index];
-			tcc.UsesSoftLimits.Us = Parameters.SoftLimits[index];
-			tcc.MaximumBufferTime.Us = Parameters.MaximumBufferTime[index];
-			tcc.MaximumPenaltyTime.Us = Parameters.MaximumPenaltyTime[index];
-			tcc.MaximumSpeed.Us = Parameters.MaximumSpeed[index];
 			foreach (Entry entry in entries[index])
 			{
 				tcc.EntryInformation.Add(new Vector3(entry.Spawn_direction, entry.Spawn_height, entry.CurrentMaterials));
-				tcc.EntryFiles.Add(entry.FilePath);
+				tcc.EntryFiles.Add(entry.FilePath.Replace(Get.ProfilePaths.PlayerName,"#0#"));
 			}
 			return tcc;
 		}
@@ -534,7 +535,8 @@ namespace TournamentMod
 			else
 			{
 				settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
-				if (settingsFile.Exists) {
+				if (settingsFile.Exists)
+				{
 					try
 					{
 						Parameters = settingsFile.LoadData<Parameters>();
@@ -543,7 +545,8 @@ namespace TournamentMod
 						FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
 						newSettingsFile.SaveData(Parameters, Formatting.Indented);
 						settingsFile.Delete();
-						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated again to different File! Turns out FTD is not able to handle files with more than one ending..."));
+						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated again to different File! Turns out FTD is not able to handle files with more than one ending, " +
+						"so basically files with endings like \".tournament.battlesettings\"."));
 					}
 					catch (Exception)
 					{
@@ -553,33 +556,9 @@ namespace TournamentMod
 							"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
 					}
 				}
-				else {
-					settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "parameters.json"));
-					if (settingsFile.Exists)
-					{
-						try
-						{
-							Parameters = settingsFile.LoadData<Parameters>();
-							Parameters.EnsureEnoughData();
-							PopulateFormations();
-							FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
-							newSettingsFile.SaveData(Parameters, Formatting.Indented);
-							settingsFile.Delete();
-							GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated to different File! This is done as a preparation for being able to save entire teams, " +
-							"including formation-info, spawn- and penalty-rules into a single file for easy transfer and quick loading into your battle."));
-						}
-						catch (Exception)
-						{
-							LoadDefaults();
-							SaveSettings();
-							GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
-								"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
-						}
-					}
-					else
-					{
-						LoadDefaults();
-					}
+				else
+				{
+					LoadDefaults();
 				}
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
@@ -593,7 +572,7 @@ namespace TournamentMod
 		public void QuickloadTeam(int index)
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
-			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.tournament.battlesettings"));
+			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.teamsettings"));
 			if (settingsFile.Exists)
 			{
 				try
@@ -640,17 +619,16 @@ namespace TournamentMod
 					Spawn_direction = info.x,
 					Spawn_height = info.y,
 					CurrentMaterials = info.z,
-					FilePath = tcc.EntryFiles[i],
+					FilePath = tcc.EntryFiles[i].Replace("#0#", Get.ProfilePaths.PlayerName),
 					FactionIndex = index
 				};
-				SafeLogging.Log($"Filepath of entry is {entry.FilePath}");
 				if (entry.LoadBlueprintFile())
 				{
 					entries[index].Add(entry);
 				}
 				else
 				{
-					GuiPopUp.Instance.Add(new PopupInfo("Entry did not load Blueprint", $"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team."));
+					SafeLogging.LogWarning($"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team.");
 				}
 			}
 			teamFormations[index].formationEntrycount.Clear();
@@ -659,8 +637,6 @@ namespace TournamentMod
 				Vector3Int info = tcc.Formation[i];
 				teamFormations[index].formationEntrycount.Add(new Tuple<FormationType, int>((FormationType) info.y, info.z));
 			}
-			GuiDisplayer.GetSingleton().CloseAllUis();
-			_GUI.ActivateGui(this, GuiActivateType.Stack);
 		}
 		/// <summary>
 		/// Resets the Parameters and makes sure that there is enough data for the GUI.
@@ -688,6 +664,7 @@ namespace TournamentMod
 				GUILayout.BeginArea(new Rect(0, 50, 200, 700), sidelist);
 				scrollPos = GUILayout.BeginScrollView(scrollPos);
 				float t = Time.realtimeSinceStartup * 30;
+				string finalDQHtmlColor = ColorUtility.ToHtmlStringRGB(penaltyTimeGradient.Evaluate(1));
 				foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> team in HUDLog)
 				{
 					string teamMaterials = "M: " + team.Key.FactionInst().ResourceStore.Material.ToString();
@@ -708,7 +685,7 @@ namespace TournamentMod
 						GUIContent memberContent;
 						if (disqualified)
 						{
-							memberContent = new GUIContent($"<color=red>{name} DQ @{Mathf.FloorToInt(member.Value.TimeOfDespawn / 60f)}m {Mathf.FloorToInt(member.Value.TimeOfDespawn % 60f)}s</color>");
+							memberContent = new GUIContent($"<color=#{finalDQHtmlColor}>{name} DQ @{Mathf.FloorToInt(member.Value.TimeOfDespawn / 60f)}m {Mathf.FloorToInt(member.Value.TimeOfDespawn % 60f)}s</color>");
 						}
 						else
 						{

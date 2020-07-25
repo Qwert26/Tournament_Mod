@@ -7,6 +7,7 @@ namespace TournamentMod.Serialisation
 	/// <summary>
 	/// Stores each and every Parameter of the Fight.
 	/// </summary>
+	[Serializable]
 	public class Parameters : PrototypeSystem
 	{
 		/// <summary>
@@ -379,7 +380,7 @@ namespace TournamentMod.Serialisation
 			}
 		}
 		/// <summary>
-		/// Makes each team have identical settings. Uses Team 1 as a base line.
+		/// Makes each team have identical settings. Uses Team 1(index 0) as a base line.
 		/// </summary>
 		public void MakeUniform()
 		{
