@@ -43,7 +43,7 @@ namespace TournamentMod
 			Detail = new Color(0.85f, 0.55f, 0f, 1f)
 		};
 		/// <summary>
-		/// The old red scheme, also called "CHALLENGER"
+		/// The old red scheme, also called "CHALLENGER".
 		/// </summary>
 		public readonly static FleetColor classicRed = new FleetColor()
 		{

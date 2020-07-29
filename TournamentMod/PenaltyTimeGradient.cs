@@ -33,6 +33,13 @@ namespace TournamentMod {
 		/// The Gradient constructed by the colors used in Wintergatan's Project Management Masterplan for the MMX.
 		/// </summary>
 		public static readonly Gradient WINTERGATAN_PROJECT_MASTER_PLAN;
+		/// <summary>
+		/// The Gradient constructed by the royal colors of purpur. Later stages correspond with higher penalty time.
+		/// </summary>
+		public static readonly Gradient ROYAL_HOURGLASS;
+		/// <summary>
+		/// Static Initializer: Gets called when the class gets loaded.
+		/// </summary>
 		static PenaltyTimeGradient() {
 			YOUTUBE_BUFFER_HEALTH = new Gradient
 			{
@@ -163,6 +170,24 @@ namespace TournamentMod {
 					new GradientColorKey(new Color(1f, 1f, 0f), 0.6f),//Yellow
 					new GradientColorKey(Color.red, 0.8f),
 					new GradientColorKey(Color.magenta, 1f)
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
+				mode = GradientMode.Blend
+			};
+			ROYAL_HOURGLASS = new Gradient()
+			{
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(new Color(0f, 0.5f, 0f), 0f),//Darkgreen
+					new GradientColorKey(new Color(1f, 0.5f, 0.5f), 0.2f),//Hotpink
+					new GradientColorKey(new Color(0.5f, 0f, 0f), 0.4f),//Darkred
+					new GradientColorKey(Color.blue, 0.6f),
+					new GradientColorKey(new Color(0.93f, 0.51f, 0.93f), 0.8f),//Violett
+					new GradientColorKey(new Color(0.5f, 0f, 0.5f), 1f)//Purple
 				},
 				alphaKeys = new GradientAlphaKey[]
 				{

@@ -7,13 +7,13 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using System.Collections.Generic;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
+using Assets.Scripts.Gui;
+using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.FilesAndFolders;
+using BrilliantSkies.Ui.Displayer;
+using BrilliantSkies.Ui.Special.PopUps;
 namespace TournamentMod.UI
 {
-	using Assets.Scripts.Gui;
-	using BrilliantSkies.Core.Constants;
-	using BrilliantSkies.Core.FilesAndFolders;
-	using BrilliantSkies.Ui.Displayer;
-	using BrilliantSkies.Ui.Special.PopUps;
 	using Serialisation;
 	/// <summary>
 	/// GUI-Class for advanced settings such as active teams, formations and cleanup-functions.

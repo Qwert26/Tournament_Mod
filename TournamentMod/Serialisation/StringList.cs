@@ -3,6 +3,7 @@ using System.Text;
 using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
 namespace TournamentMod.Serialisation
 {
+	[Obsolete("Can only store between a single 254 byte long encoded string and 127 single ascii-character \"string\"s. Not very useful in any case.", true)]
 	public class StringList : VarList<string>
 	{
 		/// <summary>

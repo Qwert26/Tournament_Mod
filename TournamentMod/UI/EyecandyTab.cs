@@ -13,7 +13,6 @@ using Assets.Scripts.Gui;
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Ui.Displayer;
 using System;
-
 namespace TournamentMod.UI
 {
 	/// <summary>

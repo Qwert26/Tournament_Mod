@@ -12,7 +12,8 @@ namespace TournamentMod.Formations
 		/// </summary>
 		/// <param name="v2"></param>
 		/// <returns></returns>
-		public static Vector2 Abs(this Vector2 v2) {
+		public static Vector2 Abs(this Vector2 v2)
+		{
 			return new Vector2(Mathf.Abs(v2.x), Mathf.Abs(v2.y));
 		}
 		/// <summary>
@@ -22,7 +23,8 @@ namespace TournamentMod.Formations
 		/// <param name="_2">The distance along the local z-axis.</param>
 		/// <param name="_3">The amount of entries in the formation.</param>
 		/// <returns>The Vector (0,0).</returns>
-		public static Vector2 UnkownFormation(float _1, float _2, int _3) {
+		public static Vector2 UnkownFormation(float _1 = 0, float _2 = 0, int _3 = 0)
+		{
 			return Vector2.zero;
 		}
 		/// <summary>
