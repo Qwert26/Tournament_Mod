@@ -793,11 +793,12 @@ namespace TournamentMod
 		public void LateUpdate()
 		{
 			FtdKeyMap ftdKeyMap = ProfileManager.Instance.GetModule<FtdKeyMap>();
+			MViewAndControl viewAndControl = ProfileManager.Instance.GetModule<MViewAndControl>();
 			bool pause = false;
 			bool next = false;
 			bool previous = false;
-			bool shift = false;
-			bool strg = false;
+			bool speedUp = false;
+			bool slowDown = false;
 			bool freecamOn = false;
 			bool orbitcamOn = false;
 			bool changeExtraInfo = false;
@@ -806,8 +807,8 @@ namespace TournamentMod
 			if (Parameters.DefaultKeys)
 			{
 				pause = Input.GetKeyDown(KeyCode.F11); // default f11
-				shift = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-				strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+				speedUp = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
+				slowDown = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 				next = Input.GetKeyDown(KeyCode.E); // default e
 				previous = Input.GetKeyDown(KeyCode.Q); // default q
 				changeExtraInfo = Input.GetKeyDown(KeyCode.Z); // default z
@@ -818,8 +819,8 @@ namespace TournamentMod
 			else
 			{
 				pause = ftdKeyMap.IsKey(KeyInputsFtd.PauseGame, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
-				shift = ftdKeyMap.IsKey(KeyInputsFtd.SpeedUpCamera, KeyInputEventType.Held, ModifierAllows.AllowUnnecessary);
-				strg = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
+				speedUp = ftdKeyMap.IsKey(KeyInputsFtd.SpeedUpCamera, KeyInputEventType.Held, ModifierAllows.AllowUnnecessary);
+				slowDown = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
 				next = ftdKeyMap.IsKey(KeyInputsFtd.InventoryUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
 				previous = ftdKeyMap.IsKey(KeyInputsFtd.Interact, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
 				changeExtraInfo = ftdKeyMap.IsKey(KeyInputsFtd.CharacterSheetUi, KeyInputEventType.Down, ModifierAllows.AllowUnnecessary);
@@ -941,11 +942,11 @@ namespace TournamentMod
 					z -= 1;
 				}
 				Vector3 val = new Vector3(x, y, z);
-				if (shift)
+				if (speedUp)
 				{
 					val *= 4; //increase vector with shift
 				}
-				if (strg)
+				if (slowDown)
 				{
 					val /= 4; //decrease vector with strg
 				}
@@ -953,8 +954,9 @@ namespace TournamentMod
 			}
 			if (flycam.enabled && !Parameters.DefaultKeys)
 			{
-				Vector3 movement = ftdKeyMap.GetMovemementDirection() * (shift ? 4 : 1);
-				movement /= strg ? 4 : 1;
+				Vector3 movement = ftdKeyMap.GetMovemementDirection() * viewAndControl.ExternalCameraSpeed;
+				movement *= speedUp ? viewAndControl.BoostCameraSpeed : 1;
+				movement /= slowDown ? viewAndControl.BoostCameraSpeed : 1;
 				flycam.transform.position += flycam.transform.localRotation * movement;
 			}
 			else if (orbitcam.enabled)
