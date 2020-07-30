@@ -955,8 +955,9 @@ namespace TournamentMod
 			if (flycam.enabled && !Parameters.DefaultKeys)
 			{
 				Vector3 movement = ftdKeyMap.GetMovemementDirection() * viewAndControl.ExternalCameraSpeed;
-				movement *= speedUp ? viewAndControl.BoostCameraSpeed : 1;
-				movement /= slowDown ? viewAndControl.BoostCameraSpeed : 1;
+				float speedMultiplicator = viewAndControl.BoostCameraSpeed / viewAndControl.ExternalCameraSpeed;
+				movement *= speedUp ? speedMultiplicator : 1;
+				movement /= slowDown ? speedMultiplicator : 1;
 				flycam.transform.position += flycam.transform.localRotation * movement;
 			}
 			else if (orbitcam.enabled)
