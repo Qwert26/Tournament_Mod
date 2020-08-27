@@ -88,7 +88,7 @@ namespace TournamentMod
 		/// <summary>
 		/// The Parameters used for the fight.
 		/// </summary>
-		public Parameters Parameters { get; set; } = new Parameters(1u);
+		public Parameters Parameters { get; set; } = new Parameters();
 		/// <summary>
 		/// The Blueprints to spawn in at the beginning.
 		/// </summary>
@@ -186,7 +186,7 @@ namespace TournamentMod
 			}
 			else
 			{
-				List<int> materials = new List<int>(Parameters.ResourcesPerTeam.Us);
+				List<int> materials = new List<int>(Parameters.ResourcesPerTeam);
 				Dictionary<int, int> maxMaterials = new Dictionary<int, int>();
 				Dictionary<int, List<MainConstruct>> constructs = new Dictionary<int, List<MainConstruct>>();
 				foreach (KeyValuePair<int, List<Entry>> team in entries)
@@ -246,12 +246,12 @@ namespace TournamentMod
 		/// </summary>
 		public void StartMatch()
 		{
-			penaltyTimeGradient = ((GradientType) Parameters.PenaltyTimeGradient.Us).GetGradient();
+			penaltyTimeGradient = ((GradientType) Parameters.PenaltyTimeGradient).GetGradient();
 			overtimeCounter = 0;
 			timerTotal = 0f;
 			timerTotal2 = Time.timeSinceLevelLoad;
 			ConstructableCleanUpSettings ccus = InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings;
-			InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode.Us;
+			InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode;
 			ccus.BelowAndSinking = Parameters.CleanUpSinkingConstructs;
 			ccus.BelowAndSinkingAltitude = Parameters.SinkingAltitude;
 			ccus.BelowAndSinkingHealthFraction = Parameters.SinkingHealthFraction / 100f; ;
@@ -429,7 +429,7 @@ namespace TournamentMod
 			foreach (CombinedFormation cf in teamFormations) {
 				cf.formationEntrycount.Clear();
 			}
-			Parameters.TeamFormations.Us.Sort(delegate (Vector4i x, Vector4i y)
+			Parameters.TeamFormations.Sort(delegate (Vector4i x, Vector4i y)
 			{
 				if (x.x == y.x) //Selbes Team: Der Positionsindex entscheidet.
 				{
@@ -452,7 +452,7 @@ namespace TournamentMod
 			Parameters.TeamFormations.Clear();
 			for (int team = 0; team < teamFormations.Count; team++)
 			{
-				Parameters.TeamFormations.Us.AddRange(teamFormations[team].Export(team));
+				Parameters.TeamFormations.AddRange(teamFormations[team].Export(team));
 			}
 		}
 		/// <summary>
@@ -532,35 +532,6 @@ namespace TournamentMod
 						"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
 				}
 			}
-			else
-			{
-				settingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.tournament.battlesettings"));
-				if (settingsFile.Exists)
-				{
-					try
-					{
-						Parameters = settingsFile.LoadData<Parameters>();
-						Parameters.EnsureEnoughData();
-						PopulateFormations();
-						FilesystemFileSource newSettingsFile = new FilesystemFileSource(Path.Combine(modFolder, "default.battlesettings"));
-						newSettingsFile.SaveData(Parameters, Formatting.Indented);
-						settingsFile.Delete();
-						GuiPopUp.Instance.Add(new PopupInfo("Migration sucessful!", "Your Battle Settings have just been migrated again to different File! Turns out FTD is not able to handle files with more than one ending, " +
-						"so basically files with endings like \".tournament.battlesettings\"."));
-					}
-					catch (Exception)
-					{
-						LoadDefaults();
-						SaveSettings();
-						GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
-							"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
-					}
-				}
-				else
-				{
-					LoadDefaults();
-				}
-			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
 			{
 				if (!entries.ContainsKey(i))
@@ -591,24 +562,24 @@ namespace TournamentMod
 		{
 			if (!Parameters.UniformRules)
 			{
-				Parameters.SpawngapFB.Us[index] = tcc.SpawngapFB;
-				Parameters.SpawngapLR.Us[index] = tcc.SpawngapLR;
-				Parameters.AltitudeLimits.Us[index] = tcc.AltitudeLimits;
-				Parameters.AltitudeReverse.Us[index] = tcc.AltitudeReversal;
-				Parameters.DistanceLimit.Us[index] = tcc.DistanceLimit;
-				Parameters.DistanceReverse.Us[index] = tcc.DistanceReversal;
-				Parameters.ProjectedDistance.Us[index] = tcc.UsesProjectedDistance;
-				Parameters.SoftLimits.Us[index] = tcc.UsesSoftLimits;
-				Parameters.TeamEntryMaterials.Us[index] = tcc.IndividualEntryMaterials;
-				Parameters.MaximumBufferTime.Us[index] = tcc.MaximumBufferTime;
-				Parameters.MaximumPenaltyTime.Us[index] = tcc.MaximumPenaltyTime;
-				Parameters.MaximumSpeed.Us[index] = tcc.MaximumSpeed;
-				Parameters.EnemyAttackPercentage.Us[index] = tcc.EnemyAttackPercentage;
+				Parameters.SpawngapFB[index] = tcc.SpawngapFB;
+				Parameters.SpawngapLR[index] = tcc.SpawngapLR;
+				Parameters.AltitudeLimits[index] = tcc.AltitudeLimits;
+				Parameters.AltitudeReverse[index] = tcc.AltitudeReversal;
+				Parameters.DistanceLimit[index] = tcc.DistanceLimit;
+				Parameters.DistanceReverse[index] = tcc.DistanceReversal;
+				Parameters.ProjectedDistance[index] = tcc.UsesProjectedDistance;
+				Parameters.SoftLimits[index] = tcc.UsesSoftLimits;
+				Parameters.TeamEntryMaterials[index] = tcc.IndividualEntryMaterials;
+				Parameters.MaximumBufferTime[index] = tcc.MaximumBufferTime;
+				Parameters.MaximumPenaltyTime[index] = tcc.MaximumPenaltyTime;
+				Parameters.MaximumSpeed[index] = tcc.MaximumSpeed;
+				Parameters.EnemyAttackPercentage[index] = tcc.EnemyAttackPercentage;
 			}
 			if (!Parameters.SameMaterials)
 			{
-				Parameters.ResourcesPerTeam.Us[index] = tcc.Resources;
-				Parameters.TeamEntryMaterials.Us[index] = tcc.IndividualEntryMaterials;
+				Parameters.ResourcesPerTeam[index] = tcc.Resources;
+				Parameters.TeamEntryMaterials[index] = tcc.IndividualEntryMaterials;
 			}
 			entries[index].Clear();
 			for (int i = 0; i < tcc.EntryInformation.Count; i++)
@@ -643,7 +614,7 @@ namespace TournamentMod
 		/// </summary>
 		public void LoadDefaults()
 		{
-			Parameters.ResetToDefault();
+			Parameters = new Parameters();
 			Parameters.EnsureEnoughData();
 			foreach (CombinedFormation cf in teamFormations)
 			{
@@ -671,7 +642,7 @@ namespace TournamentMod
 					float teamMaxHP = 0, teamCurHP = 0;
 					teamMaxHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPMAX);
 					teamCurHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPCUR);
-					string teamHP = $"{Mathf.RoundToInt(100 * teamCurHP / teamMaxHP)}%";
+					string teamHP = $"{Math.Round(100 * teamCurHP / teamMaxHP, 1)}%";
 					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name}</color> @ {teamHP}, <color=orange>{teamMaterials}</color>", sidelist);
 					int maxTimeForTeam = Parameters.MaximumPenaltyTime[TournamentPlugin.factionManagement.TeamIndexFromObjectID(team.Key)];
 					foreach (KeyValuePair<MainConstruct, Participant> member in team.Value)
@@ -680,7 +651,7 @@ namespace TournamentMod
 						string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
 						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
-						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Mathf.FloorToInt(member.Value.OoBTime % 60f)}s</color>";
+						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Math.Floor(10 * member.Value.OoBTime % 60f) / 10}s</color>";
 						bool disqualified = member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)

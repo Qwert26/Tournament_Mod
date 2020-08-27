@@ -287,7 +287,9 @@
     <Compile Include="TournamentMod\Formations\FormationSizeCalculation.cs" />
     <Compile Include="TournamentMod\Formations\FormationType.cs" />
     <Compile Include="TournamentMod\GradientType.cs" />
+    <Compile Include="TournamentMod\HoelderMean.cs" />
     <Compile Include="TournamentMod\PenaltyTimeGradient.cs" />
+    <Compile Include="TournamentMod\PenaltyType.cs" />
     <Compile Include="TournamentMod\Serialisation\BoolList.cs" />
     <Compile Include="TournamentMod\Serialisation\ColorList.cs" />
     <Compile Include="TournamentMod\Serialisation\ParametersFolder.cs" />
@@ -317,6 +319,7 @@
     <Compile Include="TournamentMod\Participant.cs" />
     <Compile Include="TournamentMod\TournamentPlugin.cs" />
     <Compile Include="TournamentMod\UI\AdvancedSettingsTab.cs" />
+    <Compile Include="TournamentMod\WeightCombinerType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Plugin-schema.json" />

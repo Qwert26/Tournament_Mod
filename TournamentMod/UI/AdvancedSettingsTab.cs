@@ -41,7 +41,7 @@ namespace TournamentMod.UI
 			segment1.AddInterpretter(SubjectiveFloatClampedWithBar<Parameters>.Quick(_focus.Parameters, 2, StaticConstants.MAX_TEAMS, 1,
 				M.m((Parameters tp) => tp.ActiveFactions), "Active Teams: {0}", delegate (Parameters tp, float f)
 				{
-					tp.ActiveFactions.Us = (int)f;
+					tp.ActiveFactions = (int)f;
 					TournamentPlugin.factionManagement.EnsureFactionCount((int)f);
 					tp.EnsureEnoughData();
 					for (int i = 0; i < f; i++) {
@@ -60,32 +60,32 @@ namespace TournamentMod.UI
 			}
 			segment1.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Activate Advanced Options", new ToolTip("Shows the advanced options. Unless you know exactly what you want in here, i suggest leaving it closed."), delegate (Parameters tp, bool b)
 			   {
-				   tp.ShowAdvancedOptions.Us = b;
+				   tp.ShowAdvancedOptions = b;
 				   if (!b)
 				   {
-					   _focus.Parameters.MaterialConversion.Reset();
-					   _focus.Parameters.CleanUpMode.Reset();
-					   _focus.Parameters.HealthCalculation.Reset();
-					   _focus.Parameters.MinimumHealth.Reset();
-					   _focus.Parameters.CleanUpDelayedByRepairs.Reset();
-					   _focus.Parameters.RepairDelayTime.Reset();
-					   _focus.Parameters.CleanUpNoAI.Reset();
-					   _focus.Parameters.CleanUpSinkingConstructs.Reset();
-					   _focus.Parameters.SinkingAltitude.Reset();
-					   _focus.Parameters.SinkingHealthFraction.Reset();
-					   _focus.Parameters.CleanUpTooDamagedConstructs.Reset();
-					   _focus.Parameters.TooDamagedHealthFraction.Reset();
-					   _focus.Parameters.CleanUpTooSmallConstructs.Reset();
-					   _focus.Parameters.TooSmallBlockCount.Reset();
+					   _focus.Parameters.MaterialConversion = 0;
+					   _focus.Parameters.CleanUpMode = 0;
+					   _focus.Parameters.HealthCalculation = 0;
+					   _focus.Parameters.MinimumHealth = 0;
+					   _focus.Parameters.CleanUpDelayedByRepairs = true;
+					   _focus.Parameters.RepairDelayTime = 100;
+					   _focus.Parameters.CleanUpNoAI = true;
+					   _focus.Parameters.CleanUpSinkingConstructs = true;
+					   _focus.Parameters.SinkingAltitude = -10;
+					   _focus.Parameters.SinkingHealthFraction = 80;
+					   _focus.Parameters.CleanUpTooDamagedConstructs = true;
+					   _focus.Parameters.TooDamagedHealthFraction = 55;
+					   _focus.Parameters.CleanUpTooSmallConstructs = true;
+					   _focus.Parameters.TooSmallBlockCount = 10;
 				   }
-			   }, (tp) => tp.ShowAdvancedOptions.Us));
+			   }, (tp) => tp.ShowAdvancedOptions));
 			ScreenSegmentStandard segment2 = CreateStandardSegment();
 			segment2.SpaceAbove = segment2.SpaceBelow = 5;
-			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions.Us);
+			segment2.SetConditionalDisplay(() => _focus.Parameters.ShowAdvancedOptions);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -1, 100, 1, 0,
 				M.m((Parameters tp)=>tp.MaterialConversion), "Material-Conversion: {0}%", delegate (Parameters tp, float f)
 				{
-					tp.MaterialConversion.Us = (int)f;
+					tp.MaterialConversion = (int)f;
 				}, new ToolTip("Set the Material-Conversion-Factor, also known as Lifesteal. The maximum in campaigns is 10% but here you can go up to 100%! The value -1% is special: " +
 				"In the case of friendly fire, a team will not get any materials back!")));
 			string describeCleanupMode()
@@ -106,53 +106,53 @@ namespace TournamentMod.UI
 			}
 			segment2.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(3),
 				M.m((Parameters tp) => tp.CleanUpMode), M.m<Parameters>(1), M.m<Parameters>(2),
-				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)tp.CleanUpMode.Us}"), delegate (Parameters tp, float f)
+				_focus.Parameters, M.m((Parameters tp) => $"Constructable-Cleanup set to {(ConstructableCleanUp)tp.CleanUpMode}"), delegate (Parameters tp, float f)
 				{
-					tp.CleanUpMode.Us = (int)f;
+					tp.CleanUpMode = (int)f;
 				}, null, M.m((Parameters tp) => new ToolTip(describeCleanupMode()))));
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Below and Sinking\"-Cleanup function", new ToolTip("Disable this function to allow submarines to last longer underwater."), delegate (Parameters tp, bool b)
 			{
-				tp.CleanUpSinkingConstructs.Us = b;
+				tp.CleanUpSinkingConstructs = b;
 			}, (tp) => tp.CleanUpSinkingConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 80,
 				M.m((Parameters tp) => tp.SinkingHealthFraction), "\"Below and Sinking\"-Healthfraction: {0}%", delegate (Parameters tp, float f)
 				{
-					tp.SinkingHealthFraction.Us = (int)f;
+					tp.SinkingHealthFraction = (int)f;
 				}, new ToolTip("Any construct below a certain altitude and below this health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -500, 0, 1, -10,
 				M.m((Parameters tp) => tp.SinkingAltitude), "\"Below and Sinking\"-Altitude: {0}m", delegate (Parameters tp, float f)
 				{
-					tp.SinkingAltitude.Us = (int)f;
+					tp.SinkingAltitude = (int)f;
 				}, new ToolTip("Any construct below this altitude and below a certain health-fraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpSinkingConstructs);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Too Damaged\"-Cleanup function", new ToolTip("Disable this function to allow entries to fight until they are considered \"dead\"."), delegate (Parameters tp, bool b) {
-				tp.CleanUpTooDamagedConstructs.Us = b;
+				tp.CleanUpTooDamagedConstructs = b;
 			}, (tp) => tp.CleanUpTooDamagedConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
 				M.m((Parameters tp) => tp.TooDamagedHealthFraction), "\"Too Damaged\"-Healthfraction: {0}%", delegate (Parameters tp, float f)
 				{
-					tp.TooDamagedHealthFraction.Us = (int)f;
+					tp.TooDamagedHealthFraction = (int)f;
 				}, new ToolTip("Any construct below this Healthfraction will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpTooDamagedConstructs);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Too few Blocks\"-Cleanup function", new ToolTip("Disable this function to allow entries below a certain number of blocks to exist, if they meet all other criteria."), delegate (Parameters tp, bool b)
 			{
-				tp.CleanUpTooSmallConstructs.Us = b;
+				tp.CleanUpTooSmallConstructs = b;
 			}, (tp) => tp.CleanUpTooSmallConstructs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 1, 100, 1, 10,
 				M.m((Parameters tp) => tp.TooSmallBlockCount), "\"Too few Blocks\"-Block count: {0}", delegate (Parameters tp, float f)
 				{
-					tp.TooSmallBlockCount.Us = (int)f;
+					tp.TooSmallBlockCount = (int)f;
 				}, new ToolTip("Any construct, which is not a drone and has less blocks alive than this amount, will be scrapped after 10s."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpTooSmallConstructs);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"AI Dead\"-Cleanup function", new ToolTip("Any construct without an AI-Mainframe will be scrapped after 10s"), delegate (Parameters tp, bool b)
 			{
-				tp.CleanUpNoAI.Us = b;
+				tp.CleanUpNoAI = b;
 			}, (tp) => tp.CleanUpNoAI)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
 			segment2.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Enable \"Sustained by Repairs\"-Delay function", new ToolTip("Repairs by other constructs delay the scrapping. This is important for freshly spawned in drones."), delegate (Parameters tp, bool b)
 			{
-				tp.CleanUpDelayedByRepairs.Us = b;
+				tp.CleanUpDelayedByRepairs = b;
 			}, (tp) => tp.CleanUpDelayedByRepairs)).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0);
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 10, 600, 1, 100,
 				M.m((Parameters tp) => tp.RepairDelayTime), "\"Sustained by Repairs\"-Delay time: {0}s", delegate (Parameters tp, float f)
 				{
-					tp.RepairDelayTime.Us = (int)f;
+					tp.RepairDelayTime = (int)f;
 				}, new ToolTip("Any construct, that was being repaired by another construct in the last 8 seconds, will have their scrapping delayed by this amount of time."))).SetConditionalDisplayFunction(() => _focus.Parameters.CleanUpMode != 0 && _focus.Parameters.CleanUpDelayedByRepairs);
 			string healthCalculationTip()
 			{
@@ -190,11 +190,11 @@ namespace TournamentMod.UI
 			   M.m((Parameters tp) => tp.HealthCalculation), M.m<Parameters>(1), _focus.Parameters,
 			   M.m((Parameters tp) => $"Healthcalculation: {describeHealthCalculation()}"), delegate (Parameters tp, float f)
 			   {
-				   tp.HealthCalculation.Us = (int)f;
+				   tp.HealthCalculation = (int)f;
 			   }, null, M.m((Parameters tp) => new ToolTip(healthCalculationTip()))));
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
 				M.m((Parameters tp)=>tp.MinimumHealth), "Minimum Health: {0}%", delegate (Parameters tp, float f) {
-					tp.MinimumHealth.Us = (int)f;
+					tp.MinimumHealth = (int)f;
 				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
 			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;

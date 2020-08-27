@@ -47,12 +47,12 @@ namespace TournamentMod.UI
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 20000, 1, 1250,
 				M.m((Parameters tp)=>tp.StartingDistance), "Starting Distance from center: {0}m", delegate (Parameters tp, float f)
 				{
-					tp.StartingDistance.Us = (int)f;
+					tp.StartingDistance = (int)f;
 				}, new ToolTip("The distance from the center towards the \"Flagship(s)\" of a team.")));
 			segment.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Team-based Rules are currently in effect.",
 				new ToolTip("Press here to enable a global Ruleset for all Teams."), delegate (Parameters tp)
 				{
-					tp.UniformRules.Us = true;
+					tp.UniformRules = true;
 					tp.MakeUniform();
 				})).SetConditionalDisplayFunction(() => !_focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
@@ -60,7 +60,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.SpawngapLR.Us[i] = (int)f;
+						tp.SpawngapLR[i] = (int)f;
 					}
 				}, new ToolTip("How many meters should entries on the same team be apart in the left-right direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
@@ -68,7 +68,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.SpawngapFB.Us[i] = (int)f;
+						tp.SpawngapFB[i] = (int)f;
 					}
 				}, new ToolTip("How many meters should entries on the same team be apart in the forward-backward direction?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
@@ -81,7 +81,7 @@ namespace TournamentMod.UI
 					{
 						Vector2 v = tp.AltitudeLimits[i];
 						v.x = f;
-						tp.AltitudeLimits.Us[i] = v;
+						tp.AltitudeLimits[i] = v;
 					}
 				}, null, M.m<Parameters>(new ToolTip("What is the minimum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(-heightmapRange), M.m<Parameters>(fullGravityHeight),
@@ -92,7 +92,7 @@ namespace TournamentMod.UI
 					{
 						Vector2 v = tp.AltitudeLimits[i];
 						v.y = f;
-						tp.AltitudeLimits.Us[i] = v;
+						tp.AltitudeLimits[i] = v;
 					}
 				}, null, M.m<Parameters>(new ToolTip("What is the maximum altitude for all entries?")))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 10000, 1, 1500,
@@ -100,14 +100,14 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.DistanceLimit.Us[i] = (int)f;
+						tp.DistanceLimit[i] = (int)f;
 					}
 				}, new ToolTip("What is the maximum distance for all entries towards the nearest enemy?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use projected Distance", new ToolTip("When turned on, a ground projected distance will be used. This is better for fights with a lot of vertical freedom."), delegate (Parameters tp, bool b)
 			{
 				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
-					tp.ProjectedDistance.Us[i] = b;
+					tp.ProjectedDistance[i] = b;
 				}
 			}, (tp) => tp.ProjectedDistance[0])).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 90,
@@ -115,7 +115,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.MaximumPenaltyTime.Us[i] = (int)f;
+						tp.MaximumPenaltyTime[i] = (int)f;
 					}
 				}, new ToolTip("How much penalty time can a participant have, before it self-destructs?"))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 10000, 1, 10000,
@@ -123,14 +123,14 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.MaximumSpeed.Us[i] = (int)f;
+						tp.MaximumSpeed[i] = (int)f;
 					}
 				}, new ToolTip("Going over the maximum Speed will add penalty time. If soft limits are active, it will deplete the buffer first."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use soft Limits", new ToolTip("When turned on, entries are given the chance to be considered in bounds under certain conditions. Turned off, entries will pickup penalty time as long as they are outside the bounds."), delegate (Parameters tp, bool b)
 			{
 				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
-					tp.SoftLimits.Us[i] = b;
+					tp.SoftLimits[i] = b;
 				}
 			}, (tp) => tp.SoftLimits[0])).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 50,
@@ -138,7 +138,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.EnemyAttackPercentage.Us[i] = (int) f;
+						tp.EnemyAttackPercentage[i] = (int) f;
 					}
 				}, new ToolTip("When determining if an entry is violating the distance limit, this percentage must be reached or it is considered fleeing from too many enemies."))).SetConditionalDisplayFunction(() => _focus.Parameters.UniformRules);
 			#region Puffer-Einstellungen
@@ -150,7 +150,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.MaximumBufferTime.Us[i] = (int)f;
+						tp.MaximumBufferTime[i] = (int)f;
 					}
 				}, new ToolTip("How much buffer time can a participant have, before it gains penalty time? This Buffer will reset, once a participant is considered to be back in bounds.")));
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, 3,
@@ -158,7 +158,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.DistanceReverse.Us[i] = (int)f;
+						tp.DistanceReverse[i] = (int)f;
 					}
 				}, new ToolTip("A positive value permits a certain fleeing speed, while a negative value requires a certain closing speed. It assumes, that the nearest enemy is stationary.")));
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_REVERSAL_SPEED_VALUE, StaticConstants.MAX_REVERSAL_SPEED_VALUE, 1, 3,
@@ -166,7 +166,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.AltitudeReverse.Us[i] = (int)f;
+						tp.AltitudeReverse[i] = (int)f;
 					}
 				}, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. Recommended is a negative value.")));
 			#endregion
@@ -175,29 +175,29 @@ namespace TournamentMod.UI
 			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 900,
 				M.m((Parameters tp) => tp.MaximumTime), "Maximum Time: {0}s", delegate (Parameters tp, float f)
 				{
-					tp.MaximumTime.Us = (int)f;
+					tp.MaximumTime = (int)f;
 				}, new ToolTip("What is the maximum battle time? Once reached, the game will be paused. Unpausing it will activate \"Overtime\".")));
 			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 60,
 				M.m((Parameters tp) => tp.Overtime), "Overtime: {0}s", delegate (Parameters tp, float f)
 				{
-					tp.Overtime.Us = (int)f;
+					tp.Overtime = (int)f;
 				}, new ToolTip("The length of one Overtime-section. Set it to 0 to only have one infinte long section.")));
 			#region Resourcen-Einstellungen
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Distribute Resources", new ToolTip("The materials set below become the team maximum, which gets distributed along the entries. Any excess goes into team storage."), delegate (Parameters tp, bool b)
 			{
-				tp.DistributeLocalResources.Us = b;
+				tp.DistributeLocalResources = b;
 			}, (Parameters tp) => tp.DistributeLocalResources));
 			segment3.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Even Resources", new ToolTip("Give all Teams the same amount of resources of make it uneven."), delegate (Parameters tp, bool b)
 			{
-				tp.SameMaterials.Us = b;
+				tp.SameMaterials = b;
 				if (b)
 				{
 					for (int i = 1; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.TeamEntryMaterials.Us[i] = tp.TeamEntryMaterials[0];
+						tp.TeamEntryMaterials[i] = tp.TeamEntryMaterials[0];
 					}
 				}
-			}, (tp) => tp.SameMaterials.Us));
+			}, (tp) => tp.SameMaterials));
 			ScreenSegmentStandard segmentIdenticalMaterials = CreateStandardSegment();
 			segmentIdenticalMaterials.SpaceAbove = segmentIdenticalMaterials.SpaceBelow = 5;
 			segmentIdenticalMaterials.SetConditionalDisplay(() => _focus.Parameters.SameMaterials);
@@ -206,7 +206,7 @@ namespace TournamentMod.UI
 			{
 				for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 				{
-					tp.TeamEntryMaterials.Us[i] = b;
+					tp.TeamEntryMaterials[i] = b;
 				}
 			}, (tp) =>
 			{
@@ -217,7 +217,7 @@ namespace TournamentMod.UI
 				{
 					for (int i = 0; i < StaticConstants.MAX_TEAMS; i++)
 					{
-						tp.ResourcesPerTeam.Us[i] = (int) f;
+						tp.ResourcesPerTeam[i] = (int) f;
 					}
 				}, new ToolTip("This determines with how much Materials a participant can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => !_focus.Parameters.TeamEntryMaterials[0]);
 			
@@ -229,12 +229,12 @@ namespace TournamentMod.UI
 				int index = i;
 				segmentIndividualMaterials.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, $"Entry-specific Resources for Team {index + 1}", new ToolTip($"Give the entries on Team {index + 1} individualised Materials. See the Participant-Tab."), delegate (Parameters tp, bool b)
 					   {
-						   tp.TeamEntryMaterials.Us[index] = b;
+						   tp.TeamEntryMaterials[index] = b;
 					   }, (tp) => tp.TeamEntryMaterials[index])).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && _focus.Parameters.DistributeLocalResources);
 				segmentIndividualMaterials.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 1000000, 1, 10000,
 					M.m((Parameters tp) => tp.ResourcesPerTeam[index]), $"{{0}} Materials for Team {index + 1}", delegate (Parameters tp, float f)
 					  {
-						  tp.ResourcesPerTeam.Us[index] = (int) f;
+						  tp.ResourcesPerTeam[index] = (int) f;
 					  }, new ToolTip("This determines with how much Materials a participant of this team can spawn at maximum. Teams with more entries are naturally getting more Resources."))).SetConditionalDisplayFunction(() => index < _focus.Parameters.ActiveFactions && !_focus.Parameters.TeamEntryMaterials[index]);
 			}
 			#endregion
@@ -245,20 +245,20 @@ namespace TournamentMod.UI
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, sectionsEastWest, 1, sectionsEastWest / 2,
 				M.m((Parameters tp) => tp.EastWestBoard), "East-West Board {0}", delegate (Parameters tp, float f)
 				{
-					tp.EastWestBoard.Us = (int)f;
+					tp.EastWestBoard = (int)f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the East-West Board index. In the Map it is the first number, 0 is at the left side.")));
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, sectionsNorthSouth, 1, sectionsNorthSouth / 2,
 				M.m((Parameters tp) => tp.NorthSouthBoard), "North-South Board {0}", delegate (Parameters tp, float f)
 				{
-					tp.NorthSouthBoard.Us = (int)f;
+					tp.NorthSouthBoard = (int)f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the North-South Board index. In the Map it is the second number, 0 is at the bottom.")));
 			horizontal.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m((Parameters tp) => -180f / tp.ActiveFactions), M.m((Parameters tp) => 180f / tp.ActiveFactions),
 				M.m((Parameters tp) => tp.Rotation), M.m<Parameters>(1), M.m<Parameters>(0),
 				_focus.Parameters, M.m((Parameters tp)=>$"Rotation: {tp.Rotation}°"), delegate (Parameters tp, float f)
 				{
-					tp.Rotation.Us = (int)f;
+					tp.Rotation = (int)f;
 				}, null, M.m<Parameters>(new ToolTip("Rotate everything around the center before starting the fight"))));
 			horizontal = CreateStandardHorizontalSegment();
 			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
@@ -266,33 +266,33 @@ namespace TournamentMod.UI
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -terrainsPerSection / 2, terrainsPerSection / 2, 1, 0,
 			M.m((Parameters tp) => tp.EastWestTerrain), "East-West Terrain {0}", delegate (Parameters tp, float f)
 				{
-					tp.EastWestTerrain.Us = (int) f;
+					tp.EastWestTerrain = (int) f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the offset on the east-west axis, measured in whole terrains. 0 is the center of a map tile.")));
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -terrainsPerSection / 2, terrainsPerSection / 2, 1, 0,
 				M.m((Parameters tp) => tp.NorthSouthTerrain), "North-South Terrain {0}", delegate (Parameters tp, float f)
 				{
-					tp.NorthSouthTerrain.Us = (int) f;
+					tp.NorthSouthTerrain = (int) f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the offset on the north-south axis, measured in whole terrains. 0 is the center of a map tile.")));
 			terrainSize = WorldSpecification.i.BoardLayout.TerrainSize;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -terrainSize / 2, terrainSize / 2, 1, 0,
 				M.m((Parameters tp) => tp.EastWestOffset), "East-West Offset {0}m", delegate (Parameters tp, float f)
 				{
-					tp.EastWestOffset.Us = f;
+					tp.EastWestOffset = f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the offset on the east-west axis, measured in meters. 0 is the center of a terrain.")));
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -terrainSize / 2, terrainSize / 2, 1, 0,
 				M.m((Parameters tp) => tp.NorthSouthOffset), "North-South Offset {0}m", delegate (Parameters tp, float f)
 				{
-					tp.NorthSouthOffset.Us = f;
+					tp.NorthSouthOffset = f;
 					_focus.MoveCam();
 				}, new ToolTip("Change the offset on the north-south axis, measured in meters. 0 is the center of a terrain.")));
 			ScreenSegmentStandard segment4 = CreateStandardSegment();
 			segment4.SpaceBelow = segment4.SpaceAbove = 5;
 			segment4.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Pause on Victory", new ToolTip("When active, the game will be paused once a winner has been determined."), delegate (Parameters tp, bool b)
 			{
-				tp.PauseOnVictory.Us = b;
+				tp.PauseOnVictory = b;
 			}, (tp) => tp.PauseOnVictory));
 			horizontal = CreateStandardHorizontalSegment();
 			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
@@ -331,8 +331,8 @@ namespace TournamentMod.UI
 			}));
 			horizontal.AddInterpretter(SubjectiveToggle<Parameters>.Quick(_focus.Parameters, "Use Default Keymap", new ToolTip("Uses the internal fixed keymap instead of your customized keymap."), delegate (Parameters tp, bool b)
 			   {
-				   tp.DefaultKeys.Us = b;
-			   }, (tp) => tp.DefaultKeys.Us));
+				   tp.DefaultKeys = b;
+			   }, (tp) => tp.DefaultKeys));
 		}
 	}
 }

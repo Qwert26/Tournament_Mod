@@ -62,14 +62,14 @@ namespace TournamentMod.UI
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -180, 180, 1, 0,
 				M.m((Parameters tp) => tp.Direction), "Starting Direction: {0}°", delegate (Parameters tp, float f)
 				{
-					tp.Direction.Us = f;
+					tp.Direction = f;
 				}, new ToolTip("0° is the old forward, 90° is the old right and -90° is the old left.")));
 			heightmapRange = WorldSpecification.i.BoardLayout.WorldHeightAndDepth;
 			fullGravityHeight = WorldSpecification.i.Physics.SpaceIsFullAgain;
 			horizontal.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -heightmapRange, fullGravityHeight, 1, 0,
 				M.m((Parameters tp) => tp.SpawnHeight), "Starting Height: {0}m", delegate (Parameters tp, float f)
 				{
-					tp.SpawnHeight.Us = (int)f;
+					tp.SpawnHeight = (int)f;
 				}, new ToolTip("The starting height of the entry")));
 			horizontal = screen.CreateStandardHorizontalSegment();
 			horizontal.SpaceBelow = horizontal.SpaceAbove = 5;

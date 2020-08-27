@@ -2,6 +2,9 @@
 {
 	public static class StaticConstants
 	{
+		/// <summary>
+		/// Maximum amount of Teams supported.
+		/// </summary>
 		public const int MAX_TEAMS = 6;
 		/// <summary>
 		/// Maximum axis-aligned distance between two entries of the same team.

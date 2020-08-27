@@ -2,6 +2,9 @@
 using System;
 namespace TournamentMod
 {
+	/// <summary>
+	/// 
+	/// </summary>
 	public enum GradientType : int
 	{
 		YouTubeBufferHealth,
@@ -16,6 +19,11 @@ namespace TournamentMod
 	}
 	public static class GradientTypeExtensions
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static Gradient GetGradient(this GradientType type)
 		{
 			switch (type)
@@ -42,6 +50,11 @@ namespace TournamentMod
 					throw new ArgumentOutOfRangeException("type", type, "This Gradient is not yet defined!");
 			}
 		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static string GetDescription(this GradientType type)
 		{
 			switch (type)

@@ -1,5 +1,8 @@
 ﻿using UnityEngine;
 namespace TournamentMod {
+	/// <summary>
+	/// 
+	/// </summary>
 	public static class PenaltyTimeGradient {
 		/// <summary>
 		/// The Gradient used by YouTube for visualizing Buffer-Health.

@@ -42,10 +42,10 @@ namespace TournamentMod.UI
 			ScreenSegmentStandard general = CreateStandardSegment();
 			general.SpaceAbove = general.SpaceBelow = 5;
 			general.AddInterpretter(new SubjectiveFloatClampedWithBarFromMiddle<Parameters>(M.m<Parameters>(0), M.m<Parameters>(Enum.GetValues(typeof(GradientType)).Length - 1), M.m((Parameters p) => p.PenaltyTimeGradient),
-				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient.Us}"), delegate (Parameters p, float f)
+				M.m<Parameters>(1), M.m<Parameters>(0), _focus.Parameters, M.m((Parameters p) => $"Current Colorgradient is {(GradientType) p.PenaltyTimeGradient}"), delegate (Parameters p, float f)
 					   {
-						   p.PenaltyTimeGradient.Us = (int) f;
-					   }, null, M.m((Parameters p) => new ToolTip(((GradientType) p.PenaltyTimeGradient.Us).GetDescription()))));
+						   p.PenaltyTimeGradient = (int) f;
+					   }, null, M.m((Parameters p) => new ToolTip(((GradientType) p.PenaltyTimeGradient).GetDescription()))));
 			for (int i = 0; i < StaticConstants.MAX_TEAMS; i++) {
 				int index = i;
 				CreateHeader("Team " + (1 + i), new ToolTip($"Fleetcolors for Team {i + 1}")).SetConditionalDisplay(() => index < _focus.Parameters.ActiveFactions);
@@ -55,22 +55,22 @@ namespace TournamentMod.UI
 				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Main Color"),
 					M.m<Parameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((Parameters tp) => tp.MainColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
-						  tp.MainColorsPerTeam.Us[index] = c;
+						  tp.MainColorsPerTeam[index] = c;
 					  }));
 				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Secondary Color"),
 					M.m<Parameters>(new ToolTip($"Set the Secondary Color for Team {i + 1}")), M.m((Parameters tp) => tp.SecondaryColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
-						  tp.SecondaryColorsPerTeam.Us[index] = c;
+						  tp.SecondaryColorsPerTeam[index] = c;
 					  }));
 				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Trim Color"),
 					M.m<Parameters>(new ToolTip($"Set the Trim Color for Team {i + 1}")), M.m((Parameters tp) => tp.TrimColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
-						  tp.TrimColorsPerTeam.Us[index] = c;
+						  tp.TrimColorsPerTeam[index] = c;
 					  }));
 				table.AddInterpretter(new SubjectiveColorChanger<Parameters>(_focus.Parameters, M.m<Parameters>($"Team {i + 1} Detail Color"),
 					M.m<Parameters>(new ToolTip($"Set the Main Color for Team {i + 1}")), M.m((Parameters tp) => tp.DetailColorsPerTeam[index]), delegate (Parameters tp, Color c)
 					  {
-						  tp.DetailColorsPerTeam.Us[index] = c;
+						  tp.DetailColorsPerTeam[index] = c;
 					  }));
 			}
 			CreateHeader("Saving and Loading", new ToolTip("Save you visual settings here or restore them."));
@@ -121,10 +121,10 @@ namespace TournamentMod.UI
 				standard.SpaceBelow = standard.SpaceAbove = 5;
 				standard.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, current.Name, new ToolTip(current.Description), delegate (Parameters tp)
 				{
-					tp.MainColorsPerTeam.Us[currentTeam] = current.Main;
-					tp.SecondaryColorsPerTeam.Us[currentTeam] = current.Secondary;
-					tp.DetailColorsPerTeam.Us[currentTeam] = current.Detail;
-					tp.TrimColorsPerTeam.Us[currentTeam] = current.Trim;
+					tp.MainColorsPerTeam[currentTeam] = current.Main;
+					tp.SecondaryColorsPerTeam[currentTeam] = current.Secondary;
+					tp.DetailColorsPerTeam[currentTeam] = current.Detail;
+					tp.TrimColorsPerTeam[currentTeam] = current.Trim;
 				}));
 				ScreenSegmentTable table = CreateTableSegment(4, 1);
 				table.SpaceAbove = table.SpaceBelow = 5;
