@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 namespace TournamentMod {
 	/// <summary>
-	/// 
+	/// Holds all available Gradients for the penalty time indicator.
 	/// </summary>
 	public static class PenaltyTimeGradient {
 		/// <summary>
@@ -133,13 +133,13 @@ namespace TournamentMod {
 			{
 				colorKeys = new GradientColorKey[]
 				{
-					new GradientColorKey(Color.blue, 0/55f), //40000K
-					new GradientColorKey(new Color(0.5f, 0.5f, 1f), 5/55f), //27000K: blue-white
-					new GradientColorKey(Color.white, 15/55f), //10000K
-					new GradientColorKey(new Color(1f, 1f, 0.5f), 25/55f), //7200K: yellow-white
-					new GradientColorKey(new Color(1f, 1f, 0f), 35/55f), //6000K: Yellow
-					new GradientColorKey(new Color(1f, 0.5f, 0f), 45/55f), //5100K: Orange
-					new GradientColorKey(Color.red, 55/55f) //3700K
+					new GradientColorKey(Color.blue, 0 / 55f), //40000K
+					new GradientColorKey(new Color(0.5f, 0.5f, 1f), 5 / 55f), //27000K: blue-white
+					new GradientColorKey(Color.white, 15 / 55f), //10000K
+					new GradientColorKey(new Color(1f, 1f, 0.5f), 25 / 55f), //7200K: yellow-white
+					new GradientColorKey(new Color(1f, 1f, 0f), 35 / 55f), //6000K: Yellow
+					new GradientColorKey(new Color(1f, 0.5f, 0f), 45 / 55f), //5100K: Orange
+					new GradientColorKey(Color.red, 55 / 55f) //3700K
 				},
 				alphaKeys = new GradientAlphaKey[]
 				{

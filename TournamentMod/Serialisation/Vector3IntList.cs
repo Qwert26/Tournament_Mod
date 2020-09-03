@@ -6,7 +6,7 @@ namespace TournamentMod.Serialisation
 	/// <summary>
 	/// Stores a List of Vector3I for the prototype system.
 	/// </summary>
-	[Obsolete()]
+	[Obsolete("Can only store 21 vectors",true)]
 	public class Vector3IntList : VarList<Vector3Int>
 	{
 		/// <summary>

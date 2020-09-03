@@ -6,6 +6,7 @@ namespace TournamentMod.Serialisation
 	/// <summary>
 	/// Stores a list of colors for usage with the prototype-system.
 	/// </summary>
+	[Obsolete("Only capable of storing 15 colors, but we need 6*4=24 colors.", true)]
 	public class ColorList : VarList<Color>
 	{
 		/// <summary>

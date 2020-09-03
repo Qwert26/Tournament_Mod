@@ -84,7 +84,7 @@ namespace TournamentMod
 		/// <summary>
 		/// The Formation for each Team. For saving, the entire list gets converted into a list of Vector4Int.
 		/// </summary>
-		public List<CombinedFormation> teamFormations = new List<CombinedFormation>();
+		public List<CombinedFormation> teamFormations;
 		/// <summary>
 		/// The Parameters used for the fight.
 		/// </summary>
@@ -92,7 +92,7 @@ namespace TournamentMod
 		/// <summary>
 		/// The Blueprints to spawn in at the beginning.
 		/// </summary>
-		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>();
+		public Dictionary<int, List<Entry>> entries = new Dictionary<int, List<Entry>>(StaticConstants.MAX_TEAMS);
 		/// <summary>
 		/// For distributed Materials.
 		/// </summary>
@@ -101,6 +101,11 @@ namespace TournamentMod
 		/// The currently used gradient for the penalty timer.
 		/// </summary>
 		public Gradient penaltyTimeGradient = null;
+		/// <summary>
+		/// The penalty weight settings for each team. For saving, the entire list gets converted into a list of Vector3.
+		/// </summary>
+		public List<Dictionary<PenaltyType, float>> teamPenaltyWeights;
+		private HoelderMean meanCalculation = null;
 		public Tournament()
 		{
 			_me = this;
@@ -145,14 +150,20 @@ namespace TournamentMod
 				clipping = TextClipping.Clip
 			};
 			_GUI = new TournamentConsole(_me);
-			teamFormations = new List<CombinedFormation>() {
-				new CombinedFormation(),
-				new CombinedFormation(),
-				new CombinedFormation(),
-				new CombinedFormation(),
-				new CombinedFormation(),
-				new CombinedFormation()
-			};
+			teamFormations = new List<CombinedFormation>(StaticConstants.MAX_TEAMS);
+			teamPenaltyWeights = new List<Dictionary<PenaltyType, float>>(StaticConstants.MAX_TEAMS);
+			for (int t = 0; t < StaticConstants.MAX_TEAMS; t++)
+			{
+				teamFormations.Add(new CombinedFormation());
+				Dictionary<PenaltyType, float> presets = new Dictionary<PenaltyType, float>();
+				presets.Add(PenaltyType.NoAi, 1);
+				presets.Add(PenaltyType.AboveAltitude, 1);
+				presets.Add(PenaltyType.UnderAltitude, 1);
+				presets.Add(PenaltyType.TooMuchDamage, 1);
+				presets.Add(PenaltyType.TooFast, 1);
+				presets.Add(PenaltyType.FleeingFromBattle, 1);
+				teamPenaltyWeights.Add(presets);
+			}
 			LoadSettings();
 		}
 		/// <summary>
@@ -242,7 +253,7 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Sets Cleanup-Functions, adds all Mainconstruct into the HUDLog and registers its methods.
+		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods.
 		/// </summary>
 		public void StartMatch()
 		{
@@ -263,6 +274,7 @@ namespace TournamentMod
 			ccus.AIDead = Parameters.CleanUpNoAI;
 			ccus.SustainedByRepairs = Parameters.CleanUpDelayedByRepairs;
 			ccus.SustainedByRepairsTime = Parameters.RepairDelayTime;
+			meanCalculation = new HoelderMean((WeightCombinerType) Parameters.WeightCombiner);
 			if (!GameSpeedManager.Instance.IsPaused)
 			{
 				GameSpeedManager.Instance.TogglePause();
@@ -423,9 +435,9 @@ namespace TournamentMod
 			return new Vector3(Parameters.EastWestOffset, 0, Parameters.NorthSouthOffset);
 		}
 		/// <summary>
-		/// Uses the loaded list to reconstruct the combined formation.
+		/// Uses the loaded list to reconstruct the combined formations and penalty settings for each team.
 		/// </summary>
-		private void PopulateFormations() {
+		private void PopulateData() {
 			foreach (CombinedFormation cf in teamFormations) {
 				cf.formationEntrycount.Clear();
 			}
@@ -444,15 +456,24 @@ namespace TournamentMod
 			{
 				teamFormations[v4i.x].Import(v4i);
 			}
+
 		}
 		/// <summary>
-		/// Saves the combined formations into a list.
+		/// Saves the formations and penalty-weigths into lists in the parameter-object.
 		/// </summary>
 		private void PopulateParameters() {
 			Parameters.TeamFormations.Clear();
+			Parameters.PenaltyWeights.Clear();
 			for (int team = 0; team < teamFormations.Count; team++)
 			{
 				Parameters.TeamFormations.AddRange(teamFormations[team].Export(team));
+			}
+			for (int team = 0; team < teamPenaltyWeights.Count; team++)
+			{
+				foreach(var penaltyweight in teamPenaltyWeights[team])
+				{
+					Parameters.PenaltyWeights.Add(new Vector3(team, (int)penaltyweight.Key, penaltyweight.Value));
+				}
 			}
 		}
 		/// <summary>
@@ -522,7 +543,7 @@ namespace TournamentMod
 				{
 					Parameters = settingsFile.LoadData<Parameters>();
 					Parameters.EnsureEnoughData();
-					PopulateFormations();
+					PopulateData();
 				}
 				catch (Exception)
 				{

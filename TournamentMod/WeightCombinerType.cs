@@ -1,7 +1,7 @@
 ﻿namespace TournamentMod
 {
 	/// <summary>
-	/// Entries can violate multiple rules at once, and if these rules have different weights, they must be combined in deterministic way.
+	/// Entries can violate multiple rules at once, and if these rules have different weights, they must be combined in deterministic, implementation-independent way.
 	/// </summary>
 	public enum WeightCombinerType : int
 	{

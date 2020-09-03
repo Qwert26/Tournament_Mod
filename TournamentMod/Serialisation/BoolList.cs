@@ -1,9 +1,11 @@
 ﻿using BrilliantSkies.Core.Serialisation.Parameters.Prototypes;
+using System;
 namespace TournamentMod.Serialisation
 {
 	/// <summary>
 	/// Stores a list of bools for usage with the prototype-system.
 	/// </summary>
+	[Obsolete("Speichergefahr", true)]
 	public class BoolList : VarList<bool>
 	{
 		/// <summary>

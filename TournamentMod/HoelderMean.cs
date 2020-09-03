@@ -9,7 +9,7 @@ namespace TournamentMod
 	/// </summary>
 	public class HoelderMean
 	{
-		private WeightCombinerType wct;
+		public readonly WeightCombinerType wct;
 		private readonly List<float> values = new List<float>();
 		public HoelderMean(WeightCombinerType wct)
 		{
