@@ -13,6 +13,7 @@ using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Ui.Special.PopUps;
 using Assets.Scripts.Gui;
 using BrilliantSkies.Ui.Displayer;
+using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 
 namespace TournamentMod.UI
 {
@@ -141,6 +142,8 @@ namespace TournamentMod.UI
 					}, new ToolTip("A positive value allows to move away from the limits at a maximum speed, while a negative value requires to move towards the limit with a certain speed. Recommended is a negative value."))).
 					SetConditionalDisplayFunction(() => _focus.Parameters.SoftLimits[index]);
 			}
+			segment = CreateStandardSegment();
+			segment.AddInterpretter(StringDisplay.Quick("Don't forget to check the penalty weights for the individual teams in the corresponding Tab!"));
 			ScreenSegmentStandardHorizontal horizontal = CreateStandardHorizontalSegment();
 			horizontal.SpaceAbove = horizontal.SpaceBelow = 5;
 			ParametersFolder folder = new ParametersFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);

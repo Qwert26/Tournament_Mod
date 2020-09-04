@@ -79,6 +79,10 @@ namespace TournamentMod.Serialisation
 		/// The filepath towards the blueprints of the entries.
 		/// </summary>
 		public List<string> EntryFiles { get; set; } = new List<string>();
+		/// <summary>
+		/// The penalty weights for the team.
+		/// </summary>
+		public Dictionary<int, float> PenaltyWeights { get; set; } = new Dictionary<int, float>();
 		#endregion
 	}
 }

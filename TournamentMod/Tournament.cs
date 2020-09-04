@@ -105,7 +105,13 @@ namespace TournamentMod
 		/// The penalty weight settings for each team. For saving, the entire list gets converted into a list of Vector3.
 		/// </summary>
 		public List<Dictionary<PenaltyType, float>> teamPenaltyWeights;
+		/// <summary>
+		/// Calculates the mean in the case of multiple violations at once.
+		/// </summary>
 		private HoelderMean meanCalculation = null;
+		/// <summary>
+		/// 
+		/// </summary>
 		public Tournament()
 		{
 			_me = this;
@@ -156,12 +162,10 @@ namespace TournamentMod
 			{
 				teamFormations.Add(new CombinedFormation());
 				Dictionary<PenaltyType, float> presets = new Dictionary<PenaltyType, float>();
-				presets.Add(PenaltyType.NoAi, 1);
-				presets.Add(PenaltyType.AboveAltitude, 1);
-				presets.Add(PenaltyType.UnderAltitude, 1);
-				presets.Add(PenaltyType.TooMuchDamage, 1);
-				presets.Add(PenaltyType.TooFast, 1);
-				presets.Add(PenaltyType.FleeingFromBattle, 1);
+				foreach (PenaltyType pt in Enum.GetValues(typeof(PenaltyType)))
+				{
+					presets.Add(pt, 1);
+				}
 				teamPenaltyWeights.Add(presets);
 			}
 			LoadSettings();
@@ -456,7 +460,10 @@ namespace TournamentMod
 			{
 				teamFormations[v4i.x].Import(v4i);
 			}
-
+			foreach (Vector3 data in Parameters.PenaltyWeights)
+			{
+				teamPenaltyWeights[(int)data.x][(PenaltyType)data.y] = data.z;
+			}
 		}
 		/// <summary>
 		/// Saves the formations and penalty-weigths into lists in the parameter-object.
@@ -495,6 +502,11 @@ namespace TournamentMod
 			FilesystemFileSource settingsFile = new FilesystemFileSource(Path.Combine(modFolder, $"team{index + 1}.teamsettings"));
 			settingsFile.SaveData(CreateSavefileForTeam(index), Formatting.Indented);
 		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
 		public TeamCompositionConfiguration CreateSavefileForTeam(int index)
 		{
 			TeamCompositionConfiguration tcc = new TeamCompositionConfiguration
@@ -528,6 +540,10 @@ namespace TournamentMod
 				tcc.EntryInformation.Add(new Vector3(entry.Spawn_direction, entry.Spawn_height, entry.CurrentMaterials));
 				tcc.EntryFiles.Add(entry.FilePath.Replace(Get.ProfilePaths.PlayerName,"#0#"));
 			}
+			foreach (KeyValuePair<PenaltyType, float> penaltyWeigth in teamPenaltyWeights[index])
+			{
+				tcc.PenaltyWeights.Add((int) penaltyWeigth.Key, penaltyWeigth.Value);
+			}
 			return tcc;
 		}
 		/// <summary>
@@ -550,7 +566,7 @@ namespace TournamentMod
 					LoadDefaults();
 					SaveSettings();
 					GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
-						"or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
+						"manual edits or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
 				}
 			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
@@ -561,6 +577,10 @@ namespace TournamentMod
 				}
 			}
 		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
 		public void QuickloadTeam(int index)
 		{
 			string modFolder = Get.PermanentPaths.GetSpecificModDir("Tournament").ToString();
@@ -579,6 +599,11 @@ namespace TournamentMod
 				}
 			}
 		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="index"></param>
+		/// <param name="tcc"></param>
 		public void LoadTeam(int index, TeamCompositionConfiguration tcc)
 		{
 			if (!Parameters.UniformRules)
@@ -629,6 +654,10 @@ namespace TournamentMod
 				Vector3Int info = tcc.Formation[i];
 				teamFormations[index].formationEntrycount.Add(new Tuple<FormationType, int>((FormationType) info.y, info.z));
 			}
+			foreach (KeyValuePair<int,float> penaltyWeight in tcc.PenaltyWeights)
+			{
+				teamPenaltyWeights[index][(PenaltyType) penaltyWeight.Key] = penaltyWeight.Value;
+			}
 		}
 		/// <summary>
 		/// Resets the Parameters and makes sure that there is enough data for the GUI.
@@ -641,6 +670,13 @@ namespace TournamentMod
 			{
 				cf.formationEntrycount.Clear();
 				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, 0));
+			}
+			foreach (var teamPenalties in teamPenaltyWeights)
+			{
+				foreach (var penaltyWeight in teamPenalties)
+				{
+					teamPenalties[penaltyWeight.Key] = 1;
+				}
 			}
 		}
 		/// <summary>
@@ -1014,58 +1050,76 @@ namespace TournamentMod
 						tournamentParticipant.AICount = currentConstruct.BlockTypeStorage.MainframeStore.Blocks.Count;
 						bool violatingRules = false;
 						//Is it braindead?
-						if (tournamentParticipant.AICount == 0)
+						if ((Parameters.CleanUpMode == 0 || !Parameters.CleanUpNoAI) && tournamentParticipant.AICount == 0)
 						{
 							violatingRules = true;
+							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.NoAi]);
 						}
-						//Is it outside its altitude limits?
-						if (!violatingRules && (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x || currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y))
+						//Is it below the lower altitude limit?
+						if (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x)
 						{
 							if (Parameters.SoftLimits[teamIndex])
 							{
-								if (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x && -currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Below minimum altitude and still sinking.
+								if (-currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Still sinking.
 								{
 									violatingRules = true;
-								}
-								else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y && currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Above maximum altitude and still rising.
-								{
-									violatingRules = true;
+									meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.UnderAltitude]);
 								}
 							}
 							else
 							{
 								violatingRules = true;
+								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.UnderAltitude]);
+							}
+						}
+						else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].x) //Is it above the upper altitude limit?
+						{
+							if (Parameters.SoftLimits[teamIndex])
+							{
+								if (currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Still raising.
+								{
+									violatingRules = true;
+									meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.AboveAltitude]);
+								}
+							}
+							else
+							{
+								violatingRules = true;
+								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.AboveAltitude]);
 							}
 						}
 						//Does it have too little HP?
-						if (!violatingRules && tournamentParticipant.HP < Parameters.MinimumHealth)
+						if ((Parameters.CleanUpMode == 0 || !Parameters.CleanUpTooDamagedConstructs) && tournamentParticipant.HP < Parameters.MinimumHealth)
 						{
 							violatingRules = true;
+							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.TooMuchDamage]);
 						}
 						//Is it too fast?
-						if (!violatingRules && currentConstruct.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
+						if (currentConstruct.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
 						{
 							violatingRules = true;
+							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.TooFast]);
 						}
 						//Is it too far away from enemies?
-						if (!violatingRules)
+						if (CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex] / 100f, out bool noEnemies))
 						{
-							violatingRules = CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex]/100f, out bool noEnemies);
-							//Are there no more enemies?
-							if (noEnemies)
+							violatingRules = true;
+							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.FleeingFromBattle]);
+						}
+						//Are there no more enemies?
+						if (noEnemies)
+						{
+							if (Parameters.PauseOnVictory)
 							{
-								if (Parameters.PauseOnVictory)
-								{
-									GameSpeedManager.Instance.TogglePause();
-								}
-								break;
-								//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
+								GameSpeedManager.Instance.TogglePause();
 							}
+							break;
+							//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
 						}
 						//Has any rule been violated?
 						if (violatingRules)
 						{
-							AddPenalty(tournamentParticipant, teamIndex);
+							AddPenalty(tournamentParticipant, teamIndex, meanCalculation.GetMean());
 						}
 						else
 						{
@@ -1135,22 +1189,23 @@ namespace TournamentMod
 		/// </summary>
 		/// <param name="tournamentParticipant">The offending Participant</param>
 		/// <param name="teamIndex">The index of its corresponding Team</param>
-		private void AddPenalty(Participant tournamentParticipant, int teamIndex)
+		private void AddPenalty(Participant tournamentParticipant, int teamIndex, float multiplier = 1)
 		{
+			float increment = (Time.timeSinceLevelLoad - timerTotal - timerTotal2) * multiplier;
 			if (Parameters.SoftLimits[teamIndex])
 			{
 				if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
 				{
-					tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+					tournamentParticipant.OoBTime += increment;
 				}
 				else
 				{
-					tournamentParticipant.OoBTimeBuffer += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+					tournamentParticipant.OoBTimeBuffer += increment;
 				}
 			}
 			else
 			{
-				tournamentParticipant.OoBTime += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
+				tournamentParticipant.OoBTime += increment;
 			}
 		}
 		/// <summary>

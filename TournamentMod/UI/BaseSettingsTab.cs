@@ -14,6 +14,7 @@ using Assets.Scripts.Persistence;
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
 using BrilliantSkies.Ui.Displayer;
+using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 
 namespace TournamentMod.UI
 {
@@ -48,12 +49,19 @@ namespace TournamentMod.UI
 				M.m((Parameters tp)=>tp.StartingDistance), "Starting Distance from center: {0}m", delegate (Parameters tp, float f)
 				{
 					tp.StartingDistance = (int)f;
-				}, new ToolTip("The distance from the center towards the \"Flagship(s)\" of a team.")));
-			segment.AddInterpretter(SubjectiveButton<Parameters>.Quick(_focus.Parameters, "Team-based Rules are currently in effect.",
-				new ToolTip("Press here to enable a global Ruleset for all Teams."), delegate (Parameters tp)
+				}, new ToolTip("The distance from the center towards the first \"Flagship(s)\" of a team.")));
+			segment.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "Team-based Rules are currently in effect.",
+				new ToolTip("Press here to enable a global Ruleset for all Teams."), delegate (Tournament t)
 				{
-					tp.UniformRules = true;
-					tp.MakeUniform();
+					t.Parameters.UniformRules = true;
+					t.Parameters.MakeUniform();
+					for (int i = 1; i < StaticConstants.MAX_TEAMS; i++)
+					{
+						foreach (var penaltyWeigth in t.teamPenaltyWeights[i])
+						{
+							t.teamPenaltyWeights[i][penaltyWeigth.Key] = t.teamPenaltyWeights[0][penaltyWeigth.Key];
+						}
+					}
 				})).SetConditionalDisplayFunction(() => !_focus.Parameters.UniformRules);
 			segment.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, -StaticConstants.MAX_SPAWN_GAP_VALUE, StaticConstants.MAX_SPAWN_GAP_VALUE, 1, 0,
 				M.m((Parameters tp) => tp.SpawngapLR[0]), "Spawngaps Left-Right: {0}m", delegate (Parameters tp, float f)
@@ -172,6 +180,7 @@ namespace TournamentMod.UI
 			#endregion
 			ScreenSegmentStandard segment3 = CreateStandardSegment();
 			segment3.SpaceBelow = segment3.SpaceAbove = 5;
+			segment3.AddInterpretter(StringDisplay.Quick("Don't forget to check the penalty weights in the corresponding Tab!"));
 			segment3.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, StaticConstants.MAX_TIME, 1, 900,
 				M.m((Parameters tp) => tp.MaximumTime), "Maximum Time: {0}s", delegate (Parameters tp, float f)
 				{

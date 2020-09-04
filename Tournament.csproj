@@ -290,18 +290,11 @@
     <Compile Include="TournamentMod\HoelderMean.cs" />
     <Compile Include="TournamentMod\PenaltyTimeGradient.cs" />
     <Compile Include="TournamentMod\PenaltyType.cs" />
-    <Compile Include="TournamentMod\Serialisation\BoolList.cs" />
-    <Compile Include="TournamentMod\Serialisation\ColorList.cs" />
     <Compile Include="TournamentMod\Serialisation\ParametersFolder.cs" />
     <Compile Include="TournamentMod\Serialisation\ParametersFile.cs" />
-    <Compile Include="TournamentMod\Serialisation\StringList.cs" />
     <Compile Include="TournamentMod\Serialisation\TCCFile.cs" />
     <Compile Include="TournamentMod\Serialisation\TCCFolder.cs" />
     <Compile Include="TournamentMod\Serialisation\TeamCompositionConfiguration.cs" />
-    <Compile Include="TournamentMod\Serialisation\Vector2List.cs" />
-    <Compile Include="TournamentMod\Serialisation\Vector3IntList.cs" />
-    <Compile Include="TournamentMod\Serialisation\Vector3List.cs" />
-    <Compile Include="TournamentMod\Serialisation\Vector4IntList.cs" />
     <Compile Include="TournamentMod\StaticConstants.cs" />
     <Compile Include="TournamentMod\Tournament.cs" />
     <Compile Include="TournamentMod\UI\AbstractTournamentTab.cs" />
@@ -310,6 +303,7 @@
     <Compile Include="TournamentMod\UI\FormationConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantManagementTab.cs" />
+    <Compile Include="TournamentMod\UI\PenaltiesWeightingTab.cs" />
     <Compile Include="TournamentMod\UI\TeamSplittedRules.cs" />
     <Compile Include="TournamentMod\UI\TournamentConsole.cs" />
     <Compile Include="TournamentMod\Entry.cs" />

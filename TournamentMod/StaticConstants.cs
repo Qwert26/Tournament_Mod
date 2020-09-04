@@ -18,5 +18,8 @@
 		/// Maximum time-value for the buffer-, penalty- and battle-timer in seconds. The value equals to one hour.
 		/// </summary>
 		public const int MAX_TIME = 3600;
+		public const float MIN_WEIGHT = 0.1f;
+		public const float NORMAL_WEIGHT = 1f;
+		public const float MAX_WEIGHT = 10f;
 	}
 }
