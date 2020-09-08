@@ -709,7 +709,7 @@ namespace TournamentMod
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
 						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
 						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Math.Floor(10 * member.Value.OoBTime % 60f) / 10}s</color>";
-						bool disqualified = member.Value.Scrapped || (Parameters.CleanUpMode != 0 && member.Value.AICount == 0);
+						bool disqualified = member.Value.Scrapped || ((ConstructableCleanUp) Parameters.CleanUpMode != ConstructableCleanUp.Off && Parameters.CleanUpNoAI && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)
 						{
@@ -1049,8 +1049,8 @@ namespace TournamentMod
 						int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(currentConstruct.GetTeam());
 						tournamentParticipant.AICount = currentConstruct.BlockTypeStorage.MainframeStore.Blocks.Count;
 						bool violatingRules = false;
-						//Is it braindead?
-						if ((Parameters.CleanUpMode == 0 || !Parameters.CleanUpNoAI) && tournamentParticipant.AICount == 0)
+						//Is it braindead and is the corresponding cleanup-function turned off?
+						if (((ConstructableCleanUp) Parameters.CleanUpMode == ConstructableCleanUp.Off || !Parameters.CleanUpNoAI) && tournamentParticipant.AICount == 0)
 						{
 							violatingRules = true;
 							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.NoAi]);
@@ -1088,8 +1088,8 @@ namespace TournamentMod
 								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.AboveAltitude]);
 							}
 						}
-						//Does it have too little HP?
-						if ((Parameters.CleanUpMode == 0 || !Parameters.CleanUpTooDamagedConstructs) && tournamentParticipant.HP < Parameters.MinimumHealth)
+						//Does it have too little HP and is the corresponding cleanup-function turned off?
+						if (((ConstructableCleanUp) Parameters.CleanUpMode == ConstructableCleanUp.Off || !Parameters.CleanUpTooDamagedConstructs) && tournamentParticipant.HP < Parameters.MinimumHealth)
 						{
 							violatingRules = true;
 							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.TooMuchDamage]);
@@ -1145,9 +1145,9 @@ namespace TournamentMod
 		/// <returns>True, if the current participant is considered as "fleeing from battle" and has to accumulate penalty time.</returns>
 		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
 		{
-			MainConstruct[] array2 = StaticConstructablesManager.constructables.ToArray();
-			List<MainConstruct> enemies = new List<MainConstruct>(array2.Length);
-			foreach (MainConstruct potentialEnemy in array2)
+			MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
+			List<MainConstruct> enemies = new List<MainConstruct>(array.Length);
+			foreach (MainConstruct potentialEnemy in array)
 			{
 				if (current != potentialEnemy && current.GetTeam() != potentialEnemy.GetTeam())
 				{
@@ -1160,29 +1160,42 @@ namespace TournamentMod
 				return false;
 			}
 			noEnemiesFound = false;
-			int rulebreaks = 0;
+			int rulebreaks = 0, beatenButNotDestroyed = 0;
 			foreach (MainConstruct enemy in enemies)
 			{
-				float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
-				float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
-				//Too far away?
-				if (currentDistance > Parameters.DistanceLimit[teamIndex])
+				if (HUDLog[enemy.GetTeam()].TryGetValue(enemy, out Participant participant))
 				{
-					if (Parameters.SoftLimits[teamIndex])
+					if (participant.Disqual || participant.Scrapped || ((ConstructableCleanUp) Parameters.CleanUpMode != ConstructableCleanUp.Off && Parameters.CleanUpNoAI && participant.AICount == 0))
 					{
-						//Going away faster than DistanceReverse allows?
-						if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
+						beatenButNotDestroyed++;
+						continue;
+					}
+					float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
+					float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
+					//Too far away?
+					if (currentDistance > Parameters.DistanceLimit[teamIndex])
+					{
+						if (Parameters.SoftLimits[teamIndex])
+						{
+							//Going away faster than DistanceReverse allows?
+							if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
+							{
+								rulebreaks++;
+							}
+						}
+						else
 						{
 							rulebreaks++;
 						}
 					}
-					else
-					{
-						rulebreaks++;
-					}
+				}
+				else
+				{
+					beatenButNotDestroyed++;
+					//We need to wait for the next update, so for now it doesn't get considered.
 				}
 			}
-			return Mathf.Max(1, Mathf.RoundToInt((1 - percentage) * enemies.Count)) <= rulebreaks;
+			return Mathf.Max(1, Mathf.RoundToInt((1f - percentage) * (enemies.Count - beatenButNotDestroyed))) <= rulebreaks;
 		}
 		/// <summary>
 		/// Increases the Penalty-Time of a single Participant or uses up the Time-Buffer if Soft-Limits are active for the given Team.
@@ -1349,9 +1362,9 @@ namespace TournamentMod
 		/// <summary>
 		/// Calculates the distance between two points, if they were on the XZ-Plane.
 		/// </summary>
-		/// <param name="a"></param>
-		/// <param name="b"></param>
-		/// <returns></returns>
+		/// <param name="a">Point a</param>
+		/// <param name="b">Point b</param>
+		/// <returns>The distance in the horizontal plane only.</returns>
 		private float DistanceProjected(Vector3 a, Vector3 b)
 		{
 			a.y = 0;
