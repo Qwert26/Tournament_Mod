@@ -29,7 +29,8 @@ namespace TournamentMod
 	/// <summary>
 	/// GUI-Class for the Overlay and general Mangement.
 	/// </summary>
-	public class Tournament : BrilliantSkies.FromTheDepths.Game.UserInterfaces.InteractiveOverlay.InteractiveOverlay
+	//Macht für meinen Geschmack zu viel und sollte deshalb aufgeteilt werden.
+	public class Tournament
 	{
 		/// <summary>
 		/// The Singleton-instance.
@@ -56,7 +57,6 @@ namespace TournamentMod
 		private GameObject cam;
 		private MouseLook flycam;
 		private MouseOrbit orbitcam;
-		//private DemoCamera demoCamera;
 		private int orbittarget;
 		private int orbitMothership;
 		private int orbitindex;
@@ -110,7 +110,7 @@ namespace TournamentMod
 		/// </summary>
 		private HoelderMean meanCalculation = null;
 		/// <summary>
-		/// 
+		/// Creates a new Tournament-instance.
 		/// </summary>
 		public Tournament()
 		{

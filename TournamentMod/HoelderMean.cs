@@ -26,15 +26,11 @@ namespace TournamentMod
 			switch (count)
 			{
 				case 0:
-					throw new InvalidOperationException("No values mean no mean can be calculated!");
+					throw new InvalidOperationException("No values means no mean can be calculated!");
 				case 1://Skip any calculation.
 					ret = values[0];
-					if (clear)
-					{
-						values.Clear();
-					}
-					return ret;
-				default:
+					break;
+				default://There are two or more values, so a mean can be calculated.
 					ret = 0;
 					switch (wct)
 					{
@@ -76,16 +72,17 @@ namespace TournamentMod
 						case WeightCombinerType.MAXIMUM:
 							ret = values.Max();
 							break;
-						default:
+						default://Unknown type.
 							ret = float.NaN;
 							break;
 					}
-					if (clear)
-					{
-						values.Clear();
-					}
-					return ret;
+					break;
 			}
+			if (clear)
+			{
+				values.Clear();
+			}
+			return ret;
 		}
 	}
 }
