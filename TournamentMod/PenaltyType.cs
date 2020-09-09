@@ -54,7 +54,7 @@
 					return "Any entry, which is below a set percentage of hitpoint, will have this modifier applied to their penalty timer. " +
 					"This will only have an effect, if the clean up function \"TooDamaged\" has been effectivly turned off.";
 				case PenaltyType.UnderAltitude:
-					return "";
+					return "Any entry, which is below the lower altitude limit, will have this time modifier applied to their penalty timer.";
 				default:
 					return "How did you manage to get out of bounds here?";
 			}

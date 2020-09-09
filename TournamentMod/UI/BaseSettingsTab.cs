@@ -10,11 +10,11 @@ using TournamentMod.Serialisation;
 using UnityEngine;
 using BrilliantSkies.Ui.Special.PopUps;
 using Assets.Scripts.Gui;
-using Assets.Scripts.Persistence;
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
+using BrilliantSkies.Core;
 
 namespace TournamentMod.UI
 {

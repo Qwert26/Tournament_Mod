@@ -569,6 +569,10 @@ namespace TournamentMod
 						"manual edits or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
 				}
 			}
+			else
+			{
+				LoadDefaults();
+			}
 			for (int i = 0; i < Parameters.ActiveFactions; i++)
 			{
 				if (!entries.ContainsKey(i))
@@ -671,11 +675,11 @@ namespace TournamentMod
 				cf.formationEntrycount.Clear();
 				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, 0));
 			}
-			foreach (var teamPenalties in teamPenaltyWeights)
+			foreach (Dictionary<PenaltyType, float> teamPenalties in teamPenaltyWeights)
 			{
-				foreach (var penaltyWeight in teamPenalties)
+				foreach (PenaltyType pt in Enum.GetValues(typeof(PenaltyType)))
 				{
-					teamPenalties[penaltyWeight.Key] = 1;
+					teamPenalties[pt] = 1;
 				}
 			}
 		}

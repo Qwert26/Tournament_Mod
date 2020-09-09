@@ -40,6 +40,7 @@ namespace TournamentMod.UI
 			window.DisplayTextPrompt = false;
 			window.SetMultipleTabs(new BaseSettingsTab(this, window, _focus),
 				new TeamSplittedRules(this, window, _focus),
+				new PenaltiesWeightingTab(this, window, _focus),
 				new AdvancedSettingsTab(this, window, _focus),
 				new EyecandyTab(this, window, _focus),
 				new ParticipantManagementTab(this, window, _focus));

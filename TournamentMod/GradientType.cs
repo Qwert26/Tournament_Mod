@@ -3,7 +3,7 @@ using System;
 namespace TournamentMod
 {
 	/// <summary>
-	/// 
+	/// Available Gradients
 	/// </summary>
 	public enum GradientType : int
 	{

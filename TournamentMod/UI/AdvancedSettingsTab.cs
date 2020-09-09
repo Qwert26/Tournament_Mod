@@ -187,15 +187,16 @@ namespace TournamentMod.UI
 				}
 			}
 			segment2.AddInterpretter(new SubjectiveFloatClampedWithBar<Parameters>(M.m<Parameters>(0), M.m<Parameters>(3),
-			   M.m((Parameters tp) => tp.HealthCalculation), M.m<Parameters>(1), _focus.Parameters,
-			   M.m((Parameters tp) => $"Healthcalculation: {describeHealthCalculation()}"), delegate (Parameters tp, float f)
-			   {
-				   tp.HealthCalculation = (int)f;
-			   }, null, M.m((Parameters tp) => new ToolTip(healthCalculationTip()))));
+				M.m((Parameters tp) => tp.HealthCalculation), M.m<Parameters>(1), _focus.Parameters,
+				M.m((Parameters tp) => $"Healthcalculation: {describeHealthCalculation()}"), delegate (Parameters tp, float f)
+				{
+					tp.HealthCalculation = (int)f;
+				}, null, M.m((Parameters tp) => new ToolTip(healthCalculationTip()))));
 			segment2.AddInterpretter(SubjectiveFloatClampedWithBarFromMiddle<Parameters>.Quick(_focus.Parameters, 0, 100, 1, 55,
-				M.m((Parameters tp)=>tp.MinimumHealth), "Minimum Health: {0}%", delegate (Parameters tp, float f) {
-					tp.MinimumHealth = (int)f;
-				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time, works best when clean up is \"Off\".")));
+				M.m((Parameters tp) => tp.MinimumHealth), "Minimum Health: {0}%", delegate (Parameters tp, float f)
+				{
+					tp.MinimumHealth = (int) f;
+				}, new ToolTip("Sets the minimum Health below any entry will pickup Penalty time."))).SetConditionalDisplayFunction(() => (ConstructableCleanUp) _focus.Parameters.CleanUpMode == ConstructableCleanUp.Off || !_focus.Parameters.CleanUpTooDamagedConstructs);
 			ScreenSegmentStandardHorizontal saveAndLoad = CreateStandardHorizontalSegment();
 			saveAndLoad.SpaceAbove = saveAndLoad.SpaceBelow = 5;
 			ParametersFolder folder = new ParametersFolder(new FilesystemFolderSource(Get.PermanentPaths.GetSpecificModDir("Tournament").ToString()), false);
