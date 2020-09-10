@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
-using BrilliantSkies.Core;
+using BrilliantSkies.Core.Logger;
 namespace TournamentMod
 {
 	using UI;
@@ -355,10 +355,10 @@ namespace TournamentMod
 					}
 				}
 			}
-			GameEvents.PreLateUpdate += LateUpdate;
-			GameEvents.Twice_Second += SlowUpdate;
-			GameEvents.FixedUpdateEvent += FixedUpdate;
-			GameEvents.OnGui += OnGUI;
+			GameEvents.PreLateUpdate.RegWithEvent(LateUpdate);
+			GameEvents.Twice_Second.RegWithEvent(SlowUpdate);
+			GameEvents.FixedUpdateEvent.RegWithEvent(FixedUpdate);
+			GameEvents.OnGui.RegWithEvent(OnGUI);
 		}
 		/// <summary>
 		/// Deletes every Force which there currently is.
@@ -561,12 +561,12 @@ namespace TournamentMod
 					Parameters.EnsureEnoughData();
 					PopulateData();
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					LoadDefaults();
 					SaveSettings();
 					GuiPopUp.Instance.Add(new PopupError("Could not load Settings", "Something went wrong during the loading of your last settings. This could be because of a corrupt Savefile " +
-						"manual edits or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile."));
+						"manual edits or some of the Datatypes have been changed and can not be loaded. To prevent future Errors, we just saved the default settings into the Savefile.", e.StackTrace, e));
 				}
 			}
 			else
@@ -595,11 +595,11 @@ namespace TournamentMod
 				{
 					LoadTeam(index, settingsFile.LoadData<TeamCompositionConfiguration>());
 				}
-				catch (Exception)
+				catch (Exception e)
 				{
 					settingsFile.Delete();
 					GuiPopUp.Instance.Add(new PopupError($"Default Savefile for Team {index + 1} corrupted", "The default savefile for the given team got corrputed. This could be because of manual edits " +
-					"or some variables changed their type and can no longer be loaded. In order to prevent future errors, the savefile has been deleted."));
+					"or some variables changed their type and can no longer be loaded. In order to prevent future errors, the savefile has been deleted.", e.StackTrace, e));
 				}
 			}
 		}
@@ -649,7 +649,7 @@ namespace TournamentMod
 				}
 				else
 				{
-					SafeLogging.LogWarning($"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team.");
+					AdvLogger.LogWarning($"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team.", LogOptions.Popup);
 				}
 			}
 			teamFormations[index].formationEntrycount.Clear();
@@ -1009,7 +1009,7 @@ namespace TournamentMod
 			}
 			else
 			{
-				SafeLogging.LogError("How can both Monobehaviors be disabled?");
+				AdvLogger.LogError("How can both Monobehaviors be disabled?", LogOptions.OnlyInDeveloperLog);
 			}
 		}
 		/// <summary>
@@ -1328,7 +1328,7 @@ namespace TournamentMod
 							}
 							break;
 						default:
-							SafeLogging.LogError("Health calculation of newly spawned in Construct is not available!");
+							AdvLogger.LogError("Health calculation of newly spawned in Construct is not available!", LogOptions.OnlyInDeveloperLog);
 							break;
 					}
 					HUDLog[tournamentParticipant.TeamId][val] = tournamentParticipant;
@@ -1350,7 +1350,7 @@ namespace TournamentMod
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
 							break;
 						default:
-							SafeLogging.LogError("Health calculation of Construct is not available!");
+							AdvLogger.LogError("Health calculation of Construct is not available!", LogOptions.OnlyInDeveloperLog);
 							break;
 					}
 					tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;

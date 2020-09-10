@@ -1,4 +1,4 @@
-﻿using BrilliantSkies.Core;
+﻿using BrilliantSkies.Core.Logger;
 using BrilliantSkies.Core.CSharp;
 using BrilliantSkies.Core.FilesAndFolders;
 using Newtonsoft.Json;
@@ -20,7 +20,7 @@ namespace TournamentMod.Serialisation
 			}
 			else
 			{
-				SafeLogging.LogError("The given File doesn't exist! Path is " + _fileSource.FilePath);
+				AdvLogger.LogError("The given File doesn't exist! Path is " + _fileSource.FilePath, LogOptions.Popup);
 			}
 		}
 		public void Save(Parameters parameters) {

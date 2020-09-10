@@ -20,7 +20,7 @@ namespace TournamentMod
 		/// Removes the Factions when the Editor is selected and re-adds them otherwise.
 		/// </summary>
 		public void OnInstanceChange() {
-			if (added && GAMESTATE.GetGameType() == enumGameType.worldeditor)
+			if (added && GAME_STATE.GetGameType() == enumGameType.worldeditor)
 			{
 				foreach (FactionSpecificationFaction fsf in factions)
 				{
