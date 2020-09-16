@@ -7,21 +7,32 @@ using BrilliantSkies.Ui.Consoles.Getters;
 using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Buttons;
 using BrilliantSkies.Ui.Displayer;
 using BrilliantSkies.Ui.Special.PopUps;
+using Assets.Scripts.Gui;
+using BrilliantSkies.Core.Constants;
+using BrilliantSkies.Core.FilesAndFolders;
+using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
+using System;
 namespace TournamentMod.UI
 {
-	using Assets.Scripts.Gui;
-	using BrilliantSkies.Core.Constants;
-	using BrilliantSkies.Core.FilesAndFolders;
-	using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 	using Serialisation;
-	using System;
-
+	/// <summary>
+	/// Sets the penalty weigths for all teams or individual teams.
+	/// </summary>
 	public class PenaltiesWeightingTab : AbstractTournamentTab
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parent"></param>
+		/// <param name="window"></param>
+		/// <param name="focus"></param>
 		public PenaltiesWeightingTab(TournamentConsole parent, ConsoleWindow window, Tournament focus) : base(parent, window, focus)
 		{
 			Name = new Content("Penalty Weights", "Control how much a penalty matters and set a penalty combiner.");
 		}
+		/// <summary>
+		/// Builds the Tab.
+		/// </summary>
 		public override void Build()
 		{
 			CreateHeader("Weight Combiner", new ToolTip("Entries can violate multiple boundaries at once, with each having a unique weight, you need to set a deterministic way to combine them."));

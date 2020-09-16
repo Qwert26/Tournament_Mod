@@ -1,5 +1,8 @@
 ﻿namespace TournamentMod
 {
+	/// <summary>
+	/// Contains constants used in the entire Plug-In.
+	/// </summary>
 	public static class StaticConstants
 	{
 		/// <summary>
@@ -18,8 +21,17 @@
 		/// Maximum time-value for the buffer-, penalty- and battle-timer in seconds. The value equals to one hour.
 		/// </summary>
 		public const int MAX_TIME = 3600;
+		/// <summary>
+		/// Minimum allowed weight for a penalty, should never be 0.
+		/// </summary>
 		public const float MIN_WEIGHT = 0.1f;
+		/// <summary>
+		/// Standard weight of a penalty.
+		/// </summary>
 		public const float NORMAL_WEIGHT = 1f;
+		/// <summary>
+		/// Maximum allowed weight for a penalty.
+		/// </summary>
 		public const float MAX_WEIGHT = 10f;
 	}
 }

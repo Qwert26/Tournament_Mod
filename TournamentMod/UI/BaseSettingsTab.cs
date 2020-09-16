@@ -40,7 +40,6 @@ namespace TournamentMod.UI
 		/// </summary>
 		public override void Build()
 		{
-			base.Build();
 			CreateHeader("Basic Parameters", new ToolTip("Customize the most basic Parameters here."));
 			ScreenSegmentStandard segment = CreateStandardSegment();
 			segment.SpaceBelow = 5;

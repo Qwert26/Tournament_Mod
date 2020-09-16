@@ -6,6 +6,9 @@ namespace TournamentMod.UI
 	/// </summary>
 	public abstract class AbstractTournamentTab : SuperScreen<Tournament>
 	{
+		/// <summary>
+		/// ParentUI for handling Popups
+		/// </summary>
 		private readonly TournamentConsole parentUI;
 		/// <summary>
 		/// 
@@ -42,5 +45,9 @@ namespace TournamentMod.UI
 			RebuildPopup();
 			TriggerScreenRebuild();
 		}
+		/// <summary>
+		/// Default Build() by <see cref="SuperScreen{T}"/> is empty, so it is fine to make it abstract.
+		/// </summary>
+		public abstract override void Build();
 	}
 }

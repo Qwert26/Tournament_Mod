@@ -34,7 +34,6 @@ namespace TournamentMod.UI
 		/// </summary>
 		public override void Build()
 		{
-			base.Build();
 			CreateHeader("Customize advanced fighting parameters", new ToolTip("Usually hidden, so you need to activate them first."));
 			ScreenSegmentStandard segment1 = CreateStandardSegment();
 			segment1.SpaceAbove = segment1.SpaceBelow = 5;
@@ -95,7 +94,7 @@ namespace TournamentMod.UI
 					case 0:
 						return "Entries will not be auto-removed: They will only be removed by disqualification.";
 					case 1:
-						return "Non-Player Entries will be auto-removed based on recieved damaged and current situation.";
+						return "Non-Player Entries will be auto-removed based on recieved damaged and current situation. Behaves in our case just like \"All\".";
 					case 2:
 						return "All Entries will be auto-removed based on recieved damaged and current situation.";
 					case 3:

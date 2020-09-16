@@ -36,7 +36,6 @@ namespace TournamentMod.UI
 		/// </summary>
 		public override void Build()
 		{
-			base.Build();
 			_focus.Parameters.EnsureEnoughData();
 			CreateHeader("General Appearence", new ToolTip("General Apearences"));
 			ScreenSegmentStandard general = CreateStandardSegment();
@@ -133,7 +132,7 @@ namespace TournamentMod.UI
 				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Secondary Color"), M.m<FleetColor>(new ToolTip($"The Secondary Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Secondary)));
 				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Trim Color"), M.m<FleetColor>(new ToolTip($"The Trim Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Trim)));
 				table.AddInterpretter(new SubjectiveColorDisplay<FleetColor>(current, M.m<FleetColor>("Detail Color"), M.m<FleetColor>(new ToolTip($"The Detail Color of the \"{current.Name}\"-Prefab.")), M.m((FleetColor tFC) => tFC.Detail)));
-				CreateSpace(15);
+				CreateSpace(10);
 			}
 		}
 	}
