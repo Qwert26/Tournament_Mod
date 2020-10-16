@@ -82,16 +82,16 @@ namespace TournamentMod
 						float num = 0f;
 						for (int i = 0; i < count; i++)
 						{
-							float material = list[i].CalculateResourceCost(false, true, false).Material+list[i].ContainedMaterialCost;
+							float material = list[i].CalculateResourceCost(ValueQueryType.SubsAndDrones|ValueQueryType.IncludeContents).Material;
 							array[i + 1] = $"{list[i].blueprintName} - <color=cyan>{material} Materials</color>";
 							num += material;
 						}
-						array[0] = $"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(false, true, false).Material + bp.ContainedMaterialCost} Materials</color>";
+						array[0] = $"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(ValueQueryType.IncludeContents).Material} Materials</color>";
 						return array;
 					}
 					return new string[1]
 					{
-						$"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(false, true, false).Material + bp.ContainedMaterialCost} Materials</color>"
+						$"{bp.blueprintName} - <color=cyan>{bp.CalculateResourceCost(ValueQueryType.IncludeContents).Material} Materials</color>"
 					};
 				}
 				return null;

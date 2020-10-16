@@ -320,8 +320,8 @@ namespace TournamentMod
 								BlueprintName = constructable.GetName(),
 								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
 								HP = 100,
-								HPCUR = constructable.AllBasics.GetResourceCost(false, true, false, true).Material,
-								HPMAX = constructable.AllBasics.GetResourceCost(false, true, false, true).Material
+								HPCUR = constructable.AllBasics.GetResourceCost(ValueQueryType.AliveOnly|ValueQueryType.IncludeContents).Material,
+								HPMAX = constructable.AllBasics.GetResourceCost(ValueQueryType.IncludeContents).Material
 							});
 							break;
 						case 2:
@@ -751,8 +751,6 @@ namespace TournamentMod
 					string team = targetConstruct.GetTeam().FactionSpec().Name;
 					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1)}%";
 					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum)}";
-					string ammo = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iAmmo.Maximum)}";
-					string fuel = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iFuel.Maximum)}";
 					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum)}";
 					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower)}";
 					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude)}m/s";
@@ -775,25 +773,21 @@ namespace TournamentMod
 					//GUI.Label(new Rect(980, 38, 90f, 38f), "Team:", extrainfoLeft);
 					GUI.Label(new Rect(980, 76, 90f, 38f), "HP:", extrainfoLeft);
 					GUI.Label(new Rect(980, 114, 90f, 38f), "Materials:", extrainfoLeft);
-					GUI.Label(new Rect(980, 152, 90f, 38f), "Ammo:", extrainfoLeft);
-					GUI.Label(new Rect(980, 190, 90f, 38f), "Fuel:", extrainfoLeft);
-					GUI.Label(new Rect(980, 228, 90f, 38f), "Battery:", extrainfoLeft);
-					GUI.Label(new Rect(980, 266, 90f, 38f), "Power:", extrainfoLeft);
-					GUI.Label(new Rect(980, 304, 90f, 38f), "Speed:", extrainfoLeft);
-					GUI.Label(new Rect(980, 342, 90f, 38f), "Altitude:", extrainfoLeft);
-					GUI.Label(new Rect(980, 380, 90f, 38f), "Nearest Enemy:", extrainfoLeft);
+					GUI.Label(new Rect(980, 152, 90f, 38f), "Battery:", extrainfoLeft);
+					GUI.Label(new Rect(980, 190, 90f, 38f), "Power:", extrainfoLeft);
+					GUI.Label(new Rect(980, 228, 90f, 38f), "Speed:", extrainfoLeft);
+					GUI.Label(new Rect(980, 266, 90f, 38f), "Altitude:", extrainfoLeft);
+					GUI.Label(new Rect(980, 304, 90f, 38f), "Nearest Enemy:", extrainfoLeft);
 
 					GUI.Label(new Rect(1070, 0, 110f, 38f), name, extrainfoName);
 					GUI.Label(new Rect(980, 38, 200f, 38f), team, extrainfoName);
 					GUI.Label(new Rect(1070, 76, 110f, 38f), hp, extrainfoRight);
 					GUI.Label(new Rect(1070, 114, 110f, 38f), resources, extrainfoRight);
-					GUI.Label(new Rect(1070, 152, 110f, 38f), ammo, extrainfoRight);
-					GUI.Label(new Rect(1070, 190, 110f, 38f), fuel, extrainfoRight);
-					GUI.Label(new Rect(1070, 228, 110f, 38f), battery, extrainfoRight);
-					GUI.Label(new Rect(1070, 266, 110f, 38f), power, extrainfoRight);
-					GUI.Label(new Rect(1070, 304, 110f, 38f), speed, extrainfoRight);
-					GUI.Label(new Rect(1070, 342, 110f, 38f), altitude, extrainfoRight);
-					GUI.Label(new Rect(1070, 380, 110f, 38f), nearest, extrainfoRight);
+					GUI.Label(new Rect(1070, 152, 110f, 38f), battery, extrainfoRight);
+					GUI.Label(new Rect(1070, 190, 110f, 38f), power, extrainfoRight);
+					GUI.Label(new Rect(1070, 228, 110f, 38f), speed, extrainfoRight);
+					GUI.Label(new Rect(1070, 266, 110f, 38f), altitude, extrainfoRight);
+					GUI.Label(new Rect(1070, 304, 110f, 38f), nearest, extrainfoRight);
 				}
 			}
 		}
@@ -1300,7 +1294,7 @@ namespace TournamentMod
 							tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
 							break;
 						case 1:
-							tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(false, true, false, true).Material;
+							tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(ValueQueryType.IncludeContents).Material;
 							break;
 						case 2:
 						case 3:
@@ -1341,7 +1335,7 @@ namespace TournamentMod
 							tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
 							break;
 						case 1:
-							tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(true, true, false, true).Material;
+							tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(ValueQueryType.AliveOnly|ValueQueryType.IncludeContents).Material;
 							break;
 						case 2:
 							tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
