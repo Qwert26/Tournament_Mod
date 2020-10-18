@@ -44,14 +44,14 @@ namespace TournamentMod
 		/// <summary>
 		/// Style for the Timer at the top of the screen
 		/// </summary>
-		private readonly GUIStyle timerStyle;
-		private readonly GUIStyle extrainfoLeft;
+		private GUIStyle timerStyle;
+		private GUIStyle extrainfoLeft;
 		/// <summary>
 		/// Style for the Sidelist with the Teams and Participants.
 		/// </summary>
-		private readonly GUIStyle sidelist;
-		private readonly GUIStyle extrainfoRight;
-		private readonly GUIStyle extrainfoName;
+		private GUIStyle sidelist;
+		private GUIStyle extrainfoRight;
+		private GUIStyle extrainfoName;
 		#endregion
 		#region Kamerakontrolle
 		private GameObject cam;
@@ -115,46 +115,6 @@ namespace TournamentMod
 		public Tournament()
 		{
 			_me = this;
-			timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-			{
-				alignment = TextAnchor.MiddleCenter,
-				richText = true,
-				fontSize = 12
-			};
-			extrainfoLeft = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-			{
-				alignment = TextAnchor.UpperLeft,
-				richText = true,
-				fontSize = 12,
-				wordWrap = false,
-				clipping = TextClipping.Clip
-			};
-			sidelist = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-			{
-				alignment = TextAnchor.UpperLeft,
-				richText = true,
-				fontSize = 12,
-				wordWrap = false,
-				clipping = TextClipping.Clip,
-				stretchHeight = false
-			};
-			sidelist.normal.textColor = Color.white;
-			extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-			{
-				alignment = TextAnchor.UpperRight,
-				richText = true,
-				fontSize = 12,
-				wordWrap = false,
-				clipping = TextClipping.Clip
-			};
-			extrainfoName = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-			{
-				alignment = TextAnchor.UpperRight,
-				richText = true,
-				fontSize = 12,
-				wordWrap = true,
-				clipping = TextClipping.Clip
-			};
 			_GUI = new TournamentConsole(_me);
 			teamFormations = new List<CombinedFormation>(StaticConstants.MAX_TEAMS);
 			teamPenaltyWeights = new List<Dictionary<PenaltyType, float>>(StaticConstants.MAX_TEAMS);
@@ -175,6 +135,49 @@ namespace TournamentMod
 		/// </summary>
 		public void LoadCraft()
 		{
+			if (timerStyle == null)
+			{
+				timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+				{
+					alignment = TextAnchor.MiddleCenter,
+					richText = true,
+					fontSize = 12
+				};
+				extrainfoLeft = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+				{
+					alignment = TextAnchor.UpperLeft,
+					richText = true,
+					fontSize = 12,
+					wordWrap = false,
+					clipping = TextClipping.Clip
+				};
+				sidelist = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+				{
+					alignment = TextAnchor.UpperLeft,
+					richText = true,
+					fontSize = 12,
+					wordWrap = false,
+					clipping = TextClipping.Clip,
+					stretchHeight = false
+				};
+				sidelist.normal.textColor = Color.white;
+				extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+				{
+					alignment = TextAnchor.UpperRight,
+					richText = true,
+					fontSize = 12,
+					wordWrap = false,
+					clipping = TextClipping.Clip
+				};
+				extrainfoName = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
+				{
+					alignment = TextAnchor.UpperRight,
+					richText = true,
+					fontSize = 12,
+					wordWrap = true,
+					clipping = TextClipping.Clip
+				};
+			}
 			ClearArea();
 			HUDLog.Clear();
 			materials?.Clear();
