@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using BrilliantSkies.Core.Id;
 namespace TournamentMod
 {
+	using UI;
 	/// <summary>
 	/// The Plugin, necessary to hook up the Mod into the Game.
 	/// </summary>
@@ -55,6 +56,7 @@ namespace TournamentMod
 			}
 			if (@is.Header.Name == InstanceSpecification.i.Header.Name) {
 				GAME_STATE.MyTeam = ObjectId.NoLinkage;
+				_t._GUI = new TournamentConsole(_t);
 				_t._GUI.ActivateGui(_t, BrilliantSkies.Ui.Displayer.GuiActivateType.Standard);
 				_t.MoveCam();
 			}

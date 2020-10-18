@@ -115,7 +115,6 @@ namespace TournamentMod
 		public Tournament()
 		{
 			_me = this;
-			_GUI = new TournamentConsole(_me);
 			teamFormations = new List<CombinedFormation>(StaticConstants.MAX_TEAMS);
 			teamPenaltyWeights = new List<Dictionary<PenaltyType, float>>(StaticConstants.MAX_TEAMS);
 			for (int t = 0; t < StaticConstants.MAX_TEAMS; t++)
