@@ -714,7 +714,7 @@ namespace TournamentMod
 						string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
 						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
 						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
-						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Math.Floor(10 * member.Value.OoBTime % 60f) / 10}s</color>";
+						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Math.Floor(10 * (member.Value.OoBTime % 60f)) / 10}s</color>";
 						bool disqualified = member.Value.Scrapped || ((ConstructableCleanUp) Parameters.CleanUpMode != ConstructableCleanUp.Off && Parameters.CleanUpNoAI && member.Value.AICount == 0);
 						GUIContent memberContent;
 						if (disqualified)
@@ -1072,7 +1072,7 @@ namespace TournamentMod
 								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.UnderAltitude]);
 							}
 						}
-						else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].x) //Is it above the upper altitude limit?
+						else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y) //Is it above the upper altitude limit?
 						{
 							if (Parameters.SoftLimits[teamIndex])
 							{
