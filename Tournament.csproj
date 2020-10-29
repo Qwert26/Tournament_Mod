@@ -291,7 +291,9 @@
     <Compile Include="TournamentMod\Formations\FormationSizeCalculation.cs" />
     <Compile Include="TournamentMod\Formations\FormationType.cs" />
     <Compile Include="TournamentMod\GradientType.cs" />
+    <Compile Include="TournamentMod\HealthType.cs" />
     <Compile Include="TournamentMod\HoelderMean.cs" />
+    <Compile Include="TournamentMod\ParticipantManagement.cs" />
     <Compile Include="TournamentMod\PenaltyTimeGradient.cs" />
     <Compile Include="TournamentMod\PenaltyType.cs" />
     <Compile Include="TournamentMod\Serialisation\ParametersFolder.cs" />

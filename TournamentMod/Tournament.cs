@@ -353,7 +353,8 @@ namespace TournamentMod
 							});
 							break;
 						default:
-							break;
+							AdvLogger.LogError("Health calculation has been set to an unusable Value!",LogOptions.Popup);
+							return;
 					}
 				}
 			}
