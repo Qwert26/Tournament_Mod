@@ -43,10 +43,7 @@ namespace TournamentMod
 		/// </summary>
 		public void OnInstanceChange()
 		{
-			GameEvents.FixedUpdateEvent.UnregWithEvent(_t.FixedUpdate);
-			GameEvents.OnGui.UnregWithEvent(_t.OnGUI);
-			GameEvents.Twice_Second.UnregWithEvent(_t.SlowUpdate);
-			GameEvents.PreLateUpdate.UnregWithEvent(_t.LateUpdate);
+			_t.UnregisterEvents();
 			if (GAME_STATE.GetGameType() == enumGameType.worldeditor)
 			{
 				Planet.i.Designers.RemoveInstance(@is);
@@ -56,8 +53,8 @@ namespace TournamentMod
 			}
 			if (@is.Header.Name == InstanceSpecification.i.Header.Name) {
 				GAME_STATE.MyTeam = ObjectId.NoLinkage;
-				_t._GUI = new TournamentConsole(_t);
-				_t._GUI.ActivateGui(_t, BrilliantSkies.Ui.Displayer.GuiActivateType.Standard);
+				_t.tournamentConsole = new TournamentConsole(_t);
+				_t.tournamentConsole.ActivateGui(_t, BrilliantSkies.Ui.Displayer.GuiActivateType.Standard);
 				_t.MoveCam();
 			}
 		}

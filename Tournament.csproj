@@ -307,6 +307,7 @@
     <Compile Include="TournamentMod\UI\BaseSettingsTab.cs" />
     <Compile Include="TournamentMod\UI\EyecandyTab.cs" />
     <Compile Include="TournamentMod\UI\FormationConsole.cs" />
+    <Compile Include="TournamentMod\UI\LiveViewConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantConsole.cs" />
     <Compile Include="TournamentMod\UI\ParticipantManagementTab.cs" />
     <Compile Include="TournamentMod\UI\PenaltiesWeightingTab.cs" />

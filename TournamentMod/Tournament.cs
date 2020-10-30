@@ -1,24 +1,20 @@
 using BrilliantSkies.Core.Constants;
 using BrilliantSkies.Core.FilesAndFolders;
-using BrilliantSkies.Core.Id;
 using BrilliantSkies.Core.Timing;
 using BrilliantSkies.Core.Types;
 using BrilliantSkies.Core.UniverseRepresentation;
 using BrilliantSkies.Effects.Cameras;
-using BrilliantSkies.FromTheDepths.Game;
 using BrilliantSkies.Ftd.Avatar;
 using BrilliantSkies.Ftd.Planets;
 using BrilliantSkies.Ftd.Planets.Instances;
 using BrilliantSkies.Ftd.Planets.Instances.Headers;
 using BrilliantSkies.Ftd.Planets.World;
-using BrilliantSkies.GridCasts;
 using BrilliantSkies.PlayerProfiles;
 using BrilliantSkies.Ui.Special.PopUps;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using BrilliantSkies.Core.Logger;
 namespace TournamentMod
@@ -29,7 +25,6 @@ namespace TournamentMod
 	/// <summary>
 	/// GUI-Class for the Overlay and general Mangement.
 	/// </summary>
-	//Macht für meinen Geschmack zu viel und sollte deshalb aufgeteilt werden.
 	public class Tournament
 	{
 		/// <summary>
@@ -39,20 +34,9 @@ namespace TournamentMod
 		/// <summary>
 		/// The Console-Window for setting things up.
 		/// </summary>
-		public TournamentConsole _GUI;
-		#region GUI-Stil
-		/// <summary>
-		/// Style for the Timer at the top of the screen
-		/// </summary>
-		private GUIStyle timerStyle;
-		private GUIStyle extrainfoLeft;
-		/// <summary>
-		/// Style for the Sidelist with the Teams and Participants.
-		/// </summary>
-		private GUIStyle sidelist;
-		private GUIStyle extrainfoRight;
-		private GUIStyle extrainfoName;
-		#endregion
+		public TournamentConsole tournamentConsole;
+		private LiveViewConsole liveViewConsole;
+		private ParticipantManagement participantManagement;
 		#region Kamerakontrolle
 		private GameObject cam;
 		private MouseLook flycam;
@@ -61,26 +45,22 @@ namespace TournamentMod
 		private int orbitMothership;
 		private int orbitindex;
 		#endregion
-		private bool extraInfo = false;
-		private float timerTotal;
-		private float timerTotal2;
+		/// <summary>
+		/// Should the LiveView display additional Information?
+		/// </summary>
+		public bool extraInfo = false;
+		/// <summary>
+		/// Time since battle start.
+		/// </summary>
+		public float timerTotal;
 		/// <summary>
 		/// Amount of Overtimes the battles had.
 		/// </summary>
 		private byte overtimeCounter = 0;
 		/// <summary>
-		/// Current scrollpostition of the Sidelist.
+		/// When true, the Sidelist is shown.
 		/// </summary>
-		private Vector2 scrollPos = Vector2.zero;
-		//Management
-		/// <summary>
-		/// A 2D-Table to Map Teams/Factions to their Mainconstructs which map to their Participant-Object.
-		/// </summary>
-		private readonly Dictionary<ObjectId, Dictionary<MainConstruct, Participant>> HUDLog = new Dictionary<ObjectId, Dictionary<MainConstruct, Participant>>();
-		/// <summary>
-		/// When true, the Sidelist gets shown.
-		/// </summary>
-		private bool showLists = true;
+		public bool showLists = true;
 		/// <summary>
 		/// The Formation for each Team. For saving, the entire list gets converted into a list of Vector4Int.
 		/// </summary>
@@ -98,17 +78,9 @@ namespace TournamentMod
 		/// </summary>
 		private List<int> materials;
 		/// <summary>
-		/// The currently used gradient for the penalty timer.
-		/// </summary>
-		public Gradient penaltyTimeGradient = null;
-		/// <summary>
 		/// The penalty weight settings for each team. For saving, the entire list gets converted into a list of Vector3.
 		/// </summary>
 		public List<Dictionary<PenaltyType, float>> teamPenaltyWeights;
-		/// <summary>
-		/// Calculates the mean in the case of multiple violations at once.
-		/// </summary>
-		private HoelderMean meanCalculation = null;
 		/// <summary>
 		/// Creates a new Tournament-instance.
 		/// </summary>
@@ -123,7 +95,7 @@ namespace TournamentMod
 				Dictionary<PenaltyType, float> presets = new Dictionary<PenaltyType, float>();
 				foreach (PenaltyType pt in Enum.GetValues(typeof(PenaltyType)))
 				{
-					presets.Add(pt, 1);
+					presets.Add(pt, 1f);
 				}
 				teamPenaltyWeights.Add(presets);
 			}
@@ -134,51 +106,7 @@ namespace TournamentMod
 		/// </summary>
 		public void LoadCraft()
 		{
-			if (timerStyle == null)
-			{
-				timerStyle = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-				{
-					alignment = TextAnchor.MiddleCenter,
-					richText = true,
-					fontSize = 12
-				};
-				extrainfoLeft = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-				{
-					alignment = TextAnchor.UpperLeft,
-					richText = true,
-					fontSize = 12,
-					wordWrap = false,
-					clipping = TextClipping.Clip
-				};
-				sidelist = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-				{
-					alignment = TextAnchor.UpperLeft,
-					richText = true,
-					fontSize = 12,
-					wordWrap = false,
-					clipping = TextClipping.Clip,
-					stretchHeight = false
-				};
-				sidelist.normal.textColor = Color.white;
-				extrainfoRight = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-				{
-					alignment = TextAnchor.UpperRight,
-					richText = true,
-					fontSize = 12,
-					wordWrap = false,
-					clipping = TextClipping.Clip
-				};
-				extrainfoName = new GUIStyle(LazyLoader.HUD.Get().interactionStyle)
-				{
-					alignment = TextAnchor.UpperRight,
-					richText = true,
-					fontSize = 12,
-					wordWrap = true,
-					clipping = TextClipping.Clip
-				};
-			}
 			ClearArea();
-			HUDLog.Clear();
 			materials?.Clear();
 			materials = null;
 			InstanceSpecification.i.Header.CommonSettings.EnemyBlockDestroyedResourceDrop = Parameters.MaterialConversion / 100f;
@@ -259,14 +187,12 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods.
+		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods. Gets called after <see cref="LoadCraft"/>.
 		/// </summary>
 		public void StartMatch()
 		{
-			penaltyTimeGradient = ((GradientType) Parameters.PenaltyTimeGradient).GetGradient();
 			overtimeCounter = 0;
 			timerTotal = 0f;
-			timerTotal2 = Time.timeSinceLevelLoad;
 			ConstructableCleanUpSettings ccus = InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUpSettings;
 			InstanceSpecification.i.Header.CommonSettings.ConstructableCleanUp = (ConstructableCleanUp)Parameters.CleanUpMode;
 			ccus.BelowAndSinking = Parameters.CleanUpSinkingConstructs;
@@ -280,7 +206,6 @@ namespace TournamentMod
 			ccus.AIDead = Parameters.CleanUpNoAI;
 			ccus.SustainedByRepairs = Parameters.CleanUpDelayedByRepairs;
 			ccus.SustainedByRepairsTime = Parameters.RepairDelayTime;
-			meanCalculation = new HoelderMean((WeightCombinerType) Parameters.WeightCombiner);
 			if (!GameSpeedManager.Instance.IsPaused)
 			{
 				GameSpeedManager.Instance.TogglePause();
@@ -289,79 +214,34 @@ namespace TournamentMod
 			orbittarget = 0;
 			flycam.transform.position = new Vector3(-500f, 50f, 0f) + LocalOffsetFromTerrainCenter();
 			flycam.transform.rotation = Quaternion.LookRotation(Vector3.right);
-			foreach (MainConstruct constructable in StaticConstructablesManager.constructables)
+			participantManagement = new ParticipantManagement(Parameters, teamPenaltyWeights);
+			liveViewConsole = new LiveViewConsole();
+			liveViewConsole.ActivateGui(participantManagement);
+			GameEvents.PreLateUpdate.RegWithEvent(LateUpdate);
+			GameEvents.FixedUpdateEvent.RegWithEvent(HandleTime);
+		}
+		public void UnregisterEvents()
+		{
+			GameEvents.PreLateUpdate.UnregWithEvent(LateUpdate);
+			GameEvents.FixedUpdateEvent.UnregWithEvent(HandleTime);
+			participantManagement?.UnregisterEvents();
+		}
+		public void HandleTime(ITimeStep dt)
+		{
+			timerTotal += dt.DeltaTime;
+			if (overtimeCounter == 0 && timerTotal > Parameters.MaximumTime)
 			{
-				if (!HUDLog.ContainsKey(constructable.GetTeam()))
+				GameSpeedManager.Instance.TogglePause();
+				overtimeCounter = 1;
+			}
+			else if (Parameters.Overtime > 0)
+			{//Verlängerung ist eingeschaltet.
+				if (timerTotal > Parameters.MaximumTime + overtimeCounter * Parameters.Overtime)
 				{
-					HUDLog.Add(constructable.GetTeam(), new Dictionary<MainConstruct, Participant>());
-				}
-				if (!HUDLog[constructable.GetTeam()].ContainsKey(constructable))
-				{
-					bool spawnStick = constructable.BlockTypeStorage.MainframeStore.Count == 0;
-					switch (Parameters.HealthCalculation)
-					{
-						case 0:
-							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
-							{
-								TeamId = constructable.GetTeam(),
-								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
-								UniqueId = constructable.UniqueId,
-								BlueprintName = constructable.GetName(),
-								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
-								HP = 100,
-								HPCUR = (!spawnStick) ? constructable.AllBasics.GetNumberAliveBlocksIncludingSubConstructables() : constructable.AllBasics.GetNumberAliveBlocks(),
-								HPMAX = (!spawnStick) ? constructable.AllBasics.GetNumberBlocksIncludingSubConstructables() : constructable.AllBasics.GetNumberBlocks()
-							});
-							break;
-						case 1:
-							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
-							{
-								TeamId = constructable.GetTeam(),
-								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
-								UniqueId = constructable.UniqueId,
-								BlueprintName = constructable.GetName(),
-								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
-								HP = 100,
-								HPCUR = constructable.AllBasics.GetResourceCost(ValueQueryType.AliveOnly|ValueQueryType.IncludeContents).Material,
-								HPMAX = constructable.AllBasics.GetResourceCost(ValueQueryType.IncludeContents).Material
-							});
-							break;
-						case 2:
-							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
-							{
-								TeamId = constructable.GetTeam(),
-								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
-								UniqueId = constructable.UniqueId,
-								BlueprintName = constructable.GetName(),
-								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
-								HP = 100,
-								HPCUR = constructable.AllBasics.VolumeAliveUsed,
-								HPMAX = constructable.AllBasics.VolumeAliveUsed
-							});
-							break;
-						case 3:
-							HUDLog[constructable.GetTeam()].Add(constructable, new Participant
-							{
-								TeamId = constructable.GetTeam(),
-								TeamName = constructable.GetTeam().FactionSpec().AbreviatedName,
-								UniqueId = constructable.UniqueId,
-								BlueprintName = constructable.GetName(),
-								AICount = constructable.BlockTypeStorage.MainframeStore.Blocks.Count,
-								HP = 100,
-								HPCUR = constructable.AllBasics.VolumeOfFullAliveBlocksUsed,
-								HPMAX = constructable.AllBasics.VolumeOfFullAliveBlocksUsed
-							});
-							break;
-						default:
-							AdvLogger.LogError("Health calculation has been set to an unusable Value!",LogOptions.Popup);
-							return;
-					}
+					GameSpeedManager.Instance.TogglePause();
+					overtimeCounter++;
 				}
 			}
-			GameEvents.PreLateUpdate.RegWithEvent(LateUpdate);
-			GameEvents.Twice_Second.RegWithEvent(SlowUpdate);
-			GameEvents.FixedUpdateEvent.RegWithEvent(FixedUpdate);
-			GameEvents.OnGui.RegWithEvent(OnGUI);
 		}
 		/// <summary>
 		/// Deletes every Force which there currently is.
@@ -687,136 +567,6 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Displays the Sidelist and when required the Extra-Info-Panel.
-		/// </summary>
-		public void OnGUI()
-		{
-			GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity, new Vector3(1f * Screen.width / 1280f, 1f * Screen.height / 800f, 1f));
-			GUI.backgroundColor = new Color(0f, 0f, 0f, 0.6f);
-			GUI.Label(new Rect(590f, 0f, 100f, 30f), $"{Mathf.Floor(timerTotal / 60f)}m {Mathf.Floor(timerTotal % 60f)}s", timerStyle);
-			if (showLists)
-			{
-				GUILayout.BeginArea(new Rect(0, 50, 200, 700), sidelist);
-				scrollPos = GUILayout.BeginScrollView(scrollPos);
-				float t = Time.realtimeSinceStartup * 30;
-				string finalDQHtmlColor = ColorUtility.ToHtmlStringRGB(penaltyTimeGradient.Evaluate(1));
-				foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> team in HUDLog)
-				{
-					string teamMaterials = "M: " + team.Key.FactionInst().ResourceStore.Material.ToString();
-					float teamMaxHP = 0, teamCurHP = 0;
-					teamMaxHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPMAX);
-					teamCurHP = team.Value.Values.Aggregate(0f, (currentSum, member) => currentSum + member.HPCUR);
-					string teamHP = $"{Math.Round(100 * teamCurHP / teamMaxHP, 1)}%";
-					GUILayout.Label($"<color=cyan>{team.Key.FactionSpec().Name}</color> @ {teamHP}, <color=orange>{teamMaterials}</color>", sidelist);
-					int maxTimeForTeam = Parameters.MaximumPenaltyTime[TournamentPlugin.factionManagement.TeamIndexFromObjectID(team.Key)];
-					foreach (KeyValuePair<MainConstruct, Participant> member in team.Value)
-					{
-						string name = member.Value.BlueprintName;
-						string percentHP = $"{Math.Round(member.Value.HP, 1)}%";
-						float penaltyFraction = member.Value.OoBTime / maxTimeForTeam;
-						Color32 timeColor = penaltyTimeGradient.Evaluate(penaltyFraction);
-						string penaltyTime = $"<color=#{ColorUtility.ToHtmlStringRGB(timeColor)}>{Mathf.FloorToInt(member.Value.OoBTime / 60f)}m {Math.Floor(10 * (member.Value.OoBTime % 60f)) / 10}s</color>";
-						bool disqualified = member.Value.Scrapped || ((ConstructableCleanUp) Parameters.CleanUpMode != ConstructableCleanUp.Off && Parameters.CleanUpNoAI && member.Value.AICount == 0);
-						GUIContent memberContent;
-						if (disqualified)
-						{
-							memberContent = new GUIContent($"<color=#{finalDQHtmlColor}>{name} DQ @{Mathf.FloorToInt(member.Value.TimeOfDespawn / 60f)}m {Mathf.FloorToInt(member.Value.TimeOfDespawn % 60f)}s</color>");
-						}
-						else
-						{
-							memberContent = new GUIContent($"{name} @ {percentHP}, {penaltyTime}");
-						}
-						Vector2 size = sidelist.CalcSize(memberContent);
-						if (size.x <= 175)
-						{
-							GUILayout.Label(memberContent, sidelist);
-						}
-						else
-						{
-							GUILayout.BeginScrollView(new Vector2(t % (size.x + 50) - 25, 0), false, false, GUIStyle.none, GUIStyle.none);
-							GUILayout.Label(memberContent, sidelist);
-							GUILayout.EndScrollView();
-						}
-					}
-				}
-				GUILayout.FlexibleSpace();
-				GUILayout.EndScrollView();
-				GUILayout.EndArea();
-			}
-			// extra info panel
-			if (extraInfo)
-			{
-				IMainConstructBlock target = GetTarget();
-				if (target != null)
-				{
-					MainConstruct targetConstruct = StaticConstructablesManager.constructables.Where(x => x.iMain == target).First();
-					string name = targetConstruct.blueprintName;
-					string team = targetConstruct.GetTeam().FactionSpec().Name;
-					string hp = $"{Math.Round(targetConstruct.AllBasics.GetFractionAliveBlocksIncludingSubConstructables() * 100f, 1)}%";
-					string resources = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iMaterial.Maximum)}";
-					string battery = $"{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Quantity)}/{Math.Round(targetConstruct.GetForce().ResourceStore.iEnergy.Maximum)}";
-					string power = $"{Math.Round(targetConstruct.PowerUsageCreationAndFuel.Power)} / {Math.Round(targetConstruct.PowerUsageCreationAndFuel.MaxPower)}";
-					string speed = $"{Math.Round(targetConstruct.Velocity.magnitude)}m/s";
-					string altitude = $"{Math.Round(targetConstruct.CentreOfMass.y)}m";
-					float closest = -1f;
-					foreach (MainConstruct construct in StaticConstructablesManager.constructables.ToArray())
-					{
-						if (construct.GetTeam() != targetConstruct.GetTeam())
-						{
-							float distance = Vector3.Distance(construct.CentreOfMass, targetConstruct.CentreOfMass);
-							if (closest < 0f || distance < closest)
-							{
-								closest = distance;
-							}
-						}
-					}
-					string nearest = Math.Round(closest, 0).ToString() + "m";
-
-					GUI.Label(new Rect(980, 0, 90f, 38f), "Name:", extrainfoLeft);
-					//GUI.Label(new Rect(980, 38, 90f, 38f), "Team:", extrainfoLeft);
-					GUI.Label(new Rect(980, 76, 90f, 38f), "HP:", extrainfoLeft);
-					GUI.Label(new Rect(980, 114, 90f, 38f), "Materials:", extrainfoLeft);
-					GUI.Label(new Rect(980, 152, 90f, 38f), "Battery:", extrainfoLeft);
-					GUI.Label(new Rect(980, 190, 90f, 38f), "Power:", extrainfoLeft);
-					GUI.Label(new Rect(980, 228, 90f, 38f), "Speed:", extrainfoLeft);
-					GUI.Label(new Rect(980, 266, 90f, 38f), "Altitude:", extrainfoLeft);
-					GUI.Label(new Rect(980, 304, 90f, 38f), "Nearest Enemy:", extrainfoLeft);
-
-					GUI.Label(new Rect(1070, 0, 110f, 38f), name, extrainfoName);
-					GUI.Label(new Rect(980, 38, 200f, 38f), team, extrainfoName);
-					GUI.Label(new Rect(1070, 76, 110f, 38f), hp, extrainfoRight);
-					GUI.Label(new Rect(1070, 114, 110f, 38f), resources, extrainfoRight);
-					GUI.Label(new Rect(1070, 152, 110f, 38f), battery, extrainfoRight);
-					GUI.Label(new Rect(1070, 190, 110f, 38f), power, extrainfoRight);
-					GUI.Label(new Rect(1070, 228, 110f, 38f), speed, extrainfoRight);
-					GUI.Label(new Rect(1070, 266, 110f, 38f), altitude, extrainfoRight);
-					GUI.Label(new Rect(1070, 304, 110f, 38f), nearest, extrainfoRight);
-				}
-			}
-		}
-		/// <summary>
-		/// Performes a GridCast against all Constructables starting a the camera position and into the direction its facing. The maximum distance is 1000m.
-		/// </summary>
-		/// <returns>The Mainconstruct if any was hit, otherwise null.</returns>
-		private IMainConstructBlock GetTarget()
-		{
-			IMainConstructBlock target = null;
-			Transform myTransform = flycam.enabled ? flycam.transform : orbitcam.transform;
-			GridCastReturn gridCastReturn = GridCasting.GridCastAllConstructables(new GridCastReturn(myTransform.position, myTransform.forward, 1000, 1, true));
-			if (gridCastReturn.HitSomething)
-			{
-				if (gridCastReturn.FirstHit.BlockHit.IsOnSubConstructable)
-				{
-					target = gridCastReturn.FirstHit.BlockHit.ParentConstruct.iMain;
-				}
-				else
-				{
-					target = gridCastReturn.FirstHit.BlockHit.MainConstruct;
-				}
-			}
-			return target;
-		}
-		/// <summary>
 		/// Handles input and moves, rotates and places the camera.
 		/// </summary>
 		public void LateUpdate()
@@ -864,6 +614,10 @@ namespace TournamentMod
 			if (changeShowList)
 			{
 				showLists = !showLists;
+				if (showLists)
+				{
+					liveViewConsole.ActivateGui(participantManagement);
+				}
 			}
 			if (StaticConstructablesManager.constructables.Count > 0)
 			{
@@ -1009,369 +763,7 @@ namespace TournamentMod
 				AdvLogger.LogError("How can both Monobehaviors be disabled?", LogOptions.OnlyInDeveloperLog);
 			}
 		}
-		/// <summary>
-		/// Gets called once every physics update. Negates material-gain by self-shooting if Lifesteal is -1%. Also determines if a Particiant is currently violating any rules and gives out a penalty.
-		/// </summary>
-		/// <param name="dt"></param>
-		public void FixedUpdate(ITimeStep dt)
-		{
-			if (!GameSpeedManager.Instance.IsPaused)
-			{
-				if (Parameters.MaterialConversion == -1 && materials != null) //Verbietet Materialrückgewinnung durch Selbst- und Teambeschuss.
-				{
-					for (int i = 0; i < Parameters.ActiveFactions; i++)
-					{
-						if (materials[i] < TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.Material.Quantity)
-						{
-							TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.SetResources(materials[i]);
-						}
-						else
-						{
-							materials[i] = (int)TournamentPlugin.factionManagement.factions[i].InstanceOfFaction.ResourceStore.Material.Quantity;
-						}
-					}
-				}
-				MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
-				if (array.Count() == 0)
-				{
-					GameSpeedManager.Instance.TogglePause();
-					//Everyone died...
-				}
-				foreach (MainConstruct currentConstruct in array)
-				{
-					if (!HUDLog[currentConstruct.GetTeam()].TryGetValue(currentConstruct, out Participant tournamentParticipant))
-					{
-						UpdateConstructs();
-						tournamentParticipant = HUDLog[currentConstruct.GetTeam()][currentConstruct];
-					}
-					//The participant is still in the game:
-					if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
-					{
-						int teamIndex = TournamentPlugin.factionManagement.TeamIndexFromObjectID(currentConstruct.GetTeam());
-						tournamentParticipant.AICount = currentConstruct.BlockTypeStorage.MainframeStore.Blocks.Count;
-						bool violatingRules = false;
-						//Is it braindead and is the corresponding cleanup-function turned off?
-						if (((ConstructableCleanUp) Parameters.CleanUpMode == ConstructableCleanUp.Off || !Parameters.CleanUpNoAI) && tournamentParticipant.AICount == 0)
-						{
-							violatingRules = true;
-							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.NoAi]);
-						}
-						//Is it below the lower altitude limit?
-						if (currentConstruct.CentreOfMass.y < Parameters.AltitudeLimits[teamIndex].x)
-						{
-							if (Parameters.SoftLimits[teamIndex])
-							{
-								if (-currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Still sinking.
-								{
-									violatingRules = true;
-									meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.UnderAltitude]);
-								}
-							}
-							else
-							{
-								violatingRules = true;
-								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.UnderAltitude]);
-							}
-						}
-						else if (currentConstruct.CentreOfMass.y > Parameters.AltitudeLimits[teamIndex].y) //Is it above the upper altitude limit?
-						{
-							if (Parameters.SoftLimits[teamIndex])
-							{
-								if (currentConstruct.Velocity.y > Parameters.AltitudeReverse[teamIndex]) //Still raising.
-								{
-									violatingRules = true;
-									meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.AboveAltitude]);
-								}
-							}
-							else
-							{
-								violatingRules = true;
-								meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.AboveAltitude]);
-							}
-						}
-						//Does it have too little HP and is the corresponding cleanup-function turned off?
-						if (((ConstructableCleanUp) Parameters.CleanUpMode == ConstructableCleanUp.Off || !Parameters.CleanUpTooDamagedConstructs) && tournamentParticipant.HP < Parameters.MinimumHealth)
-						{
-							violatingRules = true;
-							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.TooMuchDamage]);
-						}
-						//Is it too fast?
-						if (currentConstruct.Velocity.magnitude > Parameters.MaximumSpeed[teamIndex])
-						{
-							violatingRules = true;
-							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.TooFast]);
-						}
-						//Is it too far away from enemies?
-						if (CheckDistanceAll(currentConstruct, teamIndex, Parameters.EnemyAttackPercentage[teamIndex] / 100f, out bool noEnemies))
-						{
-							violatingRules = true;
-							meanCalculation.AddValue(teamPenaltyWeights[teamIndex][PenaltyType.FleeingFromBattle]);
-						}
-						//Are there no more enemies?
-						if (noEnemies)
-						{
-							if (Parameters.PauseOnVictory)
-							{
-								GameSpeedManager.Instance.TogglePause();
-							}
-							break;
-							//Checking additional constructs does no longer change the outcome, we still need to update the timer though.
-						}
-						//Has any rule been violated?
-						if (violatingRules)
-						{
-							AddPenalty(tournamentParticipant, teamIndex, meanCalculation.GetMean());
-						}
-						else
-						{
-							//Recover the timebuffer if soft limits are active.
-							if (Parameters.SoftLimits[teamIndex])
-							{
-								tournamentParticipant.OoBTimeBuffer = 0;
-							}
-						}
-						tournamentParticipant.Disqual = tournamentParticipant.OoBTime > Parameters.MaximumPenaltyTime[teamIndex];
-					}
-				}
-				timerTotal += Time.timeSinceLevelLoad - timerTotal - timerTotal2;
-			}
-		}
-		/// <summary>
-		/// Performs a distance-check for a given Construct against all its enemies to determine, if it is currently violating the distance-rule.
-		/// </summary>
-		/// <param name="current">The current construct to check distances.</param>
-		/// <param name="teamIndex">Its team index</param>
-		/// <param name="percentage">The relative value for attacking.</param>
-		/// <param name="noEnemiesFound">Set to true, if no enemies were found this pass.</param>
-		/// <returns>True, if the current participant is considered as "fleeing from battle" and has to accumulate penalty time.</returns>
-		private bool CheckDistanceAll(MainConstruct current, int teamIndex, float percentage, out bool noEnemiesFound)
-		{
-			MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
-			List<MainConstruct> enemies = new List<MainConstruct>(array.Length);
-			foreach (MainConstruct potentialEnemy in array)
-			{
-				if (current != potentialEnemy && current.GetTeam() != potentialEnemy.GetTeam())
-				{
-					enemies.Add(potentialEnemy);
-				}
-			}
-			if (enemies.Count == 0)
-			{
-				noEnemiesFound = true;
-				return false;
-			}
-			noEnemiesFound = false;
-			int rulebreaks = 0, beatenButNotDestroyed = 0;
-			foreach (MainConstruct enemy in enemies)
-			{
-				if (HUDLog[enemy.GetTeam()].TryGetValue(enemy, out Participant participant))
-				{
-					if (participant.Disqual || participant.Scrapped || ((ConstructableCleanUp) Parameters.CleanUpMode != ConstructableCleanUp.Off && Parameters.CleanUpNoAI && participant.AICount == 0))
-					{
-						beatenButNotDestroyed++;
-						continue;
-					}
-					float currentDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass, enemy.CentreOfMass);
-					float futureDistance = Parameters.ProjectedDistance[teamIndex] ? DistanceProjected(current.CentreOfMass + current.Velocity, enemy.CentreOfMass) : Vector3.Distance(current.CentreOfMass + current.Velocity, enemy.CentreOfMass);
-					//Too far away?
-					if (currentDistance > Parameters.DistanceLimit[teamIndex])
-					{
-						if (Parameters.SoftLimits[teamIndex])
-						{
-							//Going away faster than DistanceReverse allows?
-							if (futureDistance > currentDistance + Parameters.DistanceReverse[teamIndex])
-							{
-								rulebreaks++;
-							}
-						}
-						else
-						{
-							rulebreaks++;
-						}
-					}
-				}
-				else
-				{
-					beatenButNotDestroyed++;
-					//We need to wait for the next update, so for now it doesn't get considered.
-				}
-			}
-			return Mathf.Max(1, Mathf.RoundToInt((1f - percentage) * (enemies.Count - beatenButNotDestroyed))) <= rulebreaks;
-		}
-		/// <summary>
-		/// Increases the Penalty-Time of a single Participant or uses up the Time-Buffer if Soft-Limits are active for the given Team.
-		/// </summary>
-		/// <param name="tournamentParticipant">The offending Participant</param>
-		/// <param name="teamIndex">The index of its corresponding Team</param>
-		private void AddPenalty(Participant tournamentParticipant, int teamIndex, float multiplier = 1)
-		{
-			float increment = (Time.timeSinceLevelLoad - timerTotal - timerTotal2) * multiplier;
-			if (Parameters.SoftLimits[teamIndex])
-			{
-				if (tournamentParticipant.OoBTimeBuffer > Parameters.MaximumBufferTime[teamIndex])
-				{
-					tournamentParticipant.OoBTime += increment;
-				}
-				else
-				{
-					tournamentParticipant.OoBTimeBuffer += increment;
-				}
-			}
-			else
-			{
-				tournamentParticipant.OoBTime += increment;
-			}
-		}
-		/// <summary>
-		/// Gets called twice a second. Despawns Mainconstructs which have accumulated too much Penalty-time and pauses the Game once the time limit or the end of an overtime-section is reached.
-		/// </summary>
-		/// <param name="dt"></param>
-		public void SlowUpdate(ITimeStep dt)
-		{
-			UpdateConstructs();
-			foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> teamAndMembers in HUDLog)
-			{
-				foreach (KeyValuePair<MainConstruct, Participant> member in HUDLog[teamAndMembers.Key])
-				{
-					if (StaticConstructablesManager.constructables.Contains(member.Key))
-					{
-						if (!HUDLog[teamAndMembers.Key][member.Key].Disqual)
-						{
-							continue;
-						}
-						else if (!HUDLog[teamAndMembers.Key][member.Key].Scrapped)
-						{
-							HUDLog[teamAndMembers.Key][member.Key].HPCUR = 0f;
-							HUDLog[teamAndMembers.Key][member.Key].Scrapped = true;
-							Vector3 centreOfMass = member.Key.CentreOfMass;
-							UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
-							member.Key.DestroyCompletely(DestroyReason.Wiped, true);
-							HUDLog[teamAndMembers.Key][member.Key].TimeOfDespawn = timerTotal;
-						}
-					}
-					else if (!(HUDLog[teamAndMembers.Key][member.Key].Disqual && HUDLog[teamAndMembers.Key][member.Key].Scrapped))
-					{
-						HUDLog[teamAndMembers.Key][member.Key].Disqual = HUDLog[teamAndMembers.Key][member.Key].Scrapped = true;
-						HUDLog[teamAndMembers.Key][member.Key].HPCUR = 0;
-						HUDLog[teamAndMembers.Key][member.Key].TimeOfDespawn = timerTotal;
-					}
-				}
-			}
-			if (overtimeCounter == 0 && timerTotal > Parameters.MaximumTime)
-			{
-				GameSpeedManager.Instance.TogglePause();
-				overtimeCounter = 1;
-			}
-			else if (Parameters.Overtime > 0)
-			{//Verlängerung ist eingeschaltet.
-				if (timerTotal > Parameters.MaximumTime + overtimeCounter * Parameters.Overtime)
-				{
-					GameSpeedManager.Instance.TogglePause();
-					overtimeCounter++;
-				}
-			}
-		}
-		/// <summary>
-		/// Includes any new Mainconstruct into the HUDLog and updates current health-values.
-		/// </summary>
-		private void UpdateConstructs()
-		{
-			MainConstruct[] array = StaticConstructablesManager.constructables.ToArray();
-			foreach (MainConstruct val in array)
-			{
-				if (!HUDLog[val.GetTeam()].TryGetValue(val, out Participant tournamentParticipant))
-				{
-					tournamentParticipant = new Participant
-					{
-						AICount = val.BlockTypeStorage.MainframeStore.Count,
-						TeamId = val.GetTeam(),
-						TeamName = val.GetTeam().FactionSpec().Name,
-						BlueprintName = val.GetBlueprintName(),
-						Disqual = false,
-						Scrapped = false,
-						UniqueId = val.UniqueId
-					};
-					switch (Parameters.HealthCalculation)
-					{
-						case 0:
-							tournamentParticipant.HPMAX = val.AllBasics.GetNumberBlocksIncludingSubConstructables();
-							break;
-						case 1:
-							tournamentParticipant.HPMAX = val.AllBasics.GetResourceCost(ValueQueryType.IncludeContents).Material;
-							break;
-						case 2:
-						case 3:
-							tournamentParticipant.HPMAX = 0;
-							for (int x = val.AllBasics.minx_; x <= val.AllBasics.maxx_; x++)
-							{
-								for (int y = val.AllBasics.miny_; x <= val.AllBasics.maxy_; y++)
-								{
-									for (int z = val.AllBasics.minz_; x <= val.AllBasics.maxz_; z++)
-									{
-										Block b = val.AllBasics[x, y, z];
-										if (b != null)
-										{
-											if (Parameters.HealthCalculation == 2)
-											{
-												tournamentParticipant.HPMAX += b.item.SizeInfo.VolumeFactor;
-											}
-											else
-											{
-												tournamentParticipant.HPMAX += 1;
-											}
-										}
-									}
-								}
-							}
-							break;
-						default:
-							AdvLogger.LogError("Health calculation of newly spawned in Construct is not available!", LogOptions.OnlyInDeveloperLog);
-							break;
-					}
-					HUDLog[tournamentParticipant.TeamId][val] = tournamentParticipant;
-				}
-				if (!tournamentParticipant.Disqual || !tournamentParticipant.Scrapped)
-				{
-					switch (Parameters.HealthCalculation)
-					{
-						case 0:
-							tournamentParticipant.HPCUR = val.AllBasics.GetNumberAliveBlocksIncludingSubConstructables();
-							break;
-						case 1:
-							tournamentParticipant.HPCUR = val.AllBasics.GetResourceCost(ValueQueryType.AliveOnly|ValueQueryType.IncludeContents).Material;
-							break;
-						case 2:
-							tournamentParticipant.HPCUR = val.AllBasics.VolumeAliveUsed;
-							break;
-						case 3:
-							tournamentParticipant.HPCUR = val.AllBasics.VolumeOfFullAliveBlocksUsed;
-							break;
-						default:
-							AdvLogger.LogError("Health calculation of Construct is not available!", LogOptions.OnlyInDeveloperLog);
-							break;
-					}
-					tournamentParticipant.HP = 100f * tournamentParticipant.HPCUR / tournamentParticipant.HPMAX;
-				}
-				else
-				{
-					tournamentParticipant.HPCUR = 0f;
-					tournamentParticipant.HP = 0f;
-				}
-			}
-		}
 		public Quaternion Rotation => Quaternion.Euler(0, Parameters.Rotation, 0);
-		/// <summary>
-		/// Calculates the distance between two points, if they were on the XZ-Plane.
-		/// </summary>
-		/// <param name="a">Point a</param>
-		/// <param name="b">Point b</param>
-		/// <returns>The distance in the horizontal plane only.</returns>
-		private float DistanceProjected(Vector3 a, Vector3 b)
-		{
-			a.y = 0;
-			b.y = 0;
-			return Vector3.Distance(a, b);
-		}
 		/// <summary>
 		/// Retrieves the CombinedFormation of a given Team.
 		/// </summary>
