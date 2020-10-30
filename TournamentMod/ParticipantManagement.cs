@@ -1,15 +1,13 @@
 ﻿using BrilliantSkies.Core.Id;
-using System;
 using System.Collections.Generic;
 using BrilliantSkies.Core.Logger;
 using BrilliantSkies.Core.Enumerations;
 using BrilliantSkies.Core.Timing;
 using UnityEngine;
+using System.Linq;
 namespace TournamentMod
 {
 	using Serialisation;
-	using System.Linq;
-
 	public class ParticipantManagement
 	{
 		private HealthType healthType;
@@ -168,7 +166,7 @@ namespace TournamentMod
 								tournamentParticipant.OoBTimeBuffer = 0;
 							}
 						}
-						tournamentParticipant.Disqual = tournamentParticipant.OoBTime > parameters.MaximumPenaltyTime[teamIndex];
+						tournamentParticipant.Disqual = tournamentParticipant.OoBTime >= parameters.MaximumPenaltyTime[teamIndex];
 					}
 				}
 				timerTotal += dt.DeltaTime;

@@ -624,9 +624,9 @@ namespace TournamentMod
 				if (orbitindex >= StaticConstructablesManager.constructables.Count || oldIndex == -1)
 				{
 					orbitindex = 0;
-					orbittarget = 0;
+					orbittarget = -1;
 				}
-				if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != 0 ||
+				if (StaticConstructablesManager.constructables.ToArray()[orbitindex].UniqueId != orbittarget && orbittarget != -1 ||
 					(orbitMothership != -1 && StaticConstructablesManager.constructables.ToArray()[orbitindex].GetForce().MothershipAndDrone.MothershipLatch.Them?.LinkedCorrectly?.OurForce.Id.Id != orbitMothership))
 				{
 					int index;

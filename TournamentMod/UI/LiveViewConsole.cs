@@ -7,6 +7,8 @@ using BrilliantSkies.Core.Id;
 using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 using BrilliantSkies.Ui.Tips;
 using UnityEngine;
+using System;
+
 namespace TournamentMod.UI
 {
 	public class LiveViewConsole : ConsoleUi<ParticipantManagement>
@@ -15,14 +17,16 @@ namespace TournamentMod.UI
 		public LiveViewConsole() : base() {}
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
-			ConsoleWindow window = NewWindow("Live View", new StandardFractional(0.1f, 0.1f, 0.3f, 0.8f));
+			ConsoleWindow window = NewWindow("Live View", new StandardFractional(0.01f, 0.01f, 0.3f, 0.9f));
 			window.DisplayTextPrompt = false;
 			window.BackgroundType = BackgroundType.Normal;
 			lastParticipantCount = _focus.ParticipantCount();
-			window.Screen.CreateStandardSegment().AddInterpretter(new StringDisplay(M.m(() => $"<b>Elapsed Time: {Mathf.FloorToInt(Tournament._me.timerTotal / 60f)}m {Mathf.FloorToInt(Tournament._me.timerTotal % 60f)}s.</b>"), M.m(new ToolTip("The amount of Time that has already past."))));
+			ScreenSegmentStandard standard = window.Screen.CreateStandardSegment();
+			standard.AddInterpretter(new StringDisplay(M.m(() => $"<b>Elapsed Time: {Mathf.FloorToInt(Tournament._me.timerTotal / 60f)}m {Mathf.FloorToInt(Tournament._me.timerTotal % 60f)}s.</b>"), M.m(new ToolTip("The amount of Time that has already past."))));
+			standard.AddInterpretter(StringDisplay.Quick("As long as this Console is visible, you can not unlatch the Cursor: Instead close this console, unlatch the Cursor and reopen it with the specified Keys in the Setup-Console. It is recommended to do this while the Orbit-Camera is following a construct."));
 			foreach (KeyValuePair<ObjectId, Dictionary<MainConstruct, Participant>> team in _focus.TCP)
 			{
-				window.Screen.CreateHeader(team.Key.FactionSpec().Name);
+				window.Screen.CreateHeader($"{team.Key.FactionSpec().Name}");
 				foreach (KeyValuePair<MainConstruct, Participant> entry in team.Value)
 				{
 					Participant participant = entry.Value;
@@ -34,15 +38,14 @@ namespace TournamentMod.UI
 					table.AddInterpretter(new StringDisplay(M.m(() => $"{Mathf.RoundToInt(participant.HP * 10f) / 10f}%"), M.m(new ToolTip("The current Health value of the participant."))), 0, 1);
 					table.AddInterpretter(new StringDisplay(M.m(() => $"<color=#{_focus.PenaltyTimeColor(participant)}>{Mathf.FloorToInt(participant.OoBTime / 60f)}m{Mathf.FloorToInt(10f * (participant.OoBTime % 60f)) / 10f}s{(participant.Scrapped ? $"@{Mathf.FloorToInt(participant.TimeOfDespawn / 60f)}m{Mathf.FloorToInt(10 * (participant.TimeOfDespawn % 60f)) / 10f}s" : "")}</color>"), M.m(new ToolTip("The current penalty time of the participant."))), 0, 2);
 					//Extra Info ist hier.
-					ScreenSegmentStandard standard = window.Screen.CreateStandardSegment();
+					standard = window.Screen.CreateStandardSegment();
 					standard.SetConditionalDisplay(() => ShowExtraInfo() && !construct.Destroyed);
 					standard.SpaceAbove = standard.SpaceBelow = 5f;
-					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Altitude of {construct.SafeAltitude}m"), M.m(new ToolTip("The current altitude of the participant."))));
-					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Speed of {construct.TopSpeedAndAltitude.FilteredSpeed}m/s"), M.m(new ToolTip("The current speed of the participant."))));
-					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Materials of {construct.GetForce().Material.Quantity} out of {construct.GetForce().Material.Maximum}"), M.m(new ToolTip("The current and maximum amount of Materials of the participant."))));
-					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Energy of {construct.GetForce().Energy.Quantity} out of {construct.GetForce().Energy.Maximum}"), M.m(new ToolTip("The current and maximum amount of Energy of the participant."))));
-					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Power of {construct.PowerUsageCreationAndFuel.Power} out of {construct.PowerUsageCreationAndFuel.MaxPower}"), M.m(new ToolTip("The current and maximum amount of Power of the participant. Useful for figuring out, if someone has suffered engine damage."))));
-
+					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Altitude of {Math.Round(construct.SafeAltitude, 1)}m"), M.m(new ToolTip("The current altitude of the participant."))));
+					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Speed of {Math.Round(construct.TopSpeedAndAltitude.FilteredSpeed, 1)}m/s"), M.m(new ToolTip("The current speed of the participant."))));
+					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Materials of {Math.Round(construct.GetForce().Material.Quantity, 2)} out of {Mathf.RoundToInt(construct.GetForce().Material.Maximum)}"), M.m(new ToolTip("The current and maximum amount of Materials of the participant."))));
+					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Energy of {Math.Round(construct.GetForce().Energy.Quantity)} out of {Mathf.RoundToInt(construct.GetForce().Energy.Maximum)}"), M.m(new ToolTip("The current and maximum amount of Energy of the participant."))));
+					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Power of {Mathf.RoundToInt(construct.PowerUsageCreationAndFuel.Power)} out of {Mathf.RoundToInt(construct.PowerUsageCreationAndFuel.MaxPower)}"), M.m(new ToolTip("The current and maximum amount of Power of the participant. Useful for figuring out, if someone has suffered engine damage."))));
 				}
 			}
 			return window;
@@ -65,7 +68,7 @@ namespace TournamentMod.UI
 		public override void SetGuiSettings()
 		{
 			base.SetGuiSettings();
-			GuiSettings.DisallowMouseControl = true;
+			GuiSettings.DisallowMouseControl = false;
 			GuiSettings.PausesMultiplayerPlay = false;
 			GuiSettings.PausesPlay = false;
 			GuiSettings.QGui = false;
