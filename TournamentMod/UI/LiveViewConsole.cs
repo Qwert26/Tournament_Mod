@@ -46,6 +46,20 @@ namespace TournamentMod.UI
 					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Materials of {Math.Round(construct.GetForce().Material.Quantity, 2)} out of {Mathf.RoundToInt(construct.GetForce().Material.Maximum)}"), M.m(new ToolTip("The current and maximum amount of Materials of the participant."))));
 					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Energy of {Math.Round(construct.GetForce().Energy.Quantity)} out of {Mathf.RoundToInt(construct.GetForce().Energy.Maximum)}"), M.m(new ToolTip("The current and maximum amount of Energy of the participant."))));
 					standard.AddInterpretter(new StringDisplay(M.m(() => $"Current Power of {Mathf.RoundToInt(construct.PowerUsageCreationAndFuel.Power)} out of {Mathf.RoundToInt(construct.PowerUsageCreationAndFuel.MaxPower)}"), M.m(new ToolTip("The current and maximum amount of Power of the participant. Useful for figuring out, if someone has suffered engine damage."))));
+					table = window.Screen.CreateTableSegment(8, 1);
+					table.SpaceAbove = table.SpaceBelow = 5f;
+					table.SqueezeTable = true;
+					table.SetConditionalDisplay(standard._fnDisplayIfTrue);
+					table.eTableOrder = ScreenSegmentTable.TableOrder.Columns;
+					table.SetColumnHeadings("APS", "CRAM", "Laser", "Melee", "Missile", "PAC", "Simple Cannon", "Simple Laser");
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetApsFirePower(), 2)}"), M.m(new ToolTip("The current APS-FP"))), 0, 0);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetCramFirePower(), 2)}"), M.m(new ToolTip("The current CRAM-FP"))), 0, 1);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetLaserFirePower(), 2)}"), M.m(new ToolTip("The current Laser-FP"))), 0, 2);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetMeleeFirePower(), 2)}"), M.m(new ToolTip("The current Melee-FP"))), 0, 3);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetMissileFirePower(), 2)}"), M.m(new ToolTip("The current Missile-FP"))), 0, 4);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetPacFirePower(), 2)}"), M.m(new ToolTip("The current PAC-FP"))), 0, 5);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetSimpleCannonFirePower(), 2)}"), M.m(new ToolTip("The current Simple Cannon-FP"))), 0, 6);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Math.Round(construct.GetSimpleLaserFirePower(), 2)}"), M.m(new ToolTip("The current Simple Laser-FP"))), 0, 7);
 				}
 			}
 			return window;
