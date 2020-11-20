@@ -20,7 +20,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(3, 1, 0, 6);
+		public Version version => new Version(3, 1, 1, 0);
 		internal static FactionManagement factionManagement;
 		/// <summary>
 		/// Only gets called once during a game session.
