@@ -11,5 +11,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Tournament")]
 [assembly: AssemblyDescription("Allows Tournament-grade battles to be carried out.")]
 [assembly: AssemblyConfiguration("Debug")]
-[assembly: AssemblyVersion("3.1.1.0")]
-[assembly: AssemblyFileVersion("3.1.1.0")]
+[assembly: AssemblyVersion("3.1.1.4")]
+[assembly: AssemblyFileVersion("3.1.1.4")]
