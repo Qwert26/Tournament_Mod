@@ -8,7 +8,6 @@ using BrilliantSkies.Ui.Consoles.Interpretters.Simple;
 using BrilliantSkies.Ui.Tips;
 using UnityEngine;
 using System;
-
 namespace TournamentMod.UI
 {
 	public class LiveViewConsole : ConsoleUi<ParticipantManagement>

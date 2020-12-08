@@ -169,5 +169,16 @@ namespace TournamentMod.Formations
 			DeterminePositionDescription = FormationPositionDescription.Triangle,
 			DetermineSize = FormationSizeCalculation.Triangle
 		};
+		/// <summary>
+		/// An inverted triangle.
+		/// </summary>
+		public static readonly Formation InvertedTriangle = new Formation()
+		{
+			Name = "Inverted Triangle",
+			Description = "Just like the normal Triangle-Formation, but the Flagship will be at the back of the Formation and not on the Front.",
+			DetermineSize = FormationSizeCalculation.Triangle,
+			DeterminePositionDescription = FormationPositionDescription.Triangle,
+			DetermineLocalPosition = FormationCalculation.InvertedTriangle
+		};
 	}
 }

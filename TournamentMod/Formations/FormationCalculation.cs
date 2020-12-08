@@ -335,19 +335,50 @@ namespace TournamentMod.Formations
 		public static Vector3 Triangle(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
 		{
 			Vector3 ret = new Vector3(0, height, distance);
-			count--;
-			index--;
-			int group = 1;
-			for (int s = 2; s > count; s++)
+			int group = 0;
+			int groupSize = 1;
+			while (groupSize < index + 1)
 			{
-				count -= s;
-				index -= s;
+				count -= groupSize;
+				index -= groupSize;
+				groupSize++;
 				group++;
 			}
-			if (index >= 0)
+			ret += new Vector3(gapLeftRight * (2 * index - group), 0, gapForwardBackward * group);
+			return FactionRotation(factionRotation) * ret;
+		}
+		/// <summary>
+		/// Calculates the position of an individual entry inside an inverted triangle formation.
+		/// </summary>
+		/// <param name="factionRotation">The rotation angle for a team</param>
+		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
+		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
+		/// <param name="count">The amount of entries.</param>
+		/// <param name="index">The index of the current entry.</param>
+		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
+		/// <param name="height">The spawn-height of the entry.</param>
+		/// <returns>The local spawnposition of an entry.</returns>
+		public static Vector3 InvertedTriangle(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		{
+			Vector3 ret = new Vector3(0, height, distance);
+			int group = 0;
+			int groupSize = 1;
+			int totalGroups = 0;
+			while (groupSize < index + 1)
 			{
-				ret += new Vector3(gapLeftRight * (2 * index - group), 0, gapForwardBackward * group);
+				count -= groupSize;
+				index -= groupSize;
+				groupSize++;
+				group++;
+				totalGroups++;
 			}
+			while (groupSize < count + 1)
+			{
+				count -= groupSize;
+				groupSize++;
+				totalGroups++;
+			}
+			ret += new Vector3(gapLeftRight * (2 * index - group), 0, gapForwardBackward * (totalGroups - group));
 			return FactionRotation(factionRotation) * ret;
 		}
 	}

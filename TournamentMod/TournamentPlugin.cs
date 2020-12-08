@@ -20,7 +20,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(3, 1, 1, 4);
+		public Version version => new Version(3, 1, 2, 4);
 		internal static FactionManagement factionManagement;
 		/// <summary>
 		/// Only gets called once during a game session.
@@ -65,7 +65,6 @@ namespace TournamentMod
 		{
 			@is = new InstanceSpecification();
 			@is.GenerateBlankInstance(Planet.i);
-			//Planet.i.Designers.AddInstance(@is);
 			@is.Header.Name = new LocalStringScraped("Tournament Creator");
 			@is.Header.Summary = new LocalStringScraped("Create custom tournament style matches.");
 			@is.Header.DescriptionParagraphs = new List<HeaderAndParagraph> {

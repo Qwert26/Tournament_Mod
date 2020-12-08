@@ -52,7 +52,7 @@ namespace TournamentMod.Formations
 			int formationSpecificIndex = index, formationSpecificCount = count;
 			foreach (Tuple<FormationType,int> indexAndCount in formationEntrycount)
 			{
-				if (indexAndCount.Item2 < formationSpecificIndex+1) //Teilnehmer zu spät für Formation.
+				if (indexAndCount.Item2 < formationSpecificIndex + 1) //Teilnehmer zu spät für Formation.
 				{
 					formationSpecificCount -= indexAndCount.Item2;
 					formationSpecificIndex -= indexAndCount.Item2;
@@ -60,11 +60,19 @@ namespace TournamentMod.Formations
 				}
 				else
 				{
+					if (gapForwardBackward < 0)
+					{
+						distance += indexAndCount.Item1.GetFormation().DetermineSize(gapLeftRight, gapForwardBackward, indexAndCount.Item2).y;
+					}
 					return indexAndCount.Item1.GetFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, indexAndCount.Item2, formationSpecificIndex, distance, height);
 				}
 			}
 			//Die letzte Formation gilt als Fänger.
 			Tuple<FormationType, int> last = formationEntrycount.Last();
+			if (gapForwardBackward < 0)
+			{
+				distance += last.Item1.GetFormation().DetermineSize(gapLeftRight, gapForwardBackward, formationSpecificCount).y;
+			}
 			return last.Item1.GetFormation().DetermineLocalPosition(factionRotation, gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex, distance, height);
 		}
 		/// <summary>

@@ -13,7 +13,8 @@
 		RomanManipelBase,
 		RomanManipelAttack,
 		GuardLine,
-		Triangle
+		Triangle,
+		InvertedTriangle
 	}
 	/// <summary>
 	/// Extension-Methods for the FormationTypes.
@@ -46,6 +47,8 @@
 					return Formation.GuardLine;
 				case FormationType.Triangle:
 					return Formation.Triangle;
+				case FormationType.InvertedTriangle:
+					return Formation.InvertedTriangle;
 				default:
 					return Formation.UnknownFormation;
 			}

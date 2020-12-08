@@ -144,7 +144,7 @@ namespace TournamentMod.Formations
 		/// <returns>The bounding box of the formation.</returns>
 		public static Vector2 Triangle(float gapLeftRight, float gapForwardBackward, int count) {
 			int groups = 1;
-			for (int s = 0; s < count; s++)
+			for (int s = 1; s < count; s++)
 			{
 				count -= s;
 				groups++;

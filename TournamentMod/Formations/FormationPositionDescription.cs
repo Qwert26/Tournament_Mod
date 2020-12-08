@@ -228,7 +228,7 @@ namespace TournamentMod.Formations
 			}
 		}
 		/// <summary>
-		/// Gives each entry a Group, a Line and a Side descriptions.
+		/// Marks the Flagship in a triangle-like formation.
 		/// </summary>
 		/// <param name="_1">The distance along the local x-axis.</param>
 		/// <param name="_2">The distance along the local z-axis.</param>
@@ -243,7 +243,13 @@ namespace TournamentMod.Formations
 			}
 			else
 			{
-				return "None";
+				int group = 1;
+				for (int s = 1; s < index - 1; s++)
+				{
+					group++;
+					index -= s;
+				}
+				return $"Line-Group {group}";
 			}
 		}
 	}
