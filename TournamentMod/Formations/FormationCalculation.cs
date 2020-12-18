@@ -327,19 +327,18 @@ namespace TournamentMod.Formations
 		/// <param name="factionRotation">The rotation angle for a team</param>
 		/// <param name="gapLeftRight">The distance along the local x-axis.</param>
 		/// <param name="gapForwardBackward">The distance along the local z-axis.</param>
-		/// <param name="count">The amount of entries.</param>
+		/// <param name="_1">The amount of entries.</param>
 		/// <param name="index">The index of the current entry.</param>
 		/// <param name="distance">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="height">The spawn-height of the entry.</param>
 		/// <returns>The local spawnposition of an entry.</returns>
-		public static Vector3 Triangle(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
+		public static Vector3 Triangle(float factionRotation, float gapLeftRight, float gapForwardBackward, int _1, int index, float distance, float height)
 		{
 			Vector3 ret = new Vector3(0, height, distance);
 			int group = 0;
 			int groupSize = 1;
 			while (groupSize < index + 1)
 			{
-				count -= groupSize;
 				index -= groupSize;
 				groupSize++;
 				group++;
