@@ -20,7 +20,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(3, 1, 5, 4);
+		public Version version => new Version(3, 1, 5, 8);
 		internal static FactionManagement factionManagement;
 		/// <summary>
 		/// Only gets called once during a game session.
@@ -104,6 +104,10 @@ namespace TournamentMod
 			@is.Header.CommonSettings.DesignerOptions = DesignerOptions.Off;
 			@is.Header.CommonSettings.LuckyMechanic = LuckyMechanic.Off;
 			@is.Territory.SetAllUnowned(Planet.i.World.BoardLayout);
+			if (!Planet.i.Designers.Instances.Contains(@is))
+			{
+				Planet.i.Designers.AddInstance(@is);
+			}
 			@is.PostLoadInitiate(Planet.i, PostLoadInitiateType.New);
 		}
 	}
