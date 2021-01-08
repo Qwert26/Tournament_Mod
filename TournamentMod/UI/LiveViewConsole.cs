@@ -34,8 +34,8 @@ namespace TournamentMod.UI
 					table.SpaceAbove = table.SpaceBelow = 5f;
 					table.SqueezeTable = true;
 					table.AddInterpretter(new StringDisplay(M.m(() => participant.BlueprintName), M.m(new ToolTip("The name of the participant."))), 0, 0);
-					table.AddInterpretter(new StringDisplay(M.m(() => $"{Mathf.RoundToInt(participant.HP * 10f) / 10f}%"), M.m(new ToolTip("The current Health value of the participant."))), 0, 1);
-					table.AddInterpretter(new StringDisplay(M.m(() => $"<color=#{_focus.PenaltyTimeColor(participant)}>{Mathf.FloorToInt(participant.OoBTime / 60f)}m{Mathf.FloorToInt(10f * (participant.OoBTime % 60f)) / 10f}s{(participant.Scrapped ? $"@{Mathf.FloorToInt(participant.TimeOfDespawn / 60f)}m{Mathf.FloorToInt(10 * (participant.TimeOfDespawn % 60f)) / 10f}s" : "")}</color>"), M.m(new ToolTip("The current penalty time of the participant."))), 0, 2);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"{Mathf.RoundToInt(participant.HP * 10f) / 10f}%"), M.m(new ToolTip("The current or last known Health value of the participant."))), 0, 1);
+					table.AddInterpretter(new StringDisplay(M.m(() => $"<color=#{_focus.PenaltyTimeColor(participant)}>{Mathf.FloorToInt(participant.OoBTime / 60f)}m{Mathf.FloorToInt(10f * (participant.OoBTime % 60f)) / 10f}s{(participant.Scrapped ? $"@{Mathf.FloorToInt(participant.TimeOfDespawn / 60f)}m{Mathf.FloorToInt(10 * (participant.TimeOfDespawn % 60f)) / 10f}s" : "")}</color>"), M.m(new ToolTip("The current penalty- and DQ-time of the participant."))), 0, 2);
 					//Extra Info ist hier.
 					standard = window.Screen.CreateStandardSegment();
 					standard.SetConditionalDisplay(() => ShowExtraInfo() && !construct.Destroyed);

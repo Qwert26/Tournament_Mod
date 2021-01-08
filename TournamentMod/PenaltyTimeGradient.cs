@@ -41,6 +41,10 @@ namespace TournamentMod {
 		/// </summary>
 		public static readonly Gradient ROYAL_HOURGLASS;
 		/// <summary>
+		/// The Gradient constructed by the point system of Audiosurf.
+		/// </summary>
+		public static readonly Gradient AUDIOSURF;
+		/// <summary>
 		/// Static Initializer: Gets called when the class gets loaded.
 		/// </summary>
 		static PenaltyTimeGradient() {
@@ -191,6 +195,23 @@ namespace TournamentMod {
 					new GradientColorKey(Color.blue, 0.6f),
 					new GradientColorKey(new Color(0.93f, 0.51f, 0.93f), 0.8f),//Violett
 					new GradientColorKey(new Color(0.5f, 0f, 0.5f), 1f)//Purple
+				},
+				alphaKeys = new GradientAlphaKey[]
+				{
+					new GradientAlphaKey(1f, 0f),
+					new GradientAlphaKey(1f, 1f)
+				},
+				mode = GradientMode.Blend
+			};
+			AUDIOSURF = new Gradient()
+			{
+				colorKeys = new GradientColorKey[]
+				{
+					new GradientColorKey(new Color(1,0,0),0f),
+					new GradientColorKey(new Color(1,1,0),3f/7f),
+					new GradientColorKey(new Color(0,1,0),5f/7f),
+					new GradientColorKey(new Color(0,0,1),6f/7f),
+					new GradientColorKey(new Color(1,0,1),1f)
 				},
 				alphaKeys = new GradientAlphaKey[]
 				{

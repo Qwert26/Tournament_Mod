@@ -15,7 +15,8 @@ namespace TournamentMod
 		TemperaturColorOrdinal,
 		TrafficLight,
 		Wintergatan_MMX_PMMP,
-		RoyalHourglass
+		RoyalHourglass,
+		Audiosurf
 	}
 	public static class GradientTypeExtensions
 	{
@@ -46,6 +47,8 @@ namespace TournamentMod
 					return PenaltyTimeGradient.WINTERGATAN_PROJECT_MASTER_PLAN;
 				case GradientType.RoyalHourglass:
 					return PenaltyTimeGradient.ROYAL_HOURGLASS;
+				case GradientType.Audiosurf:
+					return PenaltyTimeGradient.AUDIOSURF;
 				default:
 					throw new ArgumentOutOfRangeException("type", type, "This Gradient is not yet defined!");
 			}
@@ -77,6 +80,8 @@ namespace TournamentMod
 					return "Based on the colors used in Wintergatan's Project Management Masterplan for the Marble Machine X.";
 				case GradientType.RoyalHourglass:
 					return "Based on the color-stages of purpur.";
+				case GradientType.Audiosurf:
+					return "Based on the point-system of Audiosurf.";
 				default:
 					throw new ArgumentOutOfRangeException("type", type, "This Gradient is not yet defined!");
 			}
