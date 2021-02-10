@@ -51,7 +51,7 @@ namespace TournamentMod.UI
 		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
-			ConsoleWindow window = NewWindow("Manage Formation", WindowSizing.GetRhs());
+			ConsoleWindow window = NewWindow(0, "Manage Formation", WindowSizing.GetRhs());
 			window.DisplayTextPrompt = false;
 			ConsoleUiScreen screen = window.Screen;
 			screen.CreateHeader($"Current Formation List for Team {teamIndex + 1}", new ToolTip("Entries will spawn in these Formation from the top to the bottom. The last formation will act as an Overflow-buffer: " +

@@ -36,7 +36,7 @@ namespace TournamentMod.UI
 		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
-			ConsoleWindow window = NewWindow("Tournament Setup", WindowSizing.GetCentralHuge());
+			ConsoleWindow window = NewWindow(3, "Tournament Setup", WindowSizing.GetCentralHuge());
 			window.DisplayTextPrompt = false;
 			window.SetMultipleTabs(new BaseSettingsTab(this, window, _focus),
 				new TeamSplittedRules(this, window, _focus),

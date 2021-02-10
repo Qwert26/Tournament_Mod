@@ -50,7 +50,7 @@ namespace TournamentMod.UI
 		/// <returns></returns>
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
-			ConsoleWindow window = NewWindow("Add Participants", WindowSizing.GetRhs());
+			ConsoleWindow window = NewWindow(2, "Add Participants", WindowSizing.GetRhs());
 			window.DisplayTextPrompt = false;
 			ConsoleUiScreen screen = window.Screen;
 			screen.CreateHeader("Add Entries", new ToolTip("Select and Add Entries into active Teams."));

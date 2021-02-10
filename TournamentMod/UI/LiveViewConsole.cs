@@ -16,7 +16,7 @@ namespace TournamentMod.UI
 		public LiveViewConsole() : base() {}
 		protected override ConsoleWindow BuildInterface(string suggestedName = "")
 		{
-			ConsoleWindow window = NewWindow("Live View", new StandardFractional(0.01f, 0.01f, 0.3f, 0.9f));
+			ConsoleWindow window = NewWindow(1, "Live View", new StandardFractional(0.01f, 0.01f, 0.3f, 0.9f));
 			window.DisplayTextPrompt = false;
 			window.BackgroundType = BackgroundType.Normal;
 			lastParticipantCount = _focus.ParticipantCount();
