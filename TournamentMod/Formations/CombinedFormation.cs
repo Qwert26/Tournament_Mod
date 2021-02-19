@@ -7,11 +7,12 @@ namespace TournamentMod.Formations
 {
 	public class CombinedFormation
 	{
-		public List<Tuple<FormationType,int>> formationEntrycount;
-		public CombinedFormation() {
-			formationEntrycount = new List<Tuple<FormationType, int>>
+		public List<Tuple<FormationType, int, bool>> formationData;
+		public CombinedFormation()
+		{
+			formationData = new List<Tuple<FormationType, int, bool>>
 			{
-				new Tuple<FormationType, int>(FormationType.Line, 0)
+				new Tuple<FormationType, int, bool>(FormationType.Line, 0, false)
 			};
 		}
 		/// <summary>
@@ -21,10 +22,10 @@ namespace TournamentMod.Formations
 		/// <returns></returns>
 		public Vector4i[] Export(int teamIndex)
 		{
-			Vector4i[] ret = new Vector4i[formationEntrycount.Count];
+			Vector4i[] ret = new Vector4i[formationData.Count];
 			for (int index = 0; index < ret.Length; index++)
 			{
-				ret[index] = new Vector4i(teamIndex, index, (int)formationEntrycount[index].Item1, formationEntrycount[index].Item2);
+				ret[index] = new Vector4i(teamIndex, index, (int) formationData[index].Item1, formationData[index].Item2);
 			}
 			return ret;
 		}
@@ -34,7 +35,7 @@ namespace TournamentMod.Formations
 		/// <param name="v4i"></param>
 		public void Import(Vector4i v4i)
 		{
-			formationEntrycount.Add(new Tuple<FormationType, int>((FormationType)v4i.z, v4i.w));
+			formationData.Add(new Tuple<FormationType, int, bool>((FormationType) v4i.z, v4i.w, false));
 		}
 		/// <summary>
 		/// Determines the local position of an entry using the information provided, as well as its internal list of formations and entry-counts.
@@ -50,7 +51,7 @@ namespace TournamentMod.Formations
 		public Vector3 DetermineLocalPosition(float factionRotation, float gapLeftRight, float gapForwardBackward, int count, int index, float distance, float height)
 		{
 			int formationSpecificIndex = index, formationSpecificCount = count;
-			foreach (Tuple<FormationType,int> indexAndCount in formationEntrycount)
+			foreach (Tuple<FormationType, int, bool> indexAndCount in formationData)
 			{
 				if (indexAndCount.Item2 < formationSpecificIndex + 1) //Teilnehmer zu spät für Formation.
 				{
@@ -68,7 +69,7 @@ namespace TournamentMod.Formations
 				}
 			}
 			//Die letzte Formation gilt als Fänger.
-			Tuple<FormationType, int> last = formationEntrycount.Last();
+			Tuple<FormationType, int, bool> last = formationData.Last();
 			if (gapForwardBackward < 0)
 			{
 				distance += last.Item1.GetFormation().DetermineSize(gapLeftRight, gapForwardBackward, formationSpecificCount).y;
@@ -86,9 +87,9 @@ namespace TournamentMod.Formations
 		public string DeterminePositionDescription(float gapLeftRight, float gapForwardBackward, int count, int index)
 		{
 			int formationSpecificIndex = index, formationSpecificCount = count;
-			foreach (Tuple<FormationType,int> indexAndCount in formationEntrycount)
+			foreach (Tuple<FormationType, int, bool> indexAndCount in formationData)
 			{
-				if (indexAndCount.Item2 < formationSpecificIndex+1) //Teilnehmer zu spät für Formation.
+				if (indexAndCount.Item2 < formationSpecificIndex + 1) //Teilnehmer zu spät für Formation.
 				{
 					formationSpecificCount -= indexAndCount.Item2;
 					formationSpecificIndex -= indexAndCount.Item2;
@@ -99,7 +100,7 @@ namespace TournamentMod.Formations
 				}
 			}
 			//Die letzte Formation gilt als Fänger.
-			Tuple<FormationType, int> last = formationEntrycount.Last();
+			Tuple<FormationType, int, bool> last = formationData.Last();
 			return last.Item1.GetFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex);
 		}
 	}

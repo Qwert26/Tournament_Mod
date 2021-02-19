@@ -104,7 +104,7 @@ namespace TournamentMod
 		/// <summary>
 		/// Loads in all selected crafts and sets their materialstorage.
 		/// </summary>
-		public void LoadCraft()
+		public void LoadCrafts()
 		{
 			ClearArea();
 			materials?.Clear();
@@ -187,7 +187,7 @@ namespace TournamentMod
 			}
 		}
 		/// <summary>
-		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods. Gets called after <see cref="LoadCraft"/>.
+		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods. Gets called after <see cref="LoadCrafts"/>.
 		/// </summary>
 		public void StartMatch()
 		{
@@ -326,7 +326,7 @@ namespace TournamentMod
 		/// </summary>
 		private void PopulateData() {
 			foreach (CombinedFormation cf in teamFormations) {
-				cf.formationEntrycount.Clear();
+				cf.formationData.Clear();
 			}
 			Parameters.TeamFormations.Sort(delegate (Vector4i x, Vector4i y)
 			{
@@ -414,7 +414,7 @@ namespace TournamentMod
 			tcc.TeamColors.Add(Parameters.TrimColorsPerTeam[index]);
 			tcc.TeamColors.Add(Parameters.DetailColorsPerTeam[index]);
 			int i = 0;
-			foreach (Tuple<FormationType, int> f in teamFormations[index].formationEntrycount)
+			foreach (Tuple<FormationType, int, bool> f in teamFormations[index].formationData)
 			{
 				tcc.Formation.Add(new Vector3Int(i++, (int) f.Item1, f.Item2));
 			}
@@ -535,11 +535,11 @@ namespace TournamentMod
 					AdvLogger.LogWarning($"The entry was successfully loaded from file, but the blueprint could not be loaded! Fileplath was \"{entry.FilePath}\". The entry was not added to the Team.", LogOptions.Popup);
 				}
 			}
-			teamFormations[index].formationEntrycount.Clear();
+			teamFormations[index].formationData.Clear();
 			for (int i = 0; i < tcc.Formation.Count; i++)
 			{
 				Vector3Int info = tcc.Formation[i];
-				teamFormations[index].formationEntrycount.Add(new Tuple<FormationType, int>((FormationType) info.y, info.z));
+				teamFormations[index].formationData.Add(new Tuple<FormationType, int, bool>((FormationType) info.y, info.z, false));
 			}
 			foreach (KeyValuePair<int,float> penaltyWeight in tcc.PenaltyWeights)
 			{
@@ -555,8 +555,8 @@ namespace TournamentMod
 			Parameters.EnsureEnoughData();
 			foreach (CombinedFormation cf in teamFormations)
 			{
-				cf.formationEntrycount.Clear();
-				cf.formationEntrycount.Add(new Tuple<FormationType, int>(FormationType.Line, 0));
+				cf.formationData.Clear();
+				cf.formationData.Add(new Tuple<FormationType, int, bool>(FormationType.Line, 0, false));
 			}
 			foreach (Dictionary<PenaltyType, float> teamPenalties in teamPenaltyWeights)
 			{

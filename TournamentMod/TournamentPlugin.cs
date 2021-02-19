@@ -20,7 +20,7 @@ namespace TournamentMod
 		private static InstanceSpecification @is;
 		public string name => "Tournament";
 		public static string Name => "Tournament";
-		public Version version => new Version(3, 1, 9, 5);
+		public Version version => new Version(3, 2, 3, 1);
 		internal static FactionManagement factionManagement;
 		/// <summary>
 		/// Only gets called once during a game session.
@@ -51,7 +51,7 @@ namespace TournamentMod
 			else if(!Planet.i.Designers.Instances.Contains(@is)) {
 				Planet.i.Designers.AddInstance(@is);
 			}
-			if (@is.Header.Name == InstanceSpecification.i.Header.Name) {
+			if (@is.Header.Name.Equals(InstanceSpecification.i.Header.Name)) {
 				GAME_STATE.MyTeam = ObjectId.NoLinkage;
 				_t.tournamentConsole = new TournamentConsole(_t);
 				_t.tournamentConsole.ActivateGui(_t, BrilliantSkies.Ui.Displayer.GuiActivateType.Standard);

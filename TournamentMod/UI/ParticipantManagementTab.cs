@@ -216,7 +216,7 @@ namespace TournamentMod.UI
 			{
 				((ConsoleUi<Tournament>)Window._governingUi).DeactivateGui();
 				t.ApplyFactionColors();
-				t.LoadCraft();
+				t.LoadCrafts();
 				t.StartMatch();
 			})).SetConditionalDisplayFunction(() => ready);
 			posthead.AddInterpretter(SubjectiveButton<Tournament>.Quick(_focus, "START & Quicksave Settings", new ToolTip("Saves your current Settings and then starts the fight."), delegate (Tournament t)
@@ -224,7 +224,7 @@ namespace TournamentMod.UI
 				((ConsoleUi<Tournament>) Window._governingUi).DeactivateGui();
 				t.SaveSettings();
 				t.ApplyFactionColors();
-				t.LoadCraft();
+				t.LoadCrafts();
 				t.StartMatch();
 			})).SetConditionalDisplayFunction(() => ready);
 			posthead.AddInterpretter(StringDisplay.Quick("It seems at least one Team has no Entry. Reduce the number of Teams or give the Team(s) in question at least one Entry.")).SetConditionalDisplayFunction(() => !ready);

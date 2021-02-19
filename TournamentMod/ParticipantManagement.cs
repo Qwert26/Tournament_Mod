@@ -372,7 +372,7 @@ namespace TournamentMod
 							TCP[teamAndMembers.Key][member.Key].HPCUR = 0f;
 							TCP[teamAndMembers.Key][member.Key].Scrapped = true;
 							Vector3 centreOfMass = member.Key.CentreOfMass;
-							UnityEngine.Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
+							Object.Instantiate(Resources.Load("Detonator-MushroomCloud") as GameObject, centreOfMass, Quaternion.identity);
 							member.Key.DestroyCompletely(DestroyReason.Wiped, true);
 							TCP[teamAndMembers.Key][member.Key].TimeOfDespawn = timerTotal;
 						}
