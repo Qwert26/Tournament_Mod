@@ -103,5 +103,44 @@ namespace TournamentMod.Formations
 			Tuple<FormationType, int, bool> last = formationData.Last();
 			return last.Item1.GetFormation().DeterminePositionDescription(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex);
 		}
+		public int DetermineFlagshipIndex(float gapLeftRight, float gapForwardBackward, int count, int index)
+		{
+			int formationSpecificIndex = index, formationSpecificCount = count, offset = 0;
+			foreach (Tuple<FormationType, int, bool> indexAndCount in formationData)
+			{
+				if (indexAndCount.Item2 < formationSpecificIndex + 1) //Teilnehmer zu spät für Formation.
+				{
+					formationSpecificCount -= indexAndCount.Item2;
+					formationSpecificIndex -= indexAndCount.Item2;
+					offset += indexAndCount.Item2;
+				}
+				else
+				{
+					return indexAndCount.Item1.GetFormation().DetermineFlagship(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex) + offset;
+				}
+			}
+			//Die letzte Formation gilt als Fänger.
+			Tuple<FormationType, int, bool> last = formationData.Last();
+			return last.Item1.GetFormation().DetermineFlagship(gapLeftRight, gapForwardBackward, formationSpecificCount, formationSpecificIndex) + offset;
+		}
+		public bool DetermineFleetForming(int count, int index)
+		{
+			int formationSpecificIndex = index, formationSpecificCount = count;
+			foreach (Tuple<FormationType, int, bool> indexAndCount in formationData)
+			{
+				if (indexAndCount.Item2 < formationSpecificIndex + 1) //Teilnehmer zu spät für Formation.
+				{
+					formationSpecificCount -= indexAndCount.Item2;
+					formationSpecificIndex -= indexAndCount.Item2;
+				}
+				else
+				{
+					return indexAndCount.Item1.GetFormation().SupportsFleetForming && indexAndCount.Item3;
+				}
+			}
+			//Die letzte Formation gilt als Fänger.
+			Tuple<FormationType, int, bool> last = formationData.Last();
+			return last.Item1.GetFormation().SupportsFleetForming && last.Item3;
+		}
 	}
 }

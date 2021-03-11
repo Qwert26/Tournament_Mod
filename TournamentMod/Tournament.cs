@@ -185,6 +185,7 @@ namespace TournamentMod
 					}
 				}
 			}
+			FleetBuilder.BuildFleets();
 		}
 		/// <summary>
 		/// Sets Cleanup-Functions, adds all Mainconstructs into the HUDLog and registers its methods. Gets called after <see cref="LoadCrafts"/>.

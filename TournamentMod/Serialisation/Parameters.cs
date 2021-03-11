@@ -13,7 +13,6 @@ namespace TournamentMod.Serialisation
 		/// <summary>
 		/// Container for all revelevant Parameters of a Tournament-grade Battle.
 		/// </summary>
-		/// <param name="uniqueId"></param>
 		public Parameters() { }
 		#region Standard-Parameter
 		/// <summary>

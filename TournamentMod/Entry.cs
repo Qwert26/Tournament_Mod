@@ -138,6 +138,19 @@ namespace TournamentMod
 			{
 				AssignNameToForce = true
 			}, faction.Id);
+			bool formFleet = Tournament._me.GetFormation(FactionIndex).DetermineFleetForming(count, index);
+			int flagship = Tournament._me.GetFormation(FactionIndex).DetermineFlagshipIndex(gapLeftRight, gapForwardBackward, count, index);
+			if (formFleet && flagship != -1)
+			{
+				if (flagship == index)
+				{
+					FleetBuilder.RegisterAsFlagship(val, FactionIndex, index);
+				}
+				else
+				{
+					FleetBuilder.RegisterForFlagship(val, FactionIndex, flagship);
+				}
+			}
 			return val;
 		}
 		/// <summary>

@@ -30,7 +30,7 @@ namespace TournamentMod.Formations
 		/// <param name="_5">The index of the current entry.</param>
 		/// <param name="_6">The distance of the formation to the center of the battlefield.</param>
 		/// <param name="_7">The spawn-height of the entry.</param>
-		/// <returns>The Vector (0,0,0).</returns>
+		/// <returns>The Vector (0, 0, 0).</returns>
 		public static Vector3 UnkownFormation(float _1, float _2, float _3, int _4, int _5, float _6, float _7)
 		{
 			return Vector3.zero;

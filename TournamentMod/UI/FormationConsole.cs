@@ -10,6 +10,7 @@ using BrilliantSkies.Ui.Layouts.DropDowns;
 using System;
 namespace TournamentMod.UI
 {
+	using BrilliantSkies.Ui.Consoles.Interpretters.Subjective.Choices;
 	using Formations;
 	/// <summary>
 	/// GUI-Class for Formation-setting of a singular team.
@@ -101,7 +102,12 @@ namespace TournamentMod.UI
 							  cf.formationData[index] = v2i;
 						  }, null, M.m<CombinedFormation>(new ToolTip("Select the amount of entries you want in this Formation. 0 means that it will be skipt."))), 0, 2);
 				formationSegment.AddInterpretter(new Empty(), 1, 2);
-				formationSegment.AddInterpretter(new Empty(), 2, 2);
+				formationSegment.AddInterpretter(SubjectiveToggle<CombinedFormation>.Quick(_focus, "Fleet", new ToolTip("Turning this on will put entries into a fleet with the designated Flagship."), delegate (CombinedFormation cf, bool set)
+				  {
+					  Tuple<FormationType, int, bool> v2i = cf.formationData[index];
+					  v2i = new Tuple<FormationType, int, bool>(v2i.Item1, v2i.Item2, set);
+					  cf.formationData[index] = v2i;
+				  }, (cf) => cf.formationData[index].Item3), 2, 2).SetConditionalDisplayFunction(() => { return _focus.formationData[index].Item1.GetFormation().SupportsFleetForming; });
 			}
 			ScreenSegmentStandardHorizontal buttons = screen.CreateStandardHorizontalSegment();
 			buttons.SpaceAbove = buttons.SpaceBelow = 5;
